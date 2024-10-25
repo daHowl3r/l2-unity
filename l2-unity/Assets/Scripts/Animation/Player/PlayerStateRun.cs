@@ -8,32 +8,22 @@ public class PlayerStateRun : PlayerStateAction
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         LoadComponents(animator);
-        if (!_enabled)
-        {
-            return;
-        }
-
         _hasStarted = true;
         _lastNormalizedTime = 0;
 
-        foreach (var ratio in _audioHandler.RunStepRatios)
+        foreach (var ratio in AudioHandler.RunStepRatios)
         {
-            _audioHandler.PlaySoundAtRatio(CharacterSoundEvent.Step, ratio);
+            AudioHandler.PlaySoundAtRatio(EntitySoundEvent.Step, ratio);
         }
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (!_enabled)
-        {
-            return;
-        }
-
         if (_hasStarted && (stateInfo.normalizedTime % 1) < 0.5f)
         {
-            if (RandomUtils.ShouldEventHappen(_audioHandler.RunBreathChance))
+            if (RandomUtils.ShouldEventHappen(AudioHandler.RunBreathChance))
             {
-                _audioHandler.PlaySound(CharacterSoundEvent.Breath);
+                AudioHandler.PlaySound(EntitySoundEvent.Breath);
             }
             _hasStarted = false;
         }
@@ -45,9 +35,9 @@ public class PlayerStateRun : PlayerStateAction
         if ((stateInfo.normalizedTime - _lastNormalizedTime) >= 1f)
         {
             _lastNormalizedTime = stateInfo.normalizedTime;
-            foreach (var ratio in _audioHandler.RunStepRatios)
+            foreach (var ratio in AudioHandler.RunStepRatios)
             {
-                _audioHandler.PlaySoundAtRatio(CharacterSoundEvent.Step, ratio);
+                AudioHandler.PlaySoundAtRatio(EntitySoundEvent.Step, ratio);
             }
         }
 
@@ -58,7 +48,7 @@ public class PlayerStateRun : PlayerStateAction
 
         if (ShouldAttack())
         {
-            SetBool("atk01", true, true, false);
+            SetBool(HumanoidAnimType.atk01, true, false);
             return;
         }
 
@@ -90,11 +80,6 @@ public class PlayerStateRun : PlayerStateAction
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (!_enabled)
-        {
-            return;
-        }
-
-        SetBool("run", true, false, false);
+        SetBool(HumanoidAnimType.run, false, false);
     }
 }

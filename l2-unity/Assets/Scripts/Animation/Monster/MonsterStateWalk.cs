@@ -1,28 +1,61 @@
 using UnityEngine;
 
-public class MonsterStateWalk : MonsterStateBase
+public class MonsterStateWalk : MonsterStateAction
 {
     private float _lastNormalizedTime = 0;
-    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+
+    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
         LoadComponents(animator);
-        foreach(var ratio in audioHandler.WalkStepRatios) {
-            audioHandler.PlaySoundAtRatio(MonsterSoundEvent.Step, ratio);
-        }
+
         _lastNormalizedTime = 0;
+        SetBool(MonsterAnimationEvent.walk, false);
+        foreach (var ratio in AudioHandler.WalkStepRatios)
+        {
+            AudioHandler.PlaySoundAtRatio(EntitySoundEvent.Step, ratio);
+        }
     }
 
-    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        // Check if the state has looped (re-entered)
-        if((stateInfo.normalizedTime - _lastNormalizedTime) >= 1f) {
-            // This block will be executed once when the state is re-entered after completion
+    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        SetBool(MonsterAnimationEvent.walk, false);
+
+        if (Entity.IsDead)
+        {
+            return;
+        }
+
+        if ((stateInfo.normalizedTime - _lastNormalizedTime) >= 1f)
+        {
             _lastNormalizedTime = stateInfo.normalizedTime;
-            foreach (var ratio in audioHandler.WalkStepRatios) {
-                audioHandler.PlaySoundAtRatio(MonsterSoundEvent.Step, ratio);
+            foreach (var ratio in AudioHandler.WalkStepRatios)
+            {
+                AudioHandler.PlaySoundAtRatio(EntitySoundEvent.Step, ratio);
             }
         }
+
+        if (!IsMoving() && (stateInfo.normalizedTime) >= 0.10f)
+        {
+            if (IsAttacking())
+            {
+                return;
+            }
+            if (ShouldAtkWait())
+            {
+                SetBool(MonsterAnimationEvent.atkwait, true);
+                return;
+            }
+            SetBool(MonsterAnimationEvent.wait, true);
+        }
+        else if (Entity.Running)
+        {
+            SetBool(MonsterAnimationEvent.run, true);
+            return;
+        }
     }
 
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
 
     }
 }

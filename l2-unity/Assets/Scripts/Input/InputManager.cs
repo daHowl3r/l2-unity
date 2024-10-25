@@ -159,7 +159,7 @@ public class InputManager : MonoBehaviour
             L2GameUI.Instance.EnableMouse();
         }
 
-        if (!ChatWindow.Instance.ChatOpened)
+        if (ChatWindow.Instance != null && !ChatWindow.Instance.ChatOpened)
         {
             MoveInput = _moveAction.ReadValue<Vector2>();
             Jump = _jumpAction.WasPerformedThisFrame();

@@ -109,7 +109,7 @@ public class PathFinderController : MonoBehaviour
                 //      PlayerCombatController.Instance.OnReachingTarget();
                 //   }
 
-                PlayerController.Instance.ResetDestination();
+                PlayerController.Instance.ResetDestination(true);
             }
         }
     }

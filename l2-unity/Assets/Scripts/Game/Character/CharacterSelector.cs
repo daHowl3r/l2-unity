@@ -68,9 +68,31 @@ public class CharacterSelector : MonoBehaviour
     public void SpawnCharacterSlot(int id)
     {
         GameObject pawnObject = CharacterCreator.Instance.CreatePawn(_characters[id].CharacterRaceAnimation, _characters[id].PlayerAppearance);
+
+        EntityReferenceHolder referenceHolder = pawnObject.GetComponent<EntityReferenceHolder>();
+        HumanoidAnimationController animController = (HumanoidAnimationController)referenceHolder.AnimationController;
+
+        if (animController == null)
+        {
+            Debug.LogError("Pawn object animation controller is null");
+        }
+
+        animController.Initialize();
+
+        UserGear gear = (UserGear)referenceHolder.Gear;
+        if (gear == null)
+        {
+            Debug.LogError("Pawn object UserGear is null");
+        }
+
+        gear.Initialize(-1, _characters[id].CharacterRaceAnimation);
+
+        CharacterCreator.Instance.GearUpPawn(_characters[id].PlayerAppearance, gear);
+
         pawnObject.GetComponent<SelectableCharacterEntity>().CharacterInfo = _characters[id];
-        pawnObject.GetComponent<SelectableCharacterEntity>().WeaponAnim = pawnObject.GetComponent<UserGear>().WeaponAnim;
-        CharacterCreator.Instance.PlacePawn(pawnObject, _pawnData[id], _characters[id].Name, _container);
+
+        CharacterCreator.Instance.PlacePawn(pawnObject, _pawnData[id], _characters[id].Name, _container, animController, gear);
+
         _characterGameObjects.Add(pawnObject);
     }
 

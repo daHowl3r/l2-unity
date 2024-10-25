@@ -2,33 +2,37 @@ using UnityEngine;
 
 public class MonsterStateBase : StateMachineBehaviour
 {
-    public MonsterAnimationAudioHandler audioHandler;
-    protected NetworkAnimationController _networkAnimationController;
-    public Animator animator;
-    private Entity _entity;
+    protected NetworkEntityReferenceHolder _referenceHolder;
 
-    public void LoadComponents(Animator animator) {
-        if(audioHandler == null) {
-            audioHandler = animator.gameObject.GetComponent<MonsterAnimationAudioHandler>();
-        }
-        if(this.animator == null) {
-            this.animator = animator;
-        }
-        if (_entity == null) {
-            _entity = animator.gameObject.GetComponent<Entity>();
-        }
-        if(_networkAnimationController == null) {
-            _networkAnimationController = animator.gameObject.GetComponent<NetworkAnimationController>();
+    protected MonsterAudioHandler AudioHandler { get { return (MonsterAudioHandler)_referenceHolder.AudioHandler; } }
+    protected NetworkCharacterControllerReceive CharacterController { get { return (NetworkCharacterControllerReceive)_referenceHolder.NetworkCharacterControllerReceive; } }
+    protected MonsterAnimationController AnimController { get { return (MonsterAnimationController)_referenceHolder.AnimationController; } }
+    protected Entity Entity { get { return _referenceHolder.Entity; } }
+
+    protected bool _cancelAction = false;
+
+    public void LoadComponents(Animator animator)
+    {
+        if (_referenceHolder == null)
+        {
+            Transform entityTransform = animator.transform;
+            _referenceHolder = entityTransform.GetComponent<NetworkEntityReferenceHolder>();
+
+            if (_referenceHolder == null)
+            {
+                entityTransform = animator.transform.parent.parent;
+                _referenceHolder = entityTransform.GetComponent<NetworkEntityReferenceHolder>();
+            }
         }
     }
 
-    public void PlaySoundAtRatio(MonsterSoundEvent soundEvent, float ratio) {
-        audioHandler.PlaySoundAtRatio(soundEvent, ratio);
+    public void PlaySoundAtRatio(EntitySoundEvent soundEvent, float ratio)
+    {
+        AudioHandler.PlaySoundAtRatio(soundEvent, ratio);
     }
 
-    public void SetBool(string name, bool value) {
-        if(animator.GetBool(name) != value) {
-            animator.SetBool(name, value);
-        }
+    public void SetBool(MonsterAnimationEvent animationEvent, bool value)
+    {
+        AnimController.SetBool(animationEvent, value);
     }
 }

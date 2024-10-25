@@ -301,7 +301,7 @@ public class GameServerPacketHandler : ServerPacketHandler
         int animId = packet.AnimId;
         float value = packet.Value;
 
-        Debug.Log($"ID: {id} AnimId: {(PlayerAnimationEvent)animId} Value: {value}");
+        Debug.Log($"ID: {id} AnimId: {(HumanoidAnimationEvent)animId} Value: {value}");
 
         World.Instance.UpdateObjectAnimation(id, animId, value);
     }
@@ -313,9 +313,9 @@ public class GameServerPacketHandler : ServerPacketHandler
 
         for (int i = 0; i < hits.Length; i++)
         {
-            if (hits[i] != null && !hits[i].isMiss())
+            if (hits[i] != null)
             {
-                World.Instance.InflictDamageTo(packet.SenderId, hits[i].TargetId, hits[i].Damage, hits[i].isCrit());
+                World.Instance.InflictDamageTo(packet.SenderId, hits[i]);
             }
         }
     }

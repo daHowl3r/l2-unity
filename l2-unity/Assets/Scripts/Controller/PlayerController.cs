@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour
         {
             if (InputManager.Instance.Move)
             {
-                ResetDestination();
+                ResetDestination(false);
             }
 
             if (ShouldRunToDestination(_stopAtRange))
@@ -109,11 +109,11 @@ public class PlayerController : MonoBehaviour
         _targetPosition = VectorUtils.To2D(position);
     }
 
-    public void ResetDestination()
+    public void ResetDestination(bool targetReached)
     {
         _runningToDestination = false;
         _targetPosition = _flatTransformPos;
-        ClickManager.Instance.HideLocator();
+        ClickManager.Instance.HideLocator(targetReached);
     }
 
     public void ListenToInputs()
@@ -326,7 +326,7 @@ public class PlayerController : MonoBehaviour
 
     public void StopMoving()
     {
-        ResetDestination();
+        ResetDestination(false);
         _moveDirection = new Vector3(0, _moveDirection.y, 0);
     }
 }

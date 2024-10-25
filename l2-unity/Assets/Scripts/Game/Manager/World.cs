@@ -133,7 +133,7 @@ public class World : MonoBehaviour
         identity.EntityType = EntityType.Player;
 
         CharacterRace race = (CharacterRace)appearance.Race;
-        CharacterRaceAnimation raceId = CharacterRaceAnimationParser.ParseRace(race, appearance.Race, identity.IsMage);
+        CharacterModelType raceId = CharacterModelTypeParser.ParseRace(race, appearance.Race, identity.IsMage);
 
         GameObject go = CharacterBuilder.Instance.BuildCharacterBase(raceId, appearance, identity.EntityType);
         go.transform.eulerAngles = new Vector3(transform.eulerAngles.x, identity.Heading, transform.eulerAngles.z);
@@ -148,7 +148,6 @@ public class World : MonoBehaviour
         player.Appearance = appearance;
         player.Race = race;
         player.RaceId = raceId;
-        player.UpdateMoveType(running);
 
         go.GetComponent<NetworkTransformShare>().enabled = true;
         go.GetComponent<PlayerController>().enabled = true;
@@ -162,6 +161,8 @@ public class World : MonoBehaviour
 
         CameraController.Instance.enabled = true;
         CameraController.Instance.SetTarget(go);
+
+        player.UpdateMoveType(running);
 
         CharacterInfoWindow.Instance.UpdateValues();
 
@@ -182,7 +183,7 @@ public class World : MonoBehaviour
         entity.UpdateWalkSpeed(stats.WalkSpeed);
         entity.UpdateRunSpeed(stats.RunSpeed);
         entity.EquipAllWeapons();
-        ((PlayerEntity)entity).EquipAllArmors();
+        entity.EquipAllArmors();
 
         CharacterInfoWindow.Instance.UpdateValues();
     }
@@ -215,13 +216,13 @@ public class World : MonoBehaviour
         identity.EntityType = EntityType.User;
 
         CharacterRace race = (CharacterRace)appearance.Race;
-        CharacterRaceAnimation raceId = CharacterRaceAnimationParser.ParseRace(race, appearance.Race, identity.IsMage);
+        CharacterModelType raceId = CharacterModelTypeParser.ParseRace(race, appearance.Race, identity.IsMage);
 
         GameObject go = CharacterBuilder.Instance.BuildCharacterBase(raceId, appearance, identity.EntityType);
         go.transform.position = identity.Position;
         go.transform.eulerAngles = new Vector3(transform.eulerAngles.x, identity.Heading, transform.eulerAngles.z);
 
-        UserEntity user = go.GetComponent<UserEntity>();
+        NetworkHumanoidEntity user = go.GetComponent<NetworkHumanoidEntity>();
 
         user.Status = status;
         user.Identity = identity;
@@ -249,7 +250,7 @@ public class World : MonoBehaviour
 
     public void UpdateUser(Entity entity, NetworkIdentity identity, PlayerStatus status, Stats stats, PlayerAppearance appearance, bool running)
     {
-        ((UserEntity)entity).Identity.UpdateEntity(identity);
+        ((NetworkHumanoidEntity)entity).Identity.UpdateEntity(identity);
         ((PlayerStatus)entity.Status).UpdateStatus(status);
         entity.Stats.UpdateStats(stats);
         entity.Running = running;
@@ -260,13 +261,11 @@ public class World : MonoBehaviour
         entity.UpdateWalkSpeed(stats.WalkSpeed);
         entity.UpdateRunSpeed(stats.RunSpeed);
         entity.EquipAllWeapons();
-        ((UserEntity)entity).EquipAllArmors();
+        ((NetworkHumanoidEntity)entity).EquipAllArmors();
     }
 
     public void SpawnNpc(NetworkIdentity identity, NpcStatus status, Stats stats)
     {
-
-
         Npcgrp npcgrp = NpcgrpTable.Instance.GetNpcgrp(identity.NpcId);
         NpcName npcName = NpcNameTable.Instance.GetNpcName(identity.NpcId);
         if (npcName == null || npcgrp == null)
@@ -284,22 +283,23 @@ public class World : MonoBehaviour
 
         identity.SetPosY(GetGroundHeight(identity.Position));
         GameObject npcGo = Instantiate(go, identity.Position, Quaternion.identity);
-        NpcData npcData = new NpcData(npcName, npcgrp);
+        //NpcData npcData = new NpcData(npcName, npcgrp);
 
-        identity.EntityType = EntityTypeParser.ParseEntityType(npcgrp.ClassName);
+        identity.EntityType = npcgrp.Type;
+
         Entity npc;
 
         if (identity.EntityType == EntityType.NPC)
         {
             npcGo.transform.SetParent(_npcsContainer.transform);
-            npc = npcGo.GetComponent<NpcEntity>();
-            ((NpcEntity)npc).NpcData = npcData;
+            npc = npcGo.GetComponent<NetworkHumanoidEntity>();
+            // ((NetworkEntity)npc).NpcData = npcData;
         }
         else
         {
             npcGo.transform.SetParent(_monstersContainer.transform);
-            npc = npcGo.GetComponent<MonsterEntity>();
-            ((MonsterEntity)npc).NpcData = npcData;
+            npc = npcGo.GetComponent<NetworkMonsterEntity>();
+            //((MonsterEntity)npc).NpcData = npcData;
         }
 
         Appearance appearance = new Appearance();
@@ -309,9 +309,7 @@ public class World : MonoBehaviour
         appearance.CollisionHeight = npcgrp.CollisionHeight;
 
         npc.Status = status;
-
         npc.Stats = stats;
-
         npc.Identity = identity;
         npc.Identity.NpcClass = npcgrp.ClassName;
         npc.Identity.Name = npcName.Name;
@@ -333,7 +331,7 @@ public class World : MonoBehaviour
 
         npcGo.SetActive(true);
 
-        npc.GetComponent<NetworkAnimationController>().Initialize();
+        npc.GetComponent<BaseAnimationController>().Initialize();
         npcGo.GetComponent<Gear>().Initialize(npc.Identity.Id, npc.RaceId);
         npc.Initialize();
 
@@ -395,17 +393,17 @@ public class World : MonoBehaviour
         });
     }
 
-    public Task InflictDamageTo(int sender, int target, int damage, bool criticalHit)
+    public Task InflictDamageTo(int sender, Hit hit)
     {
-        return ExecuteWithEntitiesAsync(sender, target, (senderEntity, targetEntity) =>
+        return ExecuteWithEntitiesAsync(sender, hit.TargetId, (senderEntity, targetEntity) =>
         {
             if (senderEntity != null)
             {
-                WorldCombat.Instance.InflictAttack(senderEntity.transform, targetEntity.transform, damage, criticalHit);
+                WorldCombat.Instance.InflictAttack(senderEntity, targetEntity, hit);
             }
             else
             {
-                WorldCombat.Instance.InflictAttack(targetEntity.transform, damage, criticalHit);
+                WorldCombat.Instance.InflictAttack(targetEntity, hit);
             }
         });
     }
@@ -431,8 +429,8 @@ public class World : MonoBehaviour
     {
         return ExecuteWithEntitiesAsync(id, targetId, (targeter, targeted) =>
         {
-            targeter.TargetId = targetId;
-            targeter.Target = targeted.transform;
+            targeter.Combat.TargetId = targetId;
+            targeter.Combat.Target = targeted.transform;
         });
     }
 

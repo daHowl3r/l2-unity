@@ -1,52 +1,56 @@
 using UnityEngine;
 
-public class PlayerStateBase : StateMachineBehaviour {
-    protected CharacterAnimationAudioHandler _audioHandler;
+public class PlayerStateBase : StateMachineBehaviour
+{
     protected Animator _animator;
-    protected Entity _entity;
-    protected PlayerGear _gear;
-    [SerializeField] protected bool _enabled = true;
+    protected EntityReferenceHolder _referenceHolder;
+    protected HumanoidAudioHandler AudioHandler { get { return (HumanoidAudioHandler)_referenceHolder.AudioHandler; } }
+    protected PlayerAnimationController AnimationController { get { return (PlayerAnimationController)_referenceHolder.AnimationController; } }
+    protected Entity Entity { get { return _referenceHolder.Entity; } }
 
-    public void LoadComponents(Animator animator) {
-        if (_entity == null) {
-            _entity = animator.transform.parent.GetComponent<Entity>();
-        }
-        if (_entity == null || _entity is UserEntity) {
-            _enabled = false;
-            return;
-        }
-
-        if (_gear == null) {
-            _gear = _entity.GetComponent<PlayerGear>();
+    public void LoadComponents(Animator animator)
+    {
+        if (_referenceHolder == null)
+        {
+            Transform entityTransform = animator.transform.parent.parent;
+            _referenceHolder = entityTransform.GetComponent<EntityReferenceHolder>();
         }
 
-        if (_audioHandler == null) {
-            _audioHandler = animator.gameObject.GetComponent<CharacterAnimationAudioHandler>();
-        }
-        if (_animator == null) {
-            _animator = animator;
+        if (_referenceHolder == null)
+        {
+            Debug.LogError("Reference holder is null");
         }
     }
 
-    public void PlaySoundAtRatio(CharacterSoundEvent soundEvent, float ratio) {
-        _audioHandler.PlaySoundAtRatio(soundEvent, ratio);
+    public void PlayAtkSoundAtRatio(float ratio)
+    {
+        AudioHandler.PlayAtkSoundAtRatio(ratio);
     }
 
-    public void PlaySoundAtRatio(ItemSoundEvent soundEvent, float ratio) {
-        _audioHandler.PlaySoundAtRatio(soundEvent, ratio);
+    public void PlaySoundAtRatio(EntitySoundEvent soundEvent, float ratio)
+    {
+        AudioHandler.PlaySoundAtRatio(soundEvent, ratio);
     }
 
-    public void SetBool(string name, bool isWeaponAnim, bool value) {
-        SetBool(name, isWeaponAnim, value, true);
+    public void PlaySoundAtRatio(ItemSoundEvent soundEvent, float ratio)
+    {
+        AudioHandler.PlaySoundAtRatio(soundEvent, ratio);
     }
 
-    public void SetBool(string name, bool isWeaponAnim, bool value, bool share) {
-        if(isWeaponAnim) {
-            name += "_" + _gear.WeaponAnim;
-        }
+    public void SetBool(HumanoidAnimType animation, bool value)
+    {
+        SetBool(animation, value, true);
+    }
+
+    public void SetBool(HumanoidAnimType animation, bool value, bool share)
+    {
+        // if (isWeaponAnim)
+        // {
+        //     name += "_" + _gear.WeaponAnim;
+        // }
 
         //Debug.Log("Set bool: " + name);
 
-        PlayerAnimationController.Instance.SetBool(name, value, share);
+        PlayerAnimationController.Instance.SetBool(animation, value, share);
     }
 }

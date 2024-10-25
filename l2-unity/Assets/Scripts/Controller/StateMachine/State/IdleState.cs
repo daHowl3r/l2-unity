@@ -28,7 +28,7 @@ public class IdleState : StateBase
                 {
                     //Debug.Log("On Reaching Target");
                     PathFinderController.Instance.ClearPath();
-                    PlayerController.Instance.ResetDestination();
+                    PlayerController.Instance.ResetDestination(false);
 
                     NetworkTransformShare.Instance.SharePosition();
 

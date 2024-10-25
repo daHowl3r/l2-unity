@@ -1,26 +1,37 @@
 using System.Collections;
 using UnityEngine;
 
-public class MonsterStateAtkWait : MonsterStateBase
+public class MonsterStateAtkWait : MonsterStateAction
 {
-    private IEnumerator _exitStateCoroutine;
-    private float _lastNormalizedTime = 0;
-    [SerializeField] private float _timeoutAfterLoopCount = 3f;
-
-    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
         LoadComponents(animator);
-        audioHandler.PlaySoundAtRatio(MonsterSoundEvent.AtkWait, audioHandler.AtkWaitRatio);
-        _lastNormalizedTime = 0;
-        animator.SetBool("atkwait", false);
+        _cancelAction = false;
+
+        SetBool(MonsterAnimationEvent.atkwait, false);
     }
 
-    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        if ((stateInfo.normalizedTime - _lastNormalizedTime) >= _timeoutAfterLoopCount) {
-            animator.SetBool("wait", true);
+    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        SetBool(MonsterAnimationEvent.atkwait, false);
+
+        if (IsMoving())
+        {
+            SetBool(MonsterAnimationEvent.run, true);
+        }
+
+        if (!_cancelAction)
+        {
+            if (!ShouldAtkWait())
+            {
+                Debug.Log("Wait now");
+                SetBool(MonsterAnimationEvent.wait, true);
+            }
         }
     }
 
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        SetBool(MonsterAnimationEvent.atkwait, false);
     }
 }

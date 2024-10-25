@@ -67,6 +67,12 @@ public class HumanoidAudioHandler : BaseAnimationAudioHandler
 
     public virtual void PlayAtkSoundAtRatio(float ratio)
     {
+        // Dont always play atk voiceline (20 % chance?)
+        if (!RandomUtils.ShouldEventHappen(20))
+        {
+            return;
+        }
+
         WeaponAnimType weaponAnim = ((HumanoidAnimationController)_entityReferenceHolder.AnimationController).WeaponAnim;
         switch (weaponAnim)
         {

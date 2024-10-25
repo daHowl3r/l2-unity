@@ -1698,9 +1698,6 @@ PrefabInstance:
       addedObject: {fileID: 5793993053486730676}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 668e4e2bfb56a7e41a3eaf4661c9ce36, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4513007686806026054}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 668e4e2bfb56a7e41a3eaf4661c9ce36, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 4441818242461402023}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 668e4e2bfb56a7e41a3eaf4661c9ce36, type: 3}
       insertIndex: -1
@@ -1714,6 +1711,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 668e4e2bfb56a7e41a3eaf4661c9ce36, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4822203140286772179}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 668e4e2bfb56a7e41a3eaf4661c9ce36, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7474140620702760634}
   m_SourcePrefab: {fileID: 100100000, guid: 668e4e2bfb56a7e41a3eaf4661c9ce36, type: 3}
 --- !u!4 &594740204659430736 stripped
 Transform:
@@ -1838,34 +1838,6 @@ MonoBehaviour:
   _speed: 0
   _destination: {x: 0, y: 0, z: 0}
   _gravity: 28
---- !u!114 &4513007686806026054
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9168378222243607099}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03160d09deb1df3479a66ba449c32ac7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _entityReferenceHolder: {fileID: 4822203140286772179}
-  _walkStepRatios:
-  - 0.25
-  - 0.75
-  _runStepRatios:
-  - 0.25
-  - 0.75
-  _swishRatio: 0.25
-  _atkRatio: 0
-  _atkWaitRatio: 0
-  _deathRatio: 0
-  _fallRatio: 0.7
-  _waitSoundChance: 5
-  _runBreathChance: 5
-  _race: 13
-  _surfaceDetector: {fileID: 8098281626821153655}
 --- !u!114 &4441818242461402023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2070,7 +2042,59 @@ MonoBehaviour:
   _gear: {fileID: 1447744958422419585}
   _combat: {fileID: 7994093733216623099}
   _animationController: {fileID: 4468460128202651815}
-  _audioHandler: {fileID: 4513007686806026054}
+  _audioHandler: {fileID: 7474140620702760634}
   _animator: {fileID: 3689229742759886789}
   _networkTransformReceive: {fileID: 2038534943150742040}
   _networkCharacterControllerReceive: {fileID: 5793993053486730676}
+--- !u!114 &7474140620702760634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9168378222243607099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1616d7a1a5ed70249a58bcd12e1811db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _entityReferenceHolder: {fileID: 4822203140286772179}
+  _walkStepRatios:
+  - 0.25
+  - 0.75
+  _runStepRatios:
+  - 0.25
+  - 0.75
+  _swishRatio: 0.25
+  _atkRatio: 0
+  _atkWaitRatio: 0
+  _deathRatio: 0
+  _fallRatio: 0.5
+  _waitSoundChance: 5
+  _runBreathChance: 5
+  _race: 0
+  _surfaceDetector: {fileID: 8098281626821153655}
+  _npcClassName: 
+  _npcgrp:
+    _npcId: 0
+    _className: 
+    _type: 0
+    _mesh: 
+    _materials: []
+    _speed: 0
+    _attackSounds: []
+    _attackSoundsEvents: []
+    _defenseSounds: []
+    _defenseSoundsEvents: []
+    _damageSounds: []
+    _damageSoundsEvents: []
+    _attackEffect: 
+    _friendly: 0
+    _hpVisible: 0
+    _dialogSounds: []
+    _collisionRadius: 0
+    _collisionHeight: 0
+    _rhand: 0
+    _lhand: 0
+    _maxHp: 0
+    _maxMp: 0

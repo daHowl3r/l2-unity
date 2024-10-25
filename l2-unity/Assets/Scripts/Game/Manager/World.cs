@@ -285,7 +285,8 @@ public class World : MonoBehaviour
         GameObject npcGo = Instantiate(go, identity.Position, Quaternion.identity);
         //NpcData npcData = new NpcData(npcName, npcgrp);
 
-        identity.EntityType = EntityTypeParser.ParseEntityType(npcgrp.ClassName);
+        identity.EntityType = npcgrp.Type;
+
         Entity npc;
 
         if (identity.EntityType == EntityType.NPC)

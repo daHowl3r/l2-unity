@@ -313,7 +313,7 @@ public class GameServerPacketHandler : ServerPacketHandler
 
         for (int i = 0; i < hits.Length; i++)
         {
-            if (hits[i] != null && !hits[i].isMiss())
+            if (hits[i] != null)
             {
                 World.Instance.InflictDamageTo(packet.SenderId, hits[i]);
             }

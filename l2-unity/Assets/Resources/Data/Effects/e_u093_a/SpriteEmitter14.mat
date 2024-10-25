@@ -88,10 +88,12 @@ Material:
     - _SubdivisionStart: 1
     - _TextureUSubdivisions: 1
     - _TextureVSubdivisions: 1
+    - _UniformSize: 0
     - _UseColorScale: 0
     - _UseDirectionAs: 2
     - _UseSizeScale: 1
     m_Colors:
+    - _Acceleration: {r: 0, g: 0, b: 0, a: 0}
     - _ColorMultiplierRangeB: {r: 0, g: 0, b: 0, a: 0}
     - _ColorMultiplierRangeG: {r: 0, g: 0, b: 0, a: 0}
     - _ColorMultiplierRangeR: {r: 0, g: 0, b: 0, a: 0}
@@ -105,7 +107,8 @@ Material:
     - _ColorScale7Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorScale8Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorScale9Color: {r: 1, g: 1, b: 1, a: 1}
-    - _LifetimeRange: {r: 1, g: 1, b: 0, a: 0}
+    - _InitialDelayRange: {r: 0, g: 0, b: 0, a: 0}
+    - _LifetimeRange: {r: 100, g: 100, b: 0, a: 0}
     - _ProjectionNormal: {r: 0, g: 0, b: 0, a: 0}
     - _SizeRangeX: {r: 5.4, g: 5.4, b: 0, a: 0}
     - _SizeRangeY: {r: 8, g: 8, b: 0, a: 0}

@@ -8,6 +8,7 @@ public class Npcgrp
 {
     [SerializeField] private int _npcId;
     [SerializeField] private string _className;
+    [SerializeField] private EntityType _type;
     [SerializeField] private string _mesh;
     [SerializeField] private string[] _materials;
     [SerializeField] private float _speed;
@@ -30,6 +31,7 @@ public class Npcgrp
 
     public int NpcId { get { return _npcId; } set { _npcId = value; } }
     public string ClassName { get => _className; set => _className = value; }
+    public EntityType Type { get => _type; set => _type = value; }
     public string Mesh { get => _mesh; set => _mesh = value; }
     public string[] Materials { get => _materials; set => _materials = value; }
     public float Speed { get => _speed; set => _speed = value; }

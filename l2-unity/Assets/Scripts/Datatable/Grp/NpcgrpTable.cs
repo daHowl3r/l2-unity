@@ -65,7 +65,9 @@ public class NpcgrpTable
                             npcgrp.NpcId = int.Parse(value);
                             break;
                         case "class_name": //[LineageNPC.e_warehouse_keeper_FDwarf]	
-                            npcgrp.ClassName = DatUtils.CleanupString(value);
+                            string[] folderClass = DatUtils.CleanupString(value).Split(".");
+                            npcgrp.ClassName = folderClass[folderClass.Length - 1];
+                            npcgrp.Type = EntityTypeParser.ParseEntityType(folderClass[0]);
                             break;
                         case "mesh_name": //[LineageNPCs.e_warehouse_keeper_FDwarf_m00]	
                             npcgrp.Mesh = DatUtils.CleanupString(value);

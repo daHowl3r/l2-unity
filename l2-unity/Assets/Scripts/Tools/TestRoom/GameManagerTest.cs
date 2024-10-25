@@ -3,9 +3,13 @@ using UnityEngine;
 
 public class GameManagerTest : MonoBehaviour
 {
+    [SerializeField] private LayerMask _entityMask;
+    [SerializeField] private LayerMask _clickThroughMask;
+
     void Awake()
     {
         LoadTables();
+        ClickManager.Instance.SetMasks(_entityMask, _clickThroughMask);
     }
 
     private void LoadTables()

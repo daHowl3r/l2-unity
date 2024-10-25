@@ -3,6 +3,8 @@ using UnityEngine;
 public class ClickManager : MonoBehaviour
 {
     [SerializeField] private GameObject _locator;
+    [SerializeField] private GameObject _locatorBaseEffect;
+    [SerializeField] private GameObject _locatorReachedEffect;
     [SerializeField] private ObjectData _targetObjectData;
     [SerializeField] private ObjectData _hoverObjectData;
 
@@ -35,7 +37,10 @@ public class ClickManager : MonoBehaviour
     void Start()
     {
         _locator = GameObject.Find("Locator");
-        HideLocator();
+        _locatorBaseEffect = _locator.transform.GetChild(0).gameObject;
+        _locatorReachedEffect = _locator.transform.GetChild(1).gameObject;
+
+        HideLocator(false);
     }
 
     public void SetMasks(LayerMask entityMask, LayerMask clickThroughMask)
@@ -88,35 +93,56 @@ public class ClickManager : MonoBehaviour
         _lastClickPosition = hit.point;
         //  PlayerCombatController.Instance.RunningToTarget = false;
 
-        PlayerStateMachine.Instance.ChangeIntention(Intention.INTENTION_MOVE_TO, _lastClickPosition);
+        if (PlayerStateMachine.Instance != null)
+        {
+            PlayerStateMachine.Instance.ChangeIntention(Intention.INTENTION_MOVE_TO, _lastClickPosition);
+        }
 
-        TargetManager.Instance.ClearAttackTarget();
+        if (TargetManager.Instance != null)
+        {
+            TargetManager.Instance.ClearAttackTarget();
+        }
+
         //  PathFinderController.Instance.MoveTo(_lastClickPosition);
         float angle = Vector3.Angle(hit.normal, Vector3.up);
         if (angle < 85f)
         {
-            PlaceLocator(_lastClickPosition);
+            PlaceLocator(_lastClickPosition, hit.normal);
         }
         else
         {
-            HideLocator();
+            HideLocator(false);
         }
     }
 
     public void OnClickOnEntity()
     {
-        Debug.Log("Hit entity");
+        Debug.Log("Click on entity");
         TargetManager.Instance.SetTarget(_targetObjectData);
     }
 
-    public void PlaceLocator(Vector3 position)
+    public void PlaceLocator(Vector3 position, Vector3 normal)
     {
-        _locator.SetActive(true);
         _locator.gameObject.transform.position = position;
+        _locatorBaseEffect.GetComponent<ParticleTimerResetGroup>().SurfaceNormal = normal;
+        _locatorReachedEffect.SetActive(false);
+        _locatorBaseEffect.SetActive(false);
+        _locatorBaseEffect.SetActive(true);
     }
 
-    public void HideLocator()
+    public void HideLocator(bool targetReached)
     {
-        _locator.SetActive(false);
+        if (targetReached)
+        {
+            Vector3 normal = _locatorBaseEffect.GetComponent<ParticleTimerResetGroup>().SurfaceNormal;
+            _locatorReachedEffect.GetComponent<ParticleTimerResetGroup>().SurfaceNormal = normal;
+            _locatorReachedEffect.SetActive(true);
+        }
+        else
+        {
+            _locatorReachedEffect.SetActive(false);
+        }
+
+        _locatorBaseEffect.SetActive(false);
     }
 }

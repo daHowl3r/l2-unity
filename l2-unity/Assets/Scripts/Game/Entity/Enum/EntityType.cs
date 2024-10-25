@@ -9,11 +9,16 @@ public enum EntityType
 
 }
 
-public static class EntityTypeParser {
-    public static EntityType ParseEntityType(string type) {
-        if(type.Contains("LineageNPC")) {
+public static class EntityTypeParser
+{
+    public static EntityType ParseEntityType(string type)
+    {
+        if (type.ToLower().Contains("lineagenpc"))
+        {
             return EntityType.NPC;
-        } else {
+        }
+        else
+        {
             return EntityType.Monster;
         }
     }

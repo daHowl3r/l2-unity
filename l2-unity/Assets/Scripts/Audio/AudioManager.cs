@@ -59,7 +59,7 @@ public class AudioManager : MonoBehaviour
         _weaponSwishes[(int)WeaponType.none] = RuntimeManager.PathToEventReference("event:/ItemSound/fist");
         _weaponSwishes[(int)WeaponType.hand] = RuntimeManager.PathToEventReference("event:/ItemSound/fist");
         _weaponSwishes[(int)WeaponType.sword] = RuntimeManager.PathToEventReference("event:/ItemSound/sword_mid");
-        _weaponSwishes[(int)WeaponType.bigword] = RuntimeManager.PathToEventReference("event:/ItemSound/sword_geat");
+        _weaponSwishes[(int)WeaponType.bigword] = RuntimeManager.PathToEventReference("event:/ItemSound/sword_great");
         _weaponSwishes[(int)WeaponType.blunt] = RuntimeManager.PathToEventReference("event:/ItemSound/axe");
         _weaponSwishes[(int)WeaponType.bigblunt] = RuntimeManager.PathToEventReference("event:/ItemSound/hammer");
         _weaponSwishes[(int)WeaponType.bow] = RuntimeManager.PathToEventReference("event:/ItemSound/bow_small");

@@ -10,6 +10,7 @@ public class ParticleTimerResetGroup : MonoBehaviour
         [SerializeField] private Renderer[] _particles;
 
         public PooledEffect PooledEffect { get { return _pooledEffect; } }
+        public Vector3 SurfaceNormal { get { return _surfaceNormal; } set { _surfaceNormal = value; } }
 
         public bool playOnEnable = false;
 

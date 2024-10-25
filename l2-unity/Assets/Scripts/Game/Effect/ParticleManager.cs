@@ -103,6 +103,9 @@ public class ParticleManager : MonoBehaviour
 
         _effectPoolContainer = new GameObject("EffectPool");
         _effectContainer = new GameObject("EffectContainer");
+        Transform worldEffectsContainer = GameObject.Find("Effects").transform;
+        _effectPoolContainer.transform.parent = worldEffectsContainer;
+        _effectContainer.transform.parent = worldEffectsContainer;
     }
 
     private void Start()

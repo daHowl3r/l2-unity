@@ -103,7 +103,7 @@ public class LoginServerPacketHandler : ServerPacketHandler
 
         _client.InitPacket = false;
 
-        EventProcessor.Instance.QueueEvent(() => ((LoginClientPacketHandler)_clientPacketHandler).SendPing());
+        // EventProcessor.Instance.QueueEvent(() => ((LoginClientPacketHandler)_clientPacketHandler).SendPing());
 
         EventProcessor.Instance.QueueEvent(() => ((LoginClientPacketHandler)_clientPacketHandler).SendAuth());
     }

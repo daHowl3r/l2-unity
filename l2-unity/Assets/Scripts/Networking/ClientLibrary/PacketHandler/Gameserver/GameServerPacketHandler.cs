@@ -8,7 +8,7 @@ public class GameServerPacketHandler : ServerPacketHandler
     public override void HandlePacket(byte[] data)
     {
         GameServerPacketType packetType = (GameServerPacketType)data[0];
-        if (GameClient.Instance.LogReceivedPackets && packetType != GameServerPacketType.Ping)
+        if (GameClient.Instance.LogReceivedPackets)
         {
             Debug.Log("[" + Thread.CurrentThread.ManagedThreadId + "] [GameServer] Received packet:" + packetType);
         }
@@ -18,7 +18,7 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.Ping:
                 OnPingReceive();
                 break;
-            case GameServerPacketType.Key:
+            case GameServerPacketType.VersionCheck:
                 OnKeyReceive(data);
                 break;
             case GameServerPacketType.LoginFail:
@@ -125,7 +125,7 @@ public class GameServerPacketHandler : ServerPacketHandler
 
         if (GameClient.Instance.LogCryptography)
         {
-            Debug.Log("<---- [GAME] DECRYPTED: " + StringUtils.ByteArrayToString(data));
+            Debug.Log("<---- [GAME] CLEAR: " + StringUtils.ByteArrayToString(data));
         }
 
         return data;
@@ -162,7 +162,8 @@ public class GameServerPacketHandler : ServerPacketHandler
 
     private void OnKeyReceive(byte[] data)
     {
-        KeyPacket packet = new KeyPacket(data);
+        Debug.LogWarning("Onkeyreceive");
+        VersionCheckPacket packet = new VersionCheckPacket(data);
 
         if (!packet.AuthAllowed)
         {
@@ -176,7 +177,7 @@ public class GameServerPacketHandler : ServerPacketHandler
 
         _eventProcessor.QueueEvent(() => ((GameClientPacketHandler)_clientPacketHandler).SendAuth());
 
-        _eventProcessor.QueueEvent(() => ((GameClientPacketHandler)_clientPacketHandler).SendPing());
+        //_eventProcessor.QueueEvent(() => ((GameClientPacketHandler)_clientPacketHandler).SendPing());
     }
 
     private void OnLoginFail(byte[] data)

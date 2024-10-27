@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     // TODO: SWITCH TO EVENT HANDLER AND STATE MACHINE
     // TODO: SWITCH TO EVENT HANDLER AND STATE MACHINE
     // TODO: SWITCH TO EVENT HANDLER AND STATE MACHINE
-    [SerializeField] private int _protocolVersion = 1;
+    [SerializeField] private int _protocolVersion = 740;
     [SerializeField] private GameState _gameState = GameState.LOGIN_SCREEN;
     private bool _gameReady = false;
     [SerializeField] private bool _autoLogin = false;

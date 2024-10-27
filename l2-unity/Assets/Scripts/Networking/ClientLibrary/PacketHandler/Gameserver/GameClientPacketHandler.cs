@@ -11,11 +11,6 @@ public class GameClientPacketHandler : ClientPacketHandler
 
         byte[] data = packet.GetData();
 
-        if (GameClient.Instance.LogCryptography)
-        {
-            Debug.Log("----> [GAME] CLEAR: " + StringUtils.ByteArrayToString(data));
-        }
-
         GameClient.Instance.GameCrypt.Encrypt(data);
 
         if (GameClient.Instance.LogCryptography)
@@ -119,10 +114,12 @@ public class GameClientPacketHandler : ClientPacketHandler
         if (GameClient.Instance.LogSentPackets)
         {
             GameClientPacketType packetType = (GameClientPacketType)packet.GetPacketType();
-            if (packetType != GameClientPacketType.Ping && packetType != GameClientPacketType.RequestRotate)
-            {
-                Debug.Log("[" + Thread.CurrentThread.ManagedThreadId + "] [GameServer] Sending packet:" + packetType);
-            }
+            Debug.Log("[" + Thread.CurrentThread.ManagedThreadId + "] [GameServer] Sending packet:" + packetType);
+        }
+
+        if (GameClient.Instance.LogCryptography)
+        {
+            Debug.Log("----> [GAME] CLEAR: " + StringUtils.ByteArrayToString(packet.GetData()));
         }
 
         if (_client.CryptEnabled)

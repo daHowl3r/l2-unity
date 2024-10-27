@@ -34,7 +34,8 @@ public abstract class ClientPacket : Packet
         if (s != null)
         {
             byte[] d = Encoding.GetEncoding("UTF-16LE").GetBytes(s);
-            Write(d);
+            UnityEngine.Debug.Log(StringUtils.ByteArrayToString(d));
+            _buffer.AddRange(d);
             WriteB((byte)0);
             WriteB((byte)0);
         }

@@ -39,6 +39,13 @@ public abstract class ServerPacketHandler
                 return false;
             }
         }
+        else
+        {
+            if (GameClient.Instance.LogCryptography)
+            {
+                Debug.Log("<---- [GAME] CLEAR: " + StringUtils.ByteArrayToString(data));
+            }
+        }
 
         return true;
     }

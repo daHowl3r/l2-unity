@@ -1,9 +1,8 @@
 public enum GameServerPacketType : byte
 {
-    Ping = 0x00,
-    Key = 0x01,
-    LoginFail = 0x02,
-    CharSelectionInfo = 0x03,
+    VersionCheck = 0x00,
+    LoginFail = 0x01,
+    CharSelectionInfo = 0x02,
     MessagePacket = 0x04,
     SystemMessage = 0x05,
     PlayerInfo = 0x06,
@@ -32,5 +31,8 @@ public enum GameServerPacketType : byte
     ShortcutRegister = 0x1D,
     SocialAction = 0x1E,
     ChangeWaitType = 0x1F,
-    ChangeMoveType = 0x20
+    ChangeMoveType = 0x20,
+
+    Ping = 0xF0,
+
 }

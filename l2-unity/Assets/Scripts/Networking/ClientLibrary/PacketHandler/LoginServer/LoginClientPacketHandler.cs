@@ -11,11 +11,6 @@ public class LoginClientPacketHandler : ClientPacketHandler
 
         byte[] data = packet.GetData();
 
-        if (LoginClient.Instance.LogCryptography)
-        {
-            Debug.Log("----> [LOGIN] CLEAR: " + StringUtils.ByteArrayToString(data));
-        }
-
         LoginClient.Instance.EncryptBlowFish.processBigBlock(data, 0, data, 0, data.Length);
 
         if (LoginClient.Instance.LogCryptography)
@@ -103,10 +98,12 @@ public class LoginClientPacketHandler : ClientPacketHandler
         if (LoginClient.Instance.LogSentPackets)
         {
             LoginClientPacketType packetType = (LoginClientPacketType)packet.GetPacketType();
-            if (packetType != LoginClientPacketType.Ping)
-            {
-                Debug.Log("[" + Thread.CurrentThread.ManagedThreadId + "] [LoginServer] Sending packet:" + packetType);
-            }
+            Debug.Log("[" + Thread.CurrentThread.ManagedThreadId + "] [LoginServer] Sending packet:" + packetType);
+        }
+
+        if (LoginClient.Instance.LogCryptography)
+        {
+            Debug.Log("----> [LOGIN] CLEAR: " + StringUtils.ByteArrayToString(packet.GetData()));
         }
 
         EncryptPacket(packet);

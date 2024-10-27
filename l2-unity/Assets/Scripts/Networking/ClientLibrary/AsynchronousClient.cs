@@ -118,10 +118,11 @@ public class AsynchronousClient
         {
             using (NetworkStream stream = new NetworkStream(_socket))
             {
-                stream.WriteByte((byte)(packet.GetData().Length & 0xff));
+                int len = packet.GetData().Length + 2;
+                stream.WriteByte((byte)(len & 0xff));
 
                 // Write the higher 8 bits
-                stream.WriteByte((byte)((packet.GetData().Length >> 8) & 0xff));
+                stream.WriteByte((byte)((len >> 8) & 0xff));
 
 
                 stream.Write(packet.GetData(), 0, (int)packet.GetData().Length);
@@ -156,6 +157,8 @@ public class AsynchronousClient
                 lengthHi = stream.ReadByte();
                 length = (lengthHi * 256) + lengthLo;
 
+                Debug.LogWarning(length);
+
                 if (lengthHi == -1 || !_connected)
                 {
                     Debug.Log("Server terminated the connection.");
@@ -165,6 +168,7 @@ public class AsynchronousClient
 
                 //Debug.Log("Packet length: " + length);
 
+                length = length - 2;
                 byte[] data = new byte[length];
 
                 int receivedBytes = 0;

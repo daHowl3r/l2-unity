@@ -188,4 +188,10 @@ public class GameClientPacketHandler : ClientPacketHandler
         RequestActionUsePacket packet = new RequestActionUsePacket(actionId);
         SendPacket(packet);
     }
+
+    public void SendRequestCreateCharacter(string name, CharacterRace race, CharacterSex sex, CharacterClass clazz, int hairstyle, int haircolor, int face)
+    {
+        RequestCharCreatePacket packet = new RequestCharCreatePacket(name, race, sex, clazz, hairstyle, haircolor, face);
+        SendPacket(packet);
+    }
 }

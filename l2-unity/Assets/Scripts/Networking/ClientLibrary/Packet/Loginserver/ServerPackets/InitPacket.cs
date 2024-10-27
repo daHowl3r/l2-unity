@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-class InitPacket : ServerPacket
+class InitPacket : LoginServerPacket
 {
     private int sessionId;
     private int rsaKeyLength;

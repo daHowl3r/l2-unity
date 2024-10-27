@@ -111,6 +111,12 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.ChangeMoveType:
                 OnChangeMoveType(data);
                 break;
+            case GameServerPacketType.CharCreateOk:
+                OnCharCreateOk(data);
+                break;
+            case GameServerPacketType.CharCreateFail:
+                OnCharCreateFail(data);
+                break;
         }
     }
 
@@ -211,6 +217,22 @@ public class GameServerPacketHandler : ServerPacketHandler
         {
             EventProcessor.Instance.QueueEvent(() => GameClient.Instance.OnCharSelectAllowed());
         }
+    }
+
+    private void OnCharCreateFail(byte[] data)
+    {
+        CharCreateFailPacket packet = new CharCreateFailPacket(data);
+        CharCreateFailPacket.CreateFailReason reason = (CharCreateFailPacket.CreateFailReason)packet.Reason;
+        Debug.LogWarning($"Character creation failed: {reason}.");
+    }
+
+    private void OnCharCreateOk(byte[] data)
+    {
+        CharCreateOkPacket packet = new CharCreateOkPacket(data);
+        Debug.Log($"Character creation succeeded.");
+
+        EventProcessor.Instance.QueueEvent(() => GameClient.Instance.OnCharCreateOk());
+
     }
 
     private void OnMessageReceive(byte[] data)

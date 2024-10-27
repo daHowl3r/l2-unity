@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
 public abstract class ServerPacket : Packet
 {
     protected byte minimumLength;
-    private int _iterator;
+    protected int _iterator;
 
     public ServerPacket(byte[] d) : base(d)
     {
@@ -26,7 +27,7 @@ public abstract class ServerPacket : Packet
         return data;
     }
 
-    protected int ReadI()
+    protected virtual int ReadI()
     {
         byte[] data = new byte[4];
         Array.Copy(_packetData, _iterator, data, 0, 4);
@@ -36,7 +37,7 @@ public abstract class ServerPacket : Packet
         return value;
     }
 
-    protected long ReadL()
+    protected virtual long ReadL()
     {
         byte[] data = new byte[8];
         Array.Copy(_packetData, _iterator, data, 0, 8);
@@ -46,7 +47,7 @@ public abstract class ServerPacket : Packet
         return value;
     }
 
-    protected float ReadF()
+    protected virtual float ReadF()
     {
         byte[] data = new byte[4];
         Array.Copy(_packetData, _iterator, data, 0, 4);
@@ -56,39 +57,38 @@ public abstract class ServerPacket : Packet
         return value;
     }
 
-    // protected string ReadS()
-    // {
-    //     byte strLen = ReadB();
-    //     byte[] data = new byte[strLen];
-    //     Array.Copy(_packetData, _iterator, data, 0, strLen);
-    //     _iterator += strLen;
-
-    //     return Encoding.GetEncoding("UTF-8").GetString(data);
-    // }
-
-
-    public string ReadS()
+    protected virtual double ReadD()
     {
-        int start = _iterator;
+        byte[] data = new byte[8];
+        Array.Copy(_packetData, _iterator, data, 0, 8);
+        // Array.Reverse(data);
+        double value = BitConverter.ToDouble(data, 0);
+        Debug.Log("DOUBLE ARRAY: " + StringUtils.ByteArrayToString(data));
+        Debug.Log("IT INDEX: " + _iterator);
+        Debug.Log("DOUBLE VALUE: " + value);
+        _iterator += 8;
+        return value;
+    }
 
-        // Find the null terminator in UTF-16LE encoding.
-        int end = start;
-        while (end < _packetData.Length - 1 && (_packetData[end] != 0 || _packetData[end + 1] != 0))
-            end += 2;
+    protected virtual string ReadS()
+    {
+        List<char> chars = new List<char>();
 
-        // Move the offset past the string and the null terminator.
-        int strLen = end - start;
+        // Read chars until we hit the null terminator
+        while (true)
+        {
+            // Read 2 bytes as a char (matching Java's putChar)
+            char c = BitConverter.ToChar(_packetData, _iterator);
+            _iterator += 2; // Move iterator by 2 bytes
 
-        _iterator += strLen + 2;
+            // Check for null terminator
+            if (c == '\0')
+                break;
 
-        // Create a string from the bytes between start and end.
-        byte[] data = new byte[strLen];
-        Array.Copy(_packetData, _iterator, data, 0, strLen);
+            chars.Add(c);
+        }
 
-        string s = Encoding.GetEncoding("UTF-8").GetString(data);
-
-        Debug.Log("Read string: " + s + " : [" + strLen + "]: " + StringUtils.ByteArrayToString(data));
-        return s;
+        return new string(chars.ToArray());
     }
 
     public abstract void Parse();

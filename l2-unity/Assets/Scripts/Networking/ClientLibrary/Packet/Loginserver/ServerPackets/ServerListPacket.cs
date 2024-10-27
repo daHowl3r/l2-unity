@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ServerListPacket : ServerPacket
+public class ServerListPacket : LoginServerPacket
 {
     private byte _serverCount;
     private byte _lastServer;

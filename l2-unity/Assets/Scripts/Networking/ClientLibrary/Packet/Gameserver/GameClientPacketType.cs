@@ -5,6 +5,7 @@ public enum GameClientPacketType : byte
     AuthRequest = 0x08,
     Disconnect = 0x09,
     RequestAttack = 0x0a,
+    RequestCharCreate = 0x0b,
     RequestCharSelect = 0x0d,
     RequestInventoryOpen = 0x0f,
     RequestUnEquip = 0x11,

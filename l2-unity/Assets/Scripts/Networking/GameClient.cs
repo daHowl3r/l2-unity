@@ -1,6 +1,7 @@
 using UnityEngine;
 using L2_login;
 using static PlayerInfoPacket;
+using System;
 
 public class GameClient : DefaultClient
 {
@@ -91,5 +92,10 @@ public class GameClient : DefaultClient
     {
         base.OnDisconnect();
         Debug.Log("Disconnected from GameServer.");
+    }
+
+    public void OnCharCreateOk()
+    {
+        GameManager.Instance.OnCharCreateOk();
     }
 }

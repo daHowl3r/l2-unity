@@ -263,6 +263,11 @@ public class GameManager : MonoBehaviour
         LoginCameraManager.Instance.SwitchCamera("CharSelect");
     }
 
+    public void OnCharCreateOk()
+    {
+        SwitchToCharSelect();
+    }
+
     public void OnLoginUILoaded()
     {
         if (GameState == GameState.RESTARTING)

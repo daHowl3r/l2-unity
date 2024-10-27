@@ -1,38 +1,58 @@
 public enum GameServerPacketType : byte
 {
     VersionCheck = 0x00,
-    LoginFail = 0x01,
-    CharSelectionInfo = 0x02,
-    MessagePacket = 0x04,
-    SystemMessage = 0x05,
-    PlayerInfo = 0x06,
-    ObjectPosition = 0x07,
-    RemoveObject = 0x08,
-    ObjectRotation = 0x09,
-    ObjectAnimation = 0x0A,
-    ApplyDamage = 0x0B,
-    NpcInfo = 0x0C,
-    ObjectMoveTo = 0x0D,
-    UserInfo = 0x0E,
-    ObjectMoveDirection = 0x0F,
-    GameTime = 0x10,
-    EntitySetTarget = 0x11,
-    AutoAttackStart = 0x12,
-    AutoAttackStop = 0x13,
-    ActionFailed = 0x14,
-    ServerClose = 0x15,
-    StatusUpdate = 0x16,
-    ActionAllowed = 0x17,
-    InventoryItemList = 0x18,
-    InventoryUpdate = 0x19,
-    LeaveWorld = 0x1A,
-    RestartReponse = 0x1B,
-    ShortcutInit = 0x1C,
-    ShortcutRegister = 0x1D,
-    SocialAction = 0x1E,
-    ChangeWaitType = 0x1F,
-    ChangeMoveType = 0x20,
+    CharSelectionInfo = 0x13,
+    LoginFail = 0x14,
+    CharCreateOk = 0x19,
+    CharCreateFail = 0x1a,
 
-    Ping = 0xF0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    MessagePacket = 0xF4,
+    SystemMessage = 0xF5,
+    PlayerInfo = 0xF6,
+    ObjectPosition = 0xF7,
+    RemoveObject = 0xF8,
+    ObjectRotation = 0xF9,
+    ObjectAnimation = 0xFA,
+    ApplyDamage = 0xFB,
+    NpcInfo = 0xFC,
+    ObjectMoveTo = 0xFD,
+    UserInfo = 0xFE,
+    ObjectMoveDirection = 0xFF,
+    GameTime = 0xD0,
+    EntitySetTarget = 0xD1,
+    AutoAttackStart = 0xD2,
+    AutoAttackStop = 0xD3,
+    ActionFailed = 0xD4,
+    ServerClose = 0xD5,
+    StatusUpdate = 0xD6,
+    ActionAllowed = 0xD7,
+    InventoryItemList = 0xD8,
+    InventoryUpdate = 0xD9,
+    LeaveWorld = 0xDA,
+    RestartReponse = 0xDB,
+    ShortcutInit = 0xDC,
+    ShortcutRegister = 0xDD,
+    SocialAction = 0xDE,
+    ChangeWaitType = 0xDF,
+    ChangeMoveType = 0xE0,
+
+    Ping = 0xE1,
 
 }

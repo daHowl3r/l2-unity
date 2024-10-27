@@ -30,14 +30,14 @@ public class AsynchronousClient
     }
 
     public AsynchronousClient(string ip, int port, DefaultClient client, ClientPacketHandler clientPacketHandler,
-        ServerPacketHandler serverPacketHandler, bool enableInitPacket)
+        ServerPacketHandler serverPacketHandler, bool enableInitPacket, bool enableChecksum)
     {
         _ipAddress = ip;
         _port = port;
         _clientPacketHandler = clientPacketHandler;
         _serverPacketHandler = serverPacketHandler;
         _clientPacketHandler.SetClient(this);
-        _serverPacketHandler.SetClient(this, _clientPacketHandler);
+        _serverPacketHandler.SetClient(this, _clientPacketHandler, enableChecksum);
         _client = client;
         _initPacketEnabled = enableInitPacket;
         _initPacket = enableInitPacket;

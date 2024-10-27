@@ -43,7 +43,7 @@ public class GameClient : DefaultClient
         clientPacketHandler = new GameClientPacketHandler();
         serverPacketHandler = new GameServerPacketHandler();
 
-        _client = new AsynchronousClient(_serverIp, _serverPort, this, clientPacketHandler, serverPacketHandler, false);
+        _client = new AsynchronousClient(_serverIp, _serverPort, this, clientPacketHandler, serverPacketHandler, false, false);
     }
 
     public void EnableCrypt(byte[] key)

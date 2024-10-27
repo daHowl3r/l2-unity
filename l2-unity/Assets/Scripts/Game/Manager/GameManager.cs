@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static PlayerInfoPacket;
+using static CharSelectedPacket;
 using static ServerListPacket;
 
 public class GameManager : MonoBehaviour

@@ -63,9 +63,6 @@ public abstract class ServerPacket : Packet
         Array.Copy(_packetData, _iterator, data, 0, 8);
         // Array.Reverse(data);
         double value = BitConverter.ToDouble(data, 0);
-        Debug.Log("DOUBLE ARRAY: " + StringUtils.ByteArrayToString(data));
-        Debug.Log("IT INDEX: " + _iterator);
-        Debug.Log("DOUBLE VALUE: " + value);
         _iterator += 8;
         return value;
     }

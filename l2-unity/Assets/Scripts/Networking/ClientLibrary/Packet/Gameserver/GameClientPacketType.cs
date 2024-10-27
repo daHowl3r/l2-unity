@@ -1,7 +1,7 @@
 public enum GameClientPacketType : byte
 {
     ProtocolVersion = 0x00,
-    LoadWorld = 0x03,
+    EnterWorld = 0x03,
     AuthRequest = 0x08,
     Disconnect = 0x09,
     RequestAttack = 0x0a,

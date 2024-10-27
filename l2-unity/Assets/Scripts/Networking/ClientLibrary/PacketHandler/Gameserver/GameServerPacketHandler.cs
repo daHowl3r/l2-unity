@@ -33,7 +33,7 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.SystemMessage:
                 OnSystemMessageReceive(data);
                 break;
-            case GameServerPacketType.PlayerInfo:
+            case GameServerPacketType.CharSelected:
                 OnPlayerInfoReceive(data);
                 break;
             case GameServerPacketType.ObjectPosition:
@@ -117,6 +117,9 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.CharCreateFail:
                 OnCharCreateFail(data);
                 break;
+            default:
+                Debug.LogWarning($"Received unhandled packet with OPCode [{packetType}].");
+                break;
         }
     }
 
@@ -168,7 +171,6 @@ public class GameServerPacketHandler : ServerPacketHandler
 
     private void OnKeyReceive(byte[] data)
     {
-        Debug.LogWarning("Onkeyreceive");
         VersionCheckPacket packet = new VersionCheckPacket(data);
 
         if (!packet.AuthAllowed)
@@ -265,7 +267,7 @@ public class GameServerPacketHandler : ServerPacketHandler
 
     private void OnPlayerInfoReceive(byte[] data)
     {
-        PlayerInfoPacket packet = new PlayerInfoPacket(data);
+        CharSelectedPacket packet = new CharSelectedPacket(data);
         if (GameManager.Instance.GameState != GameState.IN_GAME)
         {
             _eventProcessor.QueueEvent(() =>

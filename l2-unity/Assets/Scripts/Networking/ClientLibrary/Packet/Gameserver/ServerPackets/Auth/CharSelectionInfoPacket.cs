@@ -50,9 +50,9 @@ public class CharSelectionInfoPacket : ServerPacket
 
             ReadI();
 
-            float y = ReadI() / 52.5f;
             float z = ReadI() / 52.5f;
             float x = ReadI() / 52.5f;
+            float y = ReadI() / 52.5f;
 
             character.Position = new Vector3(x, y, z);
 

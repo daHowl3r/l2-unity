@@ -1,6 +1,6 @@
 using UnityEngine;
 using L2_login;
-using static PlayerInfoPacket;
+using static CharSelectedPacket;
 using System;
 
 public class GameClient : DefaultClient

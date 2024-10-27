@@ -15,9 +15,5 @@ public class VersionCheckPacket : ServerPacket
         BlowFishKey = ReadB(8);
         UseBlowfishCipher = ReadI() == 1;
         AuthAllowed = ReadI() == 1;
-
-        UnityEngine.Debug.Log($"Blowfish key: [{8}]: {StringUtils.ByteArrayToString(BlowFishKey)}");
-        UnityEngine.Debug.Log($"UseBlowfishCipher: [{AuthAllowed}]");
-        UnityEngine.Debug.Log($"AuthAllowed: [{AuthAllowed}]");
     }
 }

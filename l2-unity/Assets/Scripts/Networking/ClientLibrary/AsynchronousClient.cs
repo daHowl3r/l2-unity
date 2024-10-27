@@ -157,8 +157,6 @@ public class AsynchronousClient
                 lengthHi = stream.ReadByte();
                 length = (lengthHi * 256) + lengthLo;
 
-                Debug.LogWarning(length);
-
                 if (lengthHi == -1 || !_connected)
                 {
                     Debug.Log("Server terminated the connection.");

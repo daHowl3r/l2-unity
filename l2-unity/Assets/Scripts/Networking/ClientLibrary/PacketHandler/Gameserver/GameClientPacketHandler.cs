@@ -57,7 +57,7 @@ public class GameClientPacketHandler : ClientPacketHandler
 
     public void SendLoadWorld()
     {
-        LoadWorldPacket packet = new LoadWorldPacket();
+        EnterWorldPacket packet = new EnterWorldPacket();
         SendPacket(packet);
     }
 

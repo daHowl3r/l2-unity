@@ -269,7 +269,26 @@ public class World : MonoBehaviour
         ((NetworkHumanoidEntity)entity).EquipAllArmors();
     }
 
-    public void SpawnNpc(NetworkIdentity identity, NpcStatus status, Stats stats, Appearance appearance)
+    public void OnReceiveNpcInfo(NetworkIdentity identity, NpcStatus status, Stats stats, Appearance appearance, bool running)
+    {
+        // Dont need to block thread
+        Task task = new Task(async () =>
+        {
+            var entity = await GetEntityAsync(identity.Id);
+
+            if (entity == null)
+            {
+                _eventProcessor.QueueEvent(() => SpawnNpc(identity, status, stats, appearance, running));
+            }
+            else
+            {
+                _eventProcessor.QueueEvent(() => UpdateNpc(entity, identity, status, stats, appearance, running));
+            }
+        });
+        task.Start();
+    }
+
+    public void SpawnNpc(NetworkIdentity identity, NpcStatus status, Stats stats, Appearance appearance, bool running)
     {
         Npcgrp npcgrp = NpcgrpTable.Instance.GetNpcgrp(identity.NpcId);
         NpcName npcName = NpcNameTable.Instance.GetNpcName(identity.NpcId);
@@ -326,7 +345,9 @@ public class World : MonoBehaviour
         }
 
         npc.Status = status;
+        npc.Status.Hp = (int)npcgrp.MaxHp;
         npc.Stats = stats;
+        npc.Stats.MaxHp = (int)npcgrp.MaxHp;
         npc.Identity = identity;
         npc.Identity.NpcClass = npcgrp.ClassName;
 
@@ -364,6 +385,21 @@ public class World : MonoBehaviour
         _objects.Add(identity.Id, npc);
     }
 
+    public void UpdateNpc(Entity entity, NetworkIdentity identity, NpcStatus status, Stats stats, Appearance appearance, bool running)
+    {
+        entity.Identity.UpdateEntity(identity);
+        entity.Status.UpdateStatus(status);
+        entity.Stats.UpdateStats(stats);
+        entity.Running = running;
+        entity.Appearance.UpdateAppearance(appearance);
+
+        entity.UpdatePAtkSpeed(stats.PAtkSpd);
+        entity.UpdateMAtkSpeed(stats.MAtkSpd);
+        entity.UpdateWalkSpeed(stats.WalkSpeed);
+        entity.UpdateRunSpeed(stats.RunSpeed);
+        entity.EquipAllWeapons();
+    }
+
     public float GetGroundHeight(Vector3 pos)
     {
         RaycastHit hit;
@@ -391,22 +427,14 @@ public class World : MonoBehaviour
         });
     }
 
-    public Task UpdateObjectDestination(int id, Vector3 position, int speed, bool walking)
+    public Task UpdateObjectDestination(int id, Vector3 currentPosition, Vector3 destination)
     {
         return ExecuteWithEntityAsync(id, e =>
         {
-            if (speed != e.Stats.WalkSpeed && walking)
-            {
-                e.UpdateWalkSpeed(speed);
-            }
-            else if (speed != e.Stats.RunSpeed && !walking)
-            {
-                e.UpdateRunSpeed(speed);
-            }
-
-            e.GetComponent<NetworkCharacterControllerReceive>().SetDestination(position);
-            e.GetComponent<NetworkTransformReceive>().LookAt(position);
-            e.OnStartMoving(walking);
+            e.GetComponent<NetworkTransformReceive>().SetNewPosition(currentPosition);
+            e.GetComponent<NetworkCharacterControllerReceive>().SetDestination(destination);
+            e.GetComponent<NetworkTransformReceive>().LookAt(destination);
+            //e.OnStartMoving();
         });
     }
 

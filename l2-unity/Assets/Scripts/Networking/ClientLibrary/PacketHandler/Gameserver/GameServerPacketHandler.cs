@@ -358,13 +358,13 @@ public class GameServerPacketHandler : ServerPacketHandler
     private void OnNpcInfoReceive(byte[] data)
     {
         NpcInfoPacket packet = new NpcInfoPacket(data);
-        _eventProcessor.QueueEvent(() => World.Instance.SpawnNpc(packet.Identity, packet.Status, packet.Stats, packet.Appearance));
+        _eventProcessor.QueueEvent(() => World.Instance.OnReceiveNpcInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running));
     }
 
     private void OnObjectMoveTo(byte[] data)
     {
         ObjectMoveToPacket packet = new ObjectMoveToPacket(data);
-        World.Instance.UpdateObjectDestination(packet.Id, packet.Pos, packet.Speed, packet.Walking);
+        World.Instance.UpdateObjectDestination(packet.Id, packet.CurrentPosition, packet.Destination);
 
     }
 

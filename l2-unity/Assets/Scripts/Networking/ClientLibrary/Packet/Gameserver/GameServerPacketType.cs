@@ -7,6 +7,8 @@ public enum GameServerPacketType : int
     CharSelected = 0x15,
     CharCreateOk = 0x19,
     CharCreateFail = 0x1a,
+    ShortcutRegister = 0x44,
+    ShortcutInit = 0x45,
     SystemMessage = 0x64,
 
 
@@ -47,8 +49,6 @@ public enum GameServerPacketType : int
     InventoryUpdate = 0xFD9,
     LeaveWorld = 0xFDA,
     RestartReponse = 0xFDB,
-    ShortcutInit = 0xFDC,
-    ShortcutRegister = 0xFDD,
     SocialAction = 0xFDE,
     ChangeWaitType = 0xFDF,
     ChangeMoveType = 0xFE0,

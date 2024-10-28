@@ -391,7 +391,7 @@ public class World : MonoBehaviour
     {
         entity.Identity.UpdateEntityPartial(identity);
         ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(identity.Position);
-        entity.Status.UpdateStatus(status);
+        //entity.Status.UpdateStatus(status);
         entity.Stats.UpdateStats(stats);
         entity.Running = running;
 
@@ -551,7 +551,7 @@ public class World : MonoBehaviour
 
         if (entity == null)
         {
-            await Task.Delay(150); // Wait for 150 ms retrying
+            await Task.Delay(500); // Wait for 150 ms retrying
 
             lock (_objects)
             {

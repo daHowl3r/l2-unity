@@ -84,7 +84,6 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
         {
             if (_direction != Vector3.zero)
             {
-                Debug.LogWarning("Stopped");
                 _entity.OnStopMoving();
                 //TODO check if has target and is attacking
             }

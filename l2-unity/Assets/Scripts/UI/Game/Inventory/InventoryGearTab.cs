@@ -19,18 +19,18 @@ public class InventoryGearTab : L2Tab
 
         _gearAnchors = new Dictionary<ItemSlot, VisualElement>
         {
-            { ItemSlot.head, _windowEle.Q<VisualElement>("Helmet") },
-            { ItemSlot.gloves, _windowEle.Q<VisualElement>("Gloves") },
-            { ItemSlot.chest, _windowEle.Q<VisualElement>("Torso") },
-            { ItemSlot.feet, _windowEle.Q<VisualElement>("Boots") },
-            { ItemSlot.legs, _windowEle.Q<VisualElement>("Legs") },
-            { ItemSlot.rhand, _windowEle.Q<VisualElement>("Rhand") },
-            { ItemSlot.lhand, _windowEle.Q<VisualElement>("Lhand") },
-            { ItemSlot.neck, _windowEle.Q<VisualElement>("Neck") },
-            { ItemSlot.rear, _windowEle.Q<VisualElement>("Rear") },
-            { ItemSlot.lear, _windowEle.Q<VisualElement>("Lear") },
-            { ItemSlot.rfinger, _windowEle.Q<VisualElement>("Rring") },
-            { ItemSlot.lfinger, _windowEle.Q<VisualElement>("Lring") }
+            { ItemSlot.SLOT_HEAD, _windowEle.Q<VisualElement>("Helmet") },
+            { ItemSlot.SLOT_GLOVES, _windowEle.Q<VisualElement>("Gloves") },
+            { ItemSlot.SLOT_CHEST, _windowEle.Q<VisualElement>("Torso") },
+            { ItemSlot.SLOT_FEET, _windowEle.Q<VisualElement>("Boots") },
+            { ItemSlot.SLOT_LEGS, _windowEle.Q<VisualElement>("Legs") },
+            { ItemSlot.SLOT_R_HAND, _windowEle.Q<VisualElement>("Rhand") },
+            { ItemSlot.SLOT_L_HAND, _windowEle.Q<VisualElement>("Lhand") },
+            { ItemSlot.SLOT_NECK, _windowEle.Q<VisualElement>("Neck") },
+            { ItemSlot.SLOT_R_EAR, _windowEle.Q<VisualElement>("Rear") },
+            { ItemSlot.SLOT_L_EAR, _windowEle.Q<VisualElement>("Lear") },
+            { ItemSlot.SLOT_R_FINGER, _windowEle.Q<VisualElement>("Rring") },
+            { ItemSlot.SLOT_L_FINGER, _windowEle.Q<VisualElement>("Lring") }
         };
     }
 
@@ -78,22 +78,22 @@ public class InventoryGearTab : L2Tab
             if (item.Equipped)
             {
                 //Debug.Log("Equip item: " + item);
-                if (item.BodyPart == ItemSlot.lrhand)
+                if (item.BodyPart == ItemSlot.SLOT_LR_HAND)
                 {
-                    _gearSlots[ItemSlot.lhand].AssignItem(item);
-                    _gearSlots[ItemSlot.rhand].AssignItem(item);
+                    _gearSlots[ItemSlot.SLOT_L_HAND].AssignItem(item);
+                    _gearSlots[ItemSlot.SLOT_R_HAND].AssignItem(item);
                 }
-                else if (item.BodyPart == ItemSlot.fullarmor)
+                else if (item.BodyPart == ItemSlot.SLOT_FULL_ARMOR)
                 {
-                    _gearSlots[ItemSlot.chest].AssignItem(item);
-                    _gearSlots[ItemSlot.legs].AssignItem(item);
+                    _gearSlots[ItemSlot.SLOT_CHEST].AssignItem(item);
+                    _gearSlots[ItemSlot.SLOT_LEGS].AssignItem(item);
                 }
                 else
                 {
-                    ItemSlot slot = (ItemSlot)item.Slot;
-                    if (slot != ItemSlot.none)
+                    ItemSlot slot = (ItemSlot)item.BodyPart;
+                    if (slot != ItemSlot.SLOT_NONE)
                     {
-                        _gearSlots[(ItemSlot)item.Slot].AssignItem(item);
+                        _gearSlots[(ItemSlot)item.BodyPart].AssignItem(item);
                     }
                     else
                     {

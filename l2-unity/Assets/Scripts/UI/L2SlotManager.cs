@@ -146,7 +146,7 @@ public class L2SlotManager : L2PopupWindow
 
         switch (_hoverSlot.Type)
         {
-            case L2Slot.SlotType.Gear when IsItemGear(inventorySlot.ItemCategory):
+            case L2Slot.SlotType.Gear when IsItemGear(inventorySlot.Type1):
                 Equip();
                 break;
             case L2Slot.SlotType.Inventory:
@@ -205,11 +205,10 @@ public class L2SlotManager : L2PopupWindow
 
     private bool IsSameSlot() => _draggedSlot != null && _hoverSlot != null && _draggedSlot.Position == _hoverSlot.Position && _draggedSlot.Type == _hoverSlot.Type;
 
-    private bool IsItemGear(ItemCategory category)
+    private bool IsItemGear(ItemType1 category)
     {
-        return category == ItemCategory.Weapon
-            || category == ItemCategory.ShieldArmor
-            || category == ItemCategory.Jewel;
+        return category == ItemType1.TYPE1_SHIELD_ARMOR
+            || category == ItemType1.TYPE1_WEAPON_RING_EARRING_NECKLACE;
     }
 
     #endregion

@@ -9,7 +9,7 @@ public class GameManagerTest : MonoBehaviour
     void Awake()
     {
         LoadTables();
-        ClickManager.Instance.SetMasks(_entityMask, _clickThroughMask);
+        // ClickManager.Instance.SetMasks(_entityMask, _clickThroughMask);
     }
 
     private void LoadTables()

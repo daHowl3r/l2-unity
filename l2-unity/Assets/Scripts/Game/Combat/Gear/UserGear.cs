@@ -75,15 +75,15 @@ public class UserGear : HumanoidGear
 
         switch (slot)
         {
-            case ItemSlot.chest:
+            case ItemSlot.SLOT_CHEST:
                 return itemId == _torsoMeta.Id;
-            case ItemSlot.fullarmor:
+            case ItemSlot.SLOT_FULL_ARMOR:
                 return itemId == _fullarmorMeta.Id;
-            case ItemSlot.legs:
+            case ItemSlot.SLOT_LEGS:
                 return itemId == _legsMeta.Id;
-            case ItemSlot.gloves:
+            case ItemSlot.SLOT_GLOVES:
                 return itemId == _glovesMeta.Id;
-            case ItemSlot.feet:
+            case ItemSlot.SLOT_FEET:
                 return itemId == _bootsMeta.Id;
         }
 
@@ -95,38 +95,38 @@ public class UserGear : HumanoidGear
         PlayerAppearance appearance = (PlayerAppearance)apr;
         if (appearance.Chest != 0)
         {
-            EquipArmor(appearance.Chest, ItemSlot.chest);
+            EquipArmor(appearance.Chest, ItemSlot.SLOT_CHEST);
         }
         else
         {
-            EquipArmor(ItemTable.NAKED_CHEST, ItemSlot.chest);
+            EquipArmor(ItemTable.NAKED_CHEST, ItemSlot.SLOT_CHEST);
         }
 
         if (appearance.Legs != 0)
         {
-            EquipArmor(appearance.Legs, ItemSlot.legs);
+            EquipArmor(appearance.Legs, ItemSlot.SLOT_LEGS);
         }
         else
         {
-            EquipArmor(ItemTable.NAKED_LEGS, ItemSlot.legs);
+            EquipArmor(ItemTable.NAKED_LEGS, ItemSlot.SLOT_LEGS);
         }
 
         if (appearance.Gloves != 0)
         {
-            EquipArmor(appearance.Gloves, ItemSlot.gloves);
+            EquipArmor(appearance.Gloves, ItemSlot.SLOT_GLOVES);
         }
         else
         {
-            EquipArmor(ItemTable.NAKED_GLOVES, ItemSlot.gloves);
+            EquipArmor(ItemTable.NAKED_GLOVES, ItemSlot.SLOT_GLOVES);
         }
 
         if (appearance.Feet != 0)
         {
-            EquipArmor(appearance.Feet, ItemSlot.feet);
+            EquipArmor(appearance.Feet, ItemSlot.SLOT_FEET);
         }
         else
         {
-            EquipArmor(ItemTable.NAKED_BOOTS, ItemSlot.feet);
+            EquipArmor(ItemTable.NAKED_BOOTS, ItemSlot.SLOT_FEET);
         }
     }
 
@@ -162,7 +162,7 @@ public class UserGear : HumanoidGear
     {
         switch (slot)
         {
-            case ItemSlot.chest:
+            case ItemSlot.SLOT_CHEST:
                 if (_torso != null)
                 {
                     DestroyImmediate(_torso);
@@ -172,13 +172,13 @@ public class UserGear : HumanoidGear
                 {
                     DestroyImmediate(_fullarmor);
                     _fullarmorMeta = null;
-                    EquipArmor(ItemTable.NAKED_LEGS, ItemSlot.legs);
+                    EquipArmor(ItemTable.NAKED_LEGS, ItemSlot.SLOT_LEGS);
                 }
                 _torso = armorPiece;
                 _torsoMeta = armor;
                 _torso.transform.SetParent(_bodypartsContainer.transform, false);
                 break;
-            case ItemSlot.fullarmor:
+            case ItemSlot.SLOT_FULL_ARMOR:
                 if (_torso != null)
                 {
                     DestroyImmediate(_torso);
@@ -193,7 +193,7 @@ public class UserGear : HumanoidGear
                 _fullarmorMeta = armor;
                 _fullarmor.transform.SetParent(_bodypartsContainer.transform, false);
                 break;
-            case ItemSlot.legs:
+            case ItemSlot.SLOT_LEGS:
                 if (_legs != null)
                 {
                     DestroyImmediate(_legs);
@@ -203,13 +203,13 @@ public class UserGear : HumanoidGear
                 {
                     DestroyImmediate(_fullarmor);
                     _fullarmorMeta = null;
-                    EquipArmor(ItemTable.NAKED_CHEST, ItemSlot.chest);
+                    EquipArmor(ItemTable.NAKED_CHEST, ItemSlot.SLOT_CHEST);
                 }
                 _legs = armorPiece;
                 _legs.transform.SetParent(_bodypartsContainer.transform, false);
                 _legsMeta = armor;
                 break;
-            case ItemSlot.gloves:
+            case ItemSlot.SLOT_GLOVES:
                 if (_gloves != null)
                 {
                     DestroyImmediate(_gloves);
@@ -219,7 +219,7 @@ public class UserGear : HumanoidGear
                 _gloves.transform.SetParent(_bodypartsContainer.transform, false);
                 _glovesMeta = armor;
                 break;
-            case ItemSlot.feet:
+            case ItemSlot.SLOT_FEET:
                 if (_boots != null)
                 {
                     DestroyImmediate(_boots);

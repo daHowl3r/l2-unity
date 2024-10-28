@@ -55,12 +55,12 @@ public class CharSelectedPacket : ServerPacket
             _info.Stats.Level = ReadI();
             _info.Stats.Karma = ReadI();
             _info.Stats.PkKills = ReadI();
-            _info.Stats.Int = ReadB();
-            _info.Stats.Str = ReadB();
-            _info.Stats.Con = ReadB();
-            _info.Stats.Men = ReadB();
-            _info.Stats.Dex = ReadB();
-            _info.Stats.Wit = ReadB();
+            _info.Stats.Int = (byte)ReadI();
+            _info.Stats.Str = (byte)ReadI();
+            _info.Stats.Con = (byte)ReadI();
+            _info.Stats.Men = (byte)ReadI();
+            _info.Stats.Dex = (byte)ReadI();
+            _info.Stats.Wit = (byte)ReadI();
 
             for (int i = 0; i < 30; i++)
             {

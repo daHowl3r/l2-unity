@@ -5,7 +5,7 @@ public class UserInfoPacket : ServerPacket
 {
     public NetworkIdentity Identity { get; private set; }
     public PlayerStatus Status { get; private set; }
-    public Stats Stats { get; private set; }
+    public PlayerStats Stats { get; private set; }
     public PlayerAppearance Appearance { get; private set; }
     public bool Running { get; set; }
 
@@ -13,7 +13,7 @@ public class UserInfoPacket : ServerPacket
     {
         Identity = new NetworkIdentity();
         Status = new PlayerStatus();
-        Stats = new Stats();
+        Stats = new PlayerStats();
         Appearance = new PlayerAppearance();
         Parse();
     }
@@ -22,45 +22,257 @@ public class UserInfoPacket : ServerPacket
     {
         try
         {
+            Identity.SetPosZ(ReadI() / 52.5f);
+            Identity.SetPosX(ReadI() / 52.5f);
+            Identity.SetPosY(ReadI() / 52.5f);
+            Identity.Heading = ReadI(); //TODO: Convert to angle
             Identity.Id = ReadI();
             Identity.Name = ReadS();
-            Identity.PlayerClass = ReadB();
-            Identity.IsMage = ReadB() == 1;
-            Identity.Heading = ReadF();
-            Identity.SetPosX(ReadF());
-            Identity.SetPosY(ReadF());
-            Identity.SetPosZ(ReadF());
-            Identity.Owned = Identity.Name == GameClient.Instance.CurrentPlayer;
-            // Status
+            Appearance.Race = (byte)ReadI();
+            Appearance.Sex = (byte)ReadI();
+            Identity.PlayerClass = (byte)ReadI();
             Stats.Level = ReadI();
-            Status.Hp = ReadI();
+            Stats.Exp = (int)ReadL();
+            Stats.Str = (byte)ReadI();
+            Stats.Dex = (byte)ReadI();
+            Stats.Con = (byte)ReadI();
+            Stats.Int = (byte)ReadI();
+            Stats.Wit = (byte)ReadI();
+            Stats.Men = (byte)ReadI();
             Stats.MaxHp = ReadI();
-            // Stats
-            Stats.RunSpeed = ReadI();
-            Stats.WalkSpeed = ReadI();
-            Stats.PAtkSpd = ReadI();
-            Stats.MAtkSpd = ReadI();
-            // Appearance
-            Appearance.CollisionHeight = ReadF();
-            Appearance.CollisionRadius = ReadF();
-            Appearance.Race = ReadB();
-            Appearance.Sex = ReadB();
-            Appearance.Face = ReadB();
-            Appearance.HairStyle = ReadB();
-            Appearance.HairColor = ReadB();
-            // Gear
-            Appearance.LHand = ReadI();
+            Status.Hp = ReadI();
+            Stats.MaxMp = ReadI();
+            Status.Mp = ReadI();
+            Stats.Sp = ReadI();
+            Stats.CurrWeight = ReadI();
+            Stats.MaxWeight = ReadI();
+            ReadI(); //Active Weapon Item
+
+            ReadI(); //HairAll?
+            ReadI(); //Rear
+            ReadI(); //Lear
+            ReadI(); //Neck
+            ReadI(); //Rfinger
+            ReadI(); //Lfinger
+            ReadI(); //Head
             Appearance.RHand = ReadI();
+            Appearance.LHand = ReadI();
+            Appearance.Gloves = ReadI();
             Appearance.Chest = ReadI();
             Appearance.Legs = ReadI();
-            Appearance.Gloves = ReadI();
             Appearance.Feet = ReadI();
+            ReadI(); //Cloak
+            Appearance.RHand = ReadI();
+            ReadI(); //Hair
+            ReadI(); //Face
 
-            Running = ReadI() == 1;
+            ReadI(); //HairAll?
+            ReadI(); //Rear
+            ReadI(); //Lear
+            ReadI(); //Neck
+            ReadI(); //Rfinger
+            ReadI(); //Lfinger
+            ReadI(); //Head
+            Appearance.RHand = ReadI();
+            Appearance.LHand = ReadI();
+            Appearance.Gloves = ReadI();
+            Appearance.Chest = ReadI();
+            Appearance.Legs = ReadI();
+            Appearance.Feet = ReadI();
+            ReadI(); //Cloak
+            Appearance.RHand = ReadI();
+            ReadI(); //Hair
+            ReadI(); //Face
+
+            ReadI();
+            ReadI();
+            ReadI();
+            ReadI();
+            ReadI();
+            ReadI();
+            ReadI();
+            ReadI(); // AugmentationId RHAND
+            ReadI();
+            ReadI();
+            ReadI();
+            ReadI();
+            ReadI();
+            ReadI();
+            ReadI(); // AugmentationId LHAND
+            ReadI();
+            ReadI();
+
+            Stats.PAtk = ReadI();
+            Stats.PAtkSpd = ReadI();
+            Stats.PDef = ReadI();
+            Stats.PEvasion = ReadI();
+            Stats.PAccuracy = ReadI();
+            Stats.PCritical = ReadI();
+            Stats.MAtk = ReadI();
+            Stats.MAtkSpd = ReadI();
+            Stats.PAtkSpd = ReadI();
+            Stats.MDef = ReadI();
+            ReadI(); // pvp flag
+            Stats.Karma = ReadI(); // karma
+
+            Stats.RunSpeed = ReadI();
+            Stats.WalkSpeed = ReadI();
+            ReadI(); // swim speed
+            ReadI(); // swim speed
+            ReadI();
+            ReadI();
+            ReadI(); //RunSpeed
+            ReadI(); //WalkSpeed
+
+            Stats.MoveSpeedMultiplier = (float)ReadD();
+            Stats.AttackSpeedMultiplier = (float)ReadD();
+
+            Appearance.CollisionRadius = (float)ReadD() / 52.5f;
+            Appearance.CollisionHeight = (float)ReadD() / 52.5f;
+
+            Appearance.HairStyle = (byte)ReadI();
+            Appearance.HairColor = (byte)ReadI();
+            Appearance.Face = (byte)ReadI();
+            ReadI(); // GM
+
+            Identity.Title = ReadS();
+
+            ReadI(); //ClanId
+            ReadI(); //ClanCrest
+            ReadI(); //Ally
+            ReadI(); //AllyCrest
+            ReadI(); //Relation
+            ReadB(); //MountType
+            ReadB(); //OperateType
+            ReadB(); //HasCrystallize
+            Stats.PkKills = ReadI();
+            Stats.PvpKills = ReadI();
+
+            int cubicCount = ReadH();
+            for (int i = 0; i < cubicCount; i++)
+            {
+                ReadH(); //cubic id
+            }
+
+            ReadB(); //IsInPartyMatchRoom
+            ReadI(); //AbnormalEffect
+            ReadB();
+            ReadI(); //ClanPrivileges
+            ReadH(); //Reco left
+            ReadH(); //Reco have
+            ReadI(); //MountId
+            ReadH(); //Inventory space
+            Identity.PlayerClass = (byte)ReadI();
+            ReadI();
+            Stats.MaxCp = ReadI();
+            Status.Cp = ReadI();
+            ReadB(); //EnchantEffect
+            ReadB(); //TeamId (Event?)
+            ReadI(); //Clan Crest LongId
+            ReadB(); //IsNoble
+            ReadB(); //Hero/GM Aura
+            ReadB(); //IsFishing
+            ReadI(); // Fishing Loc X
+            ReadI(); // Fishing Loc Y
+            ReadI(); // Fishing Loc Z
+            ReadI(); //NameColor
+            Running = ReadB() == 1;
+            ReadI(); //Pledge class
+            ReadI(); //Pledge type
+            ReadI(); //Title Color
+            ReadI(); //Cursed weapon
+
+
+            Identity.IsMage = CharacterClassParser.IsMage((CharacterClass)Identity.PlayerClass);
+            Identity.Owned = Identity.Id == GameClient.Instance.CurrentPlayerId;
+
+            // Identity.PlayerClass = ReadB();
+            // Identity.IsMage = ReadB() == 1;
+            // Identity.Heading = ReadF();
+            // Identity.SetPosX(ReadF());
+            // Identity.SetPosY(ReadF());
+            // Identity.SetPosZ(ReadF());
+            // Identity.Owned = Identity.Name == GameClient.Instance.CurrentPlayer;
+            // // Status
+            // Stats.Level = ReadI();
+            // // Stats
+            // Stats.RunSpeed = ReadI();
+            // Stats.WalkSpeed = ReadI();
+            // Stats.PAtkSpd = ReadI();
+            // Stats.MAtkSpd = ReadI();
+            // // Appearance
+            // Appearance.CollisionHeight = ReadF();
+            // Appearance.CollisionRadius = ReadF();
+            // Appearance.Race = ReadB();
+            // Appearance.Sex = ReadB();
+            // Appearance.Face = ReadB();
+            // Appearance.HairStyle = ReadB();
+            // Appearance.HairColor = ReadB();
+            // // Gear
+            // Appearance.LHand = ReadI();
+            // Appearance.RHand = ReadI();
+            // Appearance.Chest = ReadI();
+            // Appearance.Legs = ReadI();
+            // Appearance.Gloves = ReadI();
+            // Appearance.Feet = ReadI();
+
+            // Running = ReadI() == 1;
+            Debug.LogWarning(ToString());
         }
         catch (Exception e)
         {
             Debug.LogError(e);
         }
+    }
+
+    public override string ToString()
+    {
+        return $"Identity:\n" +
+               $"  Id: {Identity.Id}\n" +
+               $"  Position: ({Identity.Position})\n" +
+               $"  Heading: {Identity.Heading}\n" +
+               $"  Name: {Identity.Name}\n" +
+               $"  Title: {Identity.Title}\n" +
+               $"  PlayerClass: {Identity.PlayerClass} (Mage: {Identity.IsMage})\n" +
+               $"  Owned: {Identity.Owned}\n\n" +
+
+               $"Appearance:\n" +
+               $"  Race: {Appearance.Race}\n" +
+               $"  Sex: {Appearance.Sex}\n" +
+               $"  HairStyle: {Appearance.HairStyle}\n" +
+               $"  HairColor: {Appearance.HairColor}\n" +
+               $"  Face: {Appearance.Face}\n" +
+               $"  Collision Radius: {Appearance.CollisionRadius}\n" +
+               $"  Collision Height: {Appearance.CollisionHeight}\n" +
+               $"  Equipment:\n" +
+               $"    RHand: {Appearance.RHand}\n" +
+               $"    LHand: {Appearance.LHand}\n" +
+               $"    Gloves: {Appearance.Gloves}\n" +
+               $"    Chest: {Appearance.Chest}\n" +
+               $"    Legs: {Appearance.Legs}\n" +
+               $"    Feet: {Appearance.Feet}\n\n" +
+
+               $"Stats:\n" +
+               $"  Level: {Stats.Level}\n" +
+               $"  Exp: {Stats.Exp}\n" +
+               $"  Attributes:\n" +
+               $"    Str: {Stats.Str}, Dex: {Stats.Dex}, Con: {Stats.Con}\n" +
+               $"    Int: {Stats.Int}, Wit: {Stats.Wit}, Men: {Stats.Men}\n" +
+               $"  HP: {Status.Hp}/{Stats.MaxHp}\n" +
+               $"  MP: {Status.Mp}/{Stats.MaxMp}\n" +
+               $"  CP: {Status.Cp}/{Stats.MaxCp}\n" +
+               $"  PAtk: {Stats.PAtk}, PAtkSpd: {Stats.PAtkSpd}\n" +
+               $"  PDef: {Stats.PDef}, PEvasion: {Stats.PEvasion}\n" +
+               $"  PAccuracy: {Stats.PAccuracy}, PCritical: {Stats.PCritical}\n" +
+               $"  MAtk: {Stats.MAtk}, MAtkSpd: {Stats.MAtkSpd}, MDef: {Stats.MDef}\n" +
+               $"  RunSpeed: {Stats.RunSpeed}, WalkSpeed: {Stats.WalkSpeed}\n" +
+               $"  Speed Multipliers:\n" +
+               $"    MoveSpeedMultiplier: {Stats.MoveSpeedMultiplier}\n" +
+               $"    AttackSpeedMultiplier: {Stats.AttackSpeedMultiplier}\n" +
+               $"  Karma: {Stats.Karma}, PkKills: {Stats.PkKills}, PvpKills: {Stats.PvpKills}\n" +
+               $"  CurrWeight: {Stats.CurrWeight}, MaxWeight: {Stats.MaxWeight}\n\n" +
+
+               $"Other:\n" +
+               $"  Running: {Running}\n";
     }
 }

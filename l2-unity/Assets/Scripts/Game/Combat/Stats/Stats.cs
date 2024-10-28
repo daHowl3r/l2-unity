@@ -5,9 +5,11 @@ public class Stats
 {
     [SerializeField] private int _level;
     [SerializeField] private int _runSpeed;
+    [SerializeField] private float _moveSpeedMultiplier;
     [SerializeField] private int _walkSpeed;
     [SerializeField] private float _scaledRunSpeed;
     [SerializeField] private float _scaledWalkSpeed;
+    [SerializeField] private float _attackSpeedMultiplier;
     [SerializeField] private int _pAtkSpd;
     [SerializeField] private int _mAtkSpd;
     [SerializeField] private int _maxHp;
@@ -17,6 +19,8 @@ public class Stats
     public int Level { get => _level; set => _level = value; }
     public int RunSpeed { get => _runSpeed; set => _runSpeed = value; }
     public int WalkSpeed { get => _walkSpeed; set => _walkSpeed = value; }
+    public float MoveSpeedMultiplier { get => _moveSpeedMultiplier; set => _moveSpeedMultiplier = value; }
+    public float AttackSpeedMultiplier { get => _attackSpeedMultiplier; set => _attackSpeedMultiplier = value; }
     public float ScaledRunSpeed { get => _scaledRunSpeed; set => _scaledRunSpeed = value; }
     public float ScaledWalkSpeed { get => _scaledWalkSpeed; set => _scaledWalkSpeed = value; }
     public int PAtkSpd { get => _pAtkSpd; set => _pAtkSpd = value; }

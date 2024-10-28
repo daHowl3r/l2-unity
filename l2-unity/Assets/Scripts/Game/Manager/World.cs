@@ -139,6 +139,7 @@ public class World : MonoBehaviour
         go.transform.eulerAngles = new Vector3(transform.eulerAngles.x, identity.Heading, transform.eulerAngles.z);
         go.transform.position = identity.Position;
         go.transform.name = "_Player";
+        go.layer = LayerMask.NameToLayer("Invisible"); //Invisible
 
         PlayerEntity player = go.GetComponent<PlayerEntity>();
 
@@ -172,6 +173,8 @@ public class World : MonoBehaviour
 
     public void UpdatePlayer(Entity entity, NetworkIdentity identity, PlayerStatus status, PlayerStats stats, PlayerAppearance appearance, bool running)
     {
+        entity.gameObject.layer = LayerMask.NameToLayer("Player");
+
         ((PlayerEntity)entity).Identity.UpdateEntity(identity);
         ((PlayerStatus)entity.Status).UpdateStatus(status);
         ((PlayerStats)entity.Stats).UpdateStats(stats);

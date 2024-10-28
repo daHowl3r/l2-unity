@@ -67,6 +67,16 @@ public abstract class ServerPacket : Packet
         return value;
     }
 
+    protected virtual int ReadH()
+    {
+        byte[] data = new byte[2];
+        Array.Copy(_packetData, _iterator, data, 0, 2);
+        // Array.Reverse(data);
+        double value = BitConverter.ToInt16(data, 0);
+        _iterator += 2;
+        return (int)value;
+    }
+
     protected virtual string ReadS()
     {
         List<char> chars = new List<char>();

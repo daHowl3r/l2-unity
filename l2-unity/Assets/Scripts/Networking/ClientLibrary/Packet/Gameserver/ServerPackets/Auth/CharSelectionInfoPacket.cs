@@ -37,6 +37,7 @@ public class CharSelectionInfoPacket : ServerPacket
             character.Slot = i;
             character.Name = ReadS();
             character.Id = ReadI();
+            character.Id = i; // CharId shared by the server is always the same
             character.Account = ReadS();
             _sessionId = ReadI();
             character.ClanId = ReadI();

@@ -294,7 +294,14 @@ public class GameServerPacketHandler : ServerPacketHandler
     private void OnUserInfoReceive(byte[] data)
     {
         UserInfoPacket packet = new UserInfoPacket(data);
-        World.Instance.OnReceiveUserInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running);
+        if (packet.Identity.Owned)
+        {
+            World.Instance.OnReceivePlayerInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running);
+        }
+        else
+        {
+            World.Instance.OnReceiveUserInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running);
+        }
     }
 
     private void OnUpdatePosition(byte[] data)

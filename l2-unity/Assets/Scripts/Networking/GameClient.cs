@@ -12,7 +12,7 @@ public class GameClient : DefaultClient
     private GameCrypt _gameCrypt;
 
     public PlayerInfo PlayerInfo { get { return _playerInfo; } set { _playerInfo = value; } }
-    public string CurrentPlayer { get { return _playerInfo.Identity.Name; } }
+    public int CurrentPlayerId { get { return _playerInfo.Identity.Id; } }
     public int ServerId { get { return _serverId; } set { _serverId = value; } }
     public int PlayKey1 { get { return _playKey1; } set { _playKey1 = value; } }
     public int PlayKey2 { get { return _playKey2; } set { _playKey2 = value; } }

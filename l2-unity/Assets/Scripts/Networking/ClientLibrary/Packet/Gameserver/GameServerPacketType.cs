@@ -1,6 +1,7 @@
 public enum GameServerPacketType : int
 {
     VersionCheck = 0x00,
+    UserInfo = 0x04,
     CharSelectionInfo = 0x13,
     LoginFail = 0x14,
     CharSelected = 0x15,
@@ -33,7 +34,6 @@ public enum GameServerPacketType : int
     ApplyDamage = 0xFFB,
     NpcInfo = 0xFFC,
     ObjectMoveTo = 0xFFD,
-    UserInfo = 0xFFE,
     ObjectMoveDirection = 0xFFF,
     GameTime = 0xFD0,
     EntitySetTarget = 0xFD1,

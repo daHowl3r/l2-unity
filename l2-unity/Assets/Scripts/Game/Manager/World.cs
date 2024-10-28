@@ -255,7 +255,9 @@ public class World : MonoBehaviour
 
     public void UpdateUser(Entity entity, NetworkIdentity identity, PlayerStatus status, Stats stats, PlayerAppearance appearance, bool running)
     {
-        ((NetworkHumanoidEntity)entity).Identity.UpdateEntity(identity);
+        entity.Identity.UpdateEntityPartial(identity);
+        ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(identity.Position);
+
         ((PlayerStatus)entity.Status).UpdateStatus(status);
         entity.Stats.UpdateStats(stats);
         entity.Running = running;
@@ -387,11 +389,13 @@ public class World : MonoBehaviour
 
     public void UpdateNpc(Entity entity, NetworkIdentity identity, NpcStatus status, Stats stats, Appearance appearance, bool running)
     {
-        entity.Identity.UpdateEntity(identity);
+        entity.Identity.UpdateEntityPartial(identity);
+        ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(identity.Position);
         entity.Status.UpdateStatus(status);
         entity.Stats.UpdateStats(stats);
         entity.Running = running;
-        entity.Appearance.UpdateAppearance(appearance);
+
+        //entity.Appearance.UpdateAppearance(appearance);
 
         entity.UpdatePAtkSpeed(stats.PAtkSpd);
         entity.UpdateMAtkSpeed(stats.MAtkSpd);

@@ -8,6 +8,7 @@ public enum GameClientPacketType : byte
     RequestCharCreate = 0x0b,
     RequestCharSelect = 0x0d,
     RequestInventoryOpen = 0x0f,
+    RequestInventoryUpdateOrder = 0x10,
     RequestUnEquip = 0x11,
     RequestDropItem = 0x12,
     UseItem = 0x14,
@@ -25,7 +26,6 @@ public enum GameClientPacketType : byte
     RequestRotate = 0xF3,
     RequestAnim = 0xF4,
     RequestMoveDirection = 0xF5,
-    RequestInventoryUpdateOrder = 0xF6,
     RequestAutoAttack = 0xF7,
     RequestSetTarget = 0xF8,
 }

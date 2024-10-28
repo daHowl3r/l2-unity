@@ -297,6 +297,9 @@ public class GameServerPacketHandler : ServerPacketHandler
         if (packet.Identity.Owned)
         {
             World.Instance.OnReceivePlayerInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running);
+
+            // Additional player information received, only now is the right time to show the UI/World to avoid visual bugs
+            GameManager.Instance.OnPlayerInfoReceive();
         }
         else
         {

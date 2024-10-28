@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static CharSelectedPacket;
@@ -113,9 +114,13 @@ public class GameManager : MonoBehaviour
 
         PlayerStateMachine.Instance.enabled = true;
 
-        StopLoading();
-
         GameClient.Instance.ClientPacketHandler.SendLoadWorld();
+    }
+
+    public void OnPlayerInfoReceive()
+    {
+        // Add a small delay to avoid visual bugs
+        StartCoroutine(StopLoading());
     }
 
     public void OnLoginServerConnected()
@@ -293,8 +298,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void StopLoading()
+    public IEnumerator StopLoading()
     {
+        yield return new WaitForSeconds(0.15f);
+
         _loadingCamera.enabled = false;
         if (L2GameUI.Instance != null)
         {

@@ -10,14 +10,14 @@ public class InventoryUpdatePacket : AbstractItemPacket
 
     public override void Parse()
     {
-        int itemListSize = ReadI();
+        int itemListSize = ReadH();
 
         _items = new ItemInstance[itemListSize];
         for (int i = 0; i < itemListSize; i++)
         {
-            int lastChange = ReadI();
-            // _items[i] = ReadItem();
-            // _items[i].LastChange = lastChange;
+            int lastChange = ReadH();
+            _items[i] = ReadItem();
+            _items[i].LastChange = lastChange;
         }
     }
 }

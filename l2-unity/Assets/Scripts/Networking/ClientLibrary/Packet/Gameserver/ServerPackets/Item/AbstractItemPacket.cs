@@ -7,22 +7,6 @@ public abstract class AbstractItemPacket : ServerPacket
     {
     }
 
-
-    /*
-        protected void writeItem(ItemInfo item) {
-        writeI(item.getObjectId()); // ObjectId
-        writeI(item.getItem().getId()); // ItemId
-        writeB((byte) item.getLocation()); // Inventory? Warehouse?
-        writeI(item.getSlot()); // Slot
-        writeL(item.getCount()); // Quantity
-        writeB(item.getCategory()); // Item Type 2 : 00-weapon, 01-shield/armor, 02-ring/earring/necklace, 03-questitem, 04-adena, 05-item
-        writeB(item.getEquipped()); // Equipped : 00-No, 01-yes
-        writeI(item.getItem().getBodyPart().getValue());
-        writeI(item.getEnchant()); // Enchant level
-        writeL(item.getTime());
-    }
-    */
-
     public ItemType1 Type1 { get; private set; }
     public int ObjectId { get; private set; }
     public int ItemId { get; private set; }
@@ -38,7 +22,7 @@ public abstract class AbstractItemPacket : ServerPacket
     public ItemLocation ItemLocation { get; private set; }
     public int Slot { get; private set; }
 
-    protected ItemInstance ReadItem(int slot)
+    protected ItemInstance ReadItem()
     {
         Type1 = (ItemType1)ReadH();
         ObjectId = ReadI();
@@ -61,7 +45,7 @@ public abstract class AbstractItemPacket : ServerPacket
 
         // int slot = ReadI();
         // In interlude slot is not shared?
-        Slot = slot;
+        Slot = ReadI();
 
         Debug.LogWarning(ToString());
 

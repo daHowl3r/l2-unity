@@ -50,7 +50,7 @@ public class PlayerShortcuts : MonoBehaviour
         VerifySkillbarInputs();
     }
 
-    private void VerifySkillbarInputs() 
+    private void VerifySkillbarInputs()
     {
         foreach (Shortcut shortcut in _shortcuts.Values)
         {
@@ -68,7 +68,8 @@ public class PlayerShortcuts : MonoBehaviour
         }
     }
 
-    public string GetKeybindForShortcut(int skillbarId, int slot) {
+    public string GetKeybindForShortcut(int skillbarId, int slot)
+    {
         InputAction action = InputManager.Instance.SkillbarActions[skillbarId, slot];
         return action.GetBindingDisplayString(0).ToUpper();
     }
@@ -106,7 +107,7 @@ public class PlayerShortcuts : MonoBehaviour
             _shortcuts.Add(shortcut.Slot + shortcut.Page * MAXIMUM_SHORTCUTS_PER_BAR, shortcut);
         }
 
-        SkillbarWindow.Instance.UpdateAllShortcuts(shortcuts);
+        StartCoroutine(SkillbarWindow.Instance.UpdateAllShortcuts(shortcuts));
     }
 
     public void RegisterShortcut(Shortcut shortcut)

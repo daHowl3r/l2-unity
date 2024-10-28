@@ -15,6 +15,7 @@ public class PlayerInventory : MonoBehaviour
 
     public static PlayerInventory _instance;
     public static PlayerInventory Instance { get { return _instance; } }
+    public bool Initialized { get; private set; }
 
     private void Awake()
     {
@@ -28,6 +29,7 @@ public class PlayerInventory : MonoBehaviour
         }
 
         _playerInventory = new List<ItemInstance>();
+        Initialized = false;
     }
 
     private void Start()
@@ -50,6 +52,8 @@ public class PlayerInventory : MonoBehaviour
         {
             InventoryWindow.Instance.ShowWindow();
         }
+
+        Initialized = true;
     }
 
     public void UpdateInventory(ItemInstance[] items)

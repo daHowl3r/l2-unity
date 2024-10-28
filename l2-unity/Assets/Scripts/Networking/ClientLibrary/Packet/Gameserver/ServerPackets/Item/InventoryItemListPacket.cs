@@ -23,7 +23,7 @@ public class InventoryItemListPacket : AbstractItemPacket
         _items = new ItemInstance[itemListSize];
         for (int i = 0; i < itemListSize; i++)
         {
-            _items[i] = ReadItem(i);
+            _items[i] = ReadItem();
         }
     }
 }

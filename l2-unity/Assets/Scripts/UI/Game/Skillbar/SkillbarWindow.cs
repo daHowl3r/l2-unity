@@ -234,13 +234,18 @@ public class SkillbarWindow : L2PopupWindow
         UpdateAllShortcuts(PlayerShortcuts.Instance.Shortcuts);
     }
 
-    public void UpdateAllShortcuts(List<Shortcut> shortcuts)
+    public IEnumerator UpdateAllShortcuts(List<Shortcut> shortcuts)
     {
+        while (!PlayerInventory.Instance.Initialized)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
         _skillbars.ForEach((skillbar) => skillbar.ResetShortcuts());
 
         if (shortcuts == null)
         {
-            return;
+            yield return null;
         }
 
         shortcuts.ForEach((shortcut) =>
@@ -300,12 +305,12 @@ public class SkillbarWindow : L2PopupWindow
         List<Shortcut> shortcuts = new List<Shortcut>();
         for (int i = 0; i < PlayerShortcuts.MAXIMUM_SHORTCUTS_PER_BAR; i++)
         {
-            Shortcut shortcut = new Shortcut(i, 0, Shortcut.TYPE_ACTION, (int) ActionType.Attack, -1);
+            Shortcut shortcut = new Shortcut(i, 0, Shortcut.TYPE_ACTION, (int)ActionType.Attack, -1);
             shortcuts.Add(shortcut);
         }
         for (int i = 0; i < PlayerShortcuts.MAXIMUM_SHORTCUTS_PER_BAR; i++)
         {
-            Shortcut shortcut = new Shortcut(i, 1, Shortcut.TYPE_ACTION, (int) ActionType.Pickup, -1);
+            Shortcut shortcut = new Shortcut(i, 1, Shortcut.TYPE_ACTION, (int)ActionType.Pickup, -1);
             shortcuts.Add(shortcut);
         }
 

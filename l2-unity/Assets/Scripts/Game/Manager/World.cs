@@ -189,6 +189,8 @@ public class World : MonoBehaviour
         entity.EquipAllArmors();
 
         CharacterInfoWindow.Instance.UpdateValues();
+
+        GameManager.Instance.OnPlayerInfoReceive();
     }
 
     public void OnReceiveUserInfo(NetworkIdentity identity, PlayerStatus status, Stats stats, PlayerAppearance appearance, bool running)

@@ -6,26 +6,12 @@ public enum GameServerPacketType : int
     LoginFail = 0x14,
     CharSelected = 0x15,
     CharCreateOk = 0x19,
+    InventoryUpdate = 0x27,
     CharCreateFail = 0x1a,
     InventoryItemList = 0x1b,
     ShortcutRegister = 0x44,
     ShortcutInit = 0x45,
     SystemMessage = 0x64,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -46,7 +32,6 @@ public enum GameServerPacketType : int
     ServerClose = 0xFD5,
     StatusUpdate = 0xFD6,
     ActionAllowed = 0xFD7,
-    InventoryUpdate = 0xFD9,
     LeaveWorld = 0xFDA,
     RestartReponse = 0xFDB,
     SocialAction = 0xFDE,

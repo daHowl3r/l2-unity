@@ -450,10 +450,13 @@ public class GameServerPacketHandler : ServerPacketHandler
 
     private void OnRestartResponse(byte[] data)
     {
-        // Do nothing, handle upcoming charselect packet instead
-        GameManager.Instance.GameState = GameState.RESTARTING;
+        RestartResponsePacket packet = new RestartResponsePacket(data);
+        if (packet.Allowed)
+        {
+            // Do nothing, handle upcoming charselect packet instead
+            GameManager.Instance.GameState = GameState.RESTARTING;
+        }
     }
-
 
     private void OnShortcutInit(byte[] data)
     {

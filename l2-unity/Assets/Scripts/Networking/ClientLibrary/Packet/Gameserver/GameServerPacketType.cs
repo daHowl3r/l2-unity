@@ -11,6 +11,7 @@ public enum GameServerPacketType : int
     InventoryItemList = 0x1b,
     ShortcutRegister = 0x44,
     ShortcutInit = 0x45,
+    RestartReponse = 0x5F,
     SystemMessage = 0x64,
 
 
@@ -33,7 +34,7 @@ public enum GameServerPacketType : int
     StatusUpdate = 0xFD6,
     ActionAllowed = 0xFD7,
     LeaveWorld = 0xFDA,
-    RestartReponse = 0xFDB,
+
     SocialAction = 0xFDE,
     ChangeWaitType = 0xFDF,
     ChangeMoveType = 0xFE0,

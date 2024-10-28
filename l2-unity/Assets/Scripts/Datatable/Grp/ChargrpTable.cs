@@ -165,7 +165,7 @@ public class ChargrpTable
         {
             string updatedPath = sound.Replace(".", "/");
             EventReference er = RuntimeManager.PathToEventReference("event:/" + updatedPath);
-            Debug.LogWarning($"Getting sound reference for sound: {sound} - {er.IsNull}");
+            // Debug.LogWarning($"Getting sound reference for sound: {sound} - {er.IsNull}");
             if (er.IsNull)
             {
                 Debug.LogWarning($"Missing sound: {sound} for chargrp: {raceId}.");

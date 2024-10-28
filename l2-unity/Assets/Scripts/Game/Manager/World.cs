@@ -269,7 +269,7 @@ public class World : MonoBehaviour
         ((NetworkHumanoidEntity)entity).EquipAllArmors();
     }
 
-    public void SpawnNpc(NetworkIdentity identity, NpcStatus status, Stats stats)
+    public void SpawnNpc(NetworkIdentity identity, NpcStatus status, Stats stats, Appearance appearance)
     {
         Npcgrp npcgrp = NpcgrpTable.Instance.GetNpcgrp(identity.NpcId);
         NpcName npcName = NpcNameTable.Instance.GetNpcName(identity.NpcId);
@@ -307,25 +307,45 @@ public class World : MonoBehaviour
             //((MonsterEntity)npc).NpcData = npcData;
         }
 
-        Appearance appearance = new Appearance();
-        appearance.RHand = npcgrp.Rhand;
-        appearance.LHand = npcgrp.Lhand;
-        appearance.CollisionRadius = npcgrp.CollisionRadius;
-        appearance.CollisionHeight = npcgrp.CollisionHeight;
+        if (appearance.RHand == 0)
+        {
+            appearance.RHand = npcgrp.Rhand;
+        }
+        if (appearance.LHand == 0)
+        {
+            appearance.LHand = npcgrp.Lhand;
+        }
+
+        if (appearance.CollisionRadius == 0)
+        {
+            appearance.CollisionRadius = npcgrp.CollisionRadius;
+        }
+        if (appearance.CollisionHeight == 0)
+        {
+            appearance.CollisionHeight = npcgrp.CollisionHeight;
+        }
 
         npc.Status = status;
         npc.Stats = stats;
         npc.Identity = identity;
         npc.Identity.NpcClass = npcgrp.ClassName;
-        npc.Identity.Name = npcName.Name;
-        npc.Identity.Title = npcName.Title;
+
+        if (npc.Identity.Name == null || npc.Identity.Name.Length == 0)
+        {
+            npc.Identity.Name = npcName.Name;
+        }
+        if (npc.Identity.Title == null || npc.Identity.Title.Length == 0)
+        {
+            npc.Identity.Title = npcName.Title;
+        }
         if (npc.Identity.Title == null || npc.Identity.Title.Length == 0)
         {
             if (identity.EntityType == EntityType.Monster)
             {
-                npc.Identity.Title = " Lvl: " + npc.Stats.Level;
+                npc.Identity.Title = npcName.Title;
             }
         }
+
         npc.Identity.TitleColor = npcName.TitleColor;
 
         npc.Appearance = appearance;

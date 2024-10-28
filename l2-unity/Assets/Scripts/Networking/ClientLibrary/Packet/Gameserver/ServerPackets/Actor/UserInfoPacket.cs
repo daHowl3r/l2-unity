@@ -25,7 +25,7 @@ public class UserInfoPacket : ServerPacket
             Identity.SetPosZ(ReadI() / 52.5f);
             Identity.SetPosX(ReadI() / 52.5f);
             Identity.SetPosY(ReadI() / 52.5f);
-            Identity.Heading = ReadI(); //TODO: Convert to angle
+            Identity.Heading = VectorUtils.ConvertRotToUnity(ReadI());
             Identity.Id = ReadI();
             Identity.Name = ReadS();
             Appearance.Race = (byte)ReadI();

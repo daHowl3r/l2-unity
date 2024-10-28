@@ -60,6 +60,12 @@ public abstract class ClientPacket : Packet
         _buffer.AddRange(data);
     }
 
+    public void WriteD(double d)
+    {
+        byte[] data = BitConverter.GetBytes(d);
+        _buffer.AddRange(data);
+    }
+
     protected void BuildPacket()
     {
         _buffer.Insert(0, _packetType);

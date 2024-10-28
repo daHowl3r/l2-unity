@@ -182,7 +182,7 @@ public class WorldCombat : MonoBehaviour
                     break;
                 case AttributeType.ATK_SPD:
                     stats.PAtkSpd = attribute.value;
-                    entity.UpdatePAtkSpeed(stats.PAtkSpd);
+                    entity.UpdatePAtkSpeed(stats.PAtkSpd, stats.AttackSpeedMultiplier);
                     break;
                 case AttributeType.P_DEF:
                     ((PlayerStats)stats).PDef = attribute.value;

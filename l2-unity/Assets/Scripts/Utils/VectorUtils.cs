@@ -21,6 +21,11 @@ public class VectorUtils : MonoBehaviour
         return 360.00f * value / 65536;
     }
 
+    public static float ConvertRotToUnreal(float value)
+    {
+        return value / 360.00f * 65536;
+    }
+
     public static Vector3 ConvertToUnityUnscaled(Vector3 ueVector)
     {
         return new Vector3(ueVector.y, ueVector.z, ueVector.x);

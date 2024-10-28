@@ -181,10 +181,10 @@ public class World : MonoBehaviour
         ((PlayerAppearance)entity.Appearance).UpdateAppearance(appearance);
         entity.UpdateMoveType(running);
 
-        entity.UpdatePAtkSpeed(stats.PAtkSpd);
+        entity.UpdatePAtkSpeed(stats.PAtkSpd, stats.AttackSpeedMultiplier);
         entity.UpdateMAtkSpeed(stats.MAtkSpd);
-        entity.UpdateWalkSpeed(stats.WalkSpeed);
-        entity.UpdateRunSpeed(stats.RunSpeed);
+        entity.UpdateWalkSpeed(stats.WalkSpeed, stats.MoveSpeedMultiplier);
+        entity.UpdateRunSpeed(stats.RunSpeed, stats.MoveSpeedMultiplier);
         entity.EquipAllWeapons();
         entity.EquipAllArmors();
 
@@ -263,10 +263,10 @@ public class World : MonoBehaviour
         entity.Running = running;
         ((PlayerAppearance)entity.Appearance).UpdateAppearance(appearance);
 
-        entity.UpdatePAtkSpeed(stats.PAtkSpd);
+        entity.UpdatePAtkSpeed(stats.PAtkSpd, stats.AttackSpeedMultiplier);
         entity.UpdateMAtkSpeed(stats.MAtkSpd);
-        entity.UpdateWalkSpeed(stats.WalkSpeed);
-        entity.UpdateRunSpeed(stats.RunSpeed);
+        entity.UpdateWalkSpeed(stats.WalkSpeed, stats.MoveSpeedMultiplier);
+        entity.UpdateRunSpeed(stats.RunSpeed, stats.MoveSpeedMultiplier);
         entity.EquipAllWeapons();
         ((NetworkHumanoidEntity)entity).EquipAllArmors();
     }
@@ -397,10 +397,10 @@ public class World : MonoBehaviour
 
         //entity.Appearance.UpdateAppearance(appearance);
 
-        entity.UpdatePAtkSpeed(stats.PAtkSpd);
+        entity.UpdatePAtkSpeed(stats.PAtkSpd, stats.AttackSpeedMultiplier);
         entity.UpdateMAtkSpeed(stats.MAtkSpd);
-        entity.UpdateWalkSpeed(stats.WalkSpeed);
-        entity.UpdateRunSpeed(stats.RunSpeed);
+        entity.UpdateWalkSpeed(stats.WalkSpeed, stats.MoveSpeedMultiplier);
+        entity.UpdateRunSpeed(stats.RunSpeed, stats.MoveSpeedMultiplier);
         entity.EquipAllWeapons();
     }
 
@@ -471,11 +471,11 @@ public class World : MonoBehaviour
         {
             if (e.Running && speed != e.Stats.RunSpeed)
             {
-                e.UpdateRunSpeed(speed);
+                // e.UpdateRunSpeed(speed);
             }
             else if (!e.Running && speed != e.Stats.WalkSpeed)
             {
-                e.UpdateWalkSpeed(speed);
+                // e.UpdateWalkSpeed(speed);
             }
 
             e.GetComponent<NetworkCharacterControllerReceive>().UpdateMoveDirection(direction);

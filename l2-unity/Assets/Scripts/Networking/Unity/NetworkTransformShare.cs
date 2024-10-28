@@ -50,10 +50,10 @@ public class NetworkTransformShare : MonoBehaviour
             SharePosition();
         }
 
-        if (ShouldShareRotation && _rotationShareEnabled)
-        {
-            ShareRotation();
-        }
+        // if (ShouldShareRotation && _rotationShareEnabled)
+        // {
+        //     ShareRotation();
+        // }
     }
 
     // Share position every 0.25f and based on delay
@@ -69,6 +69,8 @@ public class NetworkTransformShare : MonoBehaviour
 
     public void SharePosition()
     {
+        return;
+
         GameClient.Instance.ClientPacketHandler.UpdatePosition(transform.position);
         _lastSharedPosTime = Time.time;
         _lastPos = transform.position;
@@ -76,17 +78,18 @@ public class NetworkTransformShare : MonoBehaviour
         //ClientPacketHandler.Instance.UpdateRotation(transform.eulerAngles.y);
     }
 
-    public void ShareRotation()
-    {
-        if (Vector3.Angle(_lastRot, transform.forward) >= 10.0f)
-        {
-            _lastRot = transform.forward;
-            GameClient.Instance.ClientPacketHandler.UpdateRotation(transform.eulerAngles.y);
-        }
-    }
+    // public void ShareRotation()
+    // {
+    //     if (Vector3.Angle(_lastRot, transform.forward) >= 10.0f)
+    //     {
+    //         _lastRot = transform.forward;
+    //         GameClient.Instance.ClientPacketHandler.UpdateRotation(transform.eulerAngles.y);
+    //     }
+    // }
 
     public void ShareAnimation(byte id, float value)
     {
-        GameClient.Instance.ClientPacketHandler.UpdateAnimation(id, value);
+        //GameClient.Instance.ClientPacketHandler.UpdateAnimation(id, value);
+        Debug.LogWarning("Animation sharing is deprecated");
     }
 }

@@ -16,23 +16,23 @@ public abstract class NetworkEntity : Entity
         return converted;
     }
 
-    public override float UpdatePAtkSpeed(int pAtkSpd)
+    public override float UpdatePAtkSpeed(int pAtkSpd, float multiplier)
     {
-        float converted = base.UpdatePAtkSpeed(pAtkSpd);
+        float converted = base.UpdatePAtkSpeed(pAtkSpd, multiplier);
         AnimationController.SetPAtkSpd(converted);
 
         return converted;
     }
 
-    public override float UpdateRunSpeed(int speed)
+    public override float UpdateRunSpeed(int speed, float multiplier)
     {
-        float converted = base.UpdateRunSpeed(speed);
+        float converted = base.UpdateRunSpeed(speed, multiplier);
         AnimationController.SetRunSpeed(converted);
         return converted;
     }
-    public override float UpdateWalkSpeed(int speed)
+    public override float UpdateWalkSpeed(int speed, float multiplier)
     {
-        float converted = base.UpdateWalkSpeed(speed);
+        float converted = base.UpdateWalkSpeed(speed, multiplier);
         AnimationController.SetWalkSpeed(converted);
         return converted;
     }

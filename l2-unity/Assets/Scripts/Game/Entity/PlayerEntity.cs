@@ -32,17 +32,17 @@ public class PlayerEntity : Entity
 
     protected override void LookAtTarget() { }
 
-    public override float UpdateRunSpeed(int speed)
+    public override float UpdateRunSpeed(int speed, float multiplier)
     {
-        float converted = base.UpdateRunSpeed(speed);
+        float converted = base.UpdateRunSpeed(speed, multiplier);
         PlayerController.Instance.DefaultRunSpeed = converted;
 
         return converted;
     }
 
-    public override float UpdateWalkSpeed(int speed)
+    public override float UpdateWalkSpeed(int speed, float multiplier)
     {
-        float converted = base.UpdateWalkSpeed(speed);
+        float converted = base.UpdateWalkSpeed(speed, multiplier);
         PlayerController.Instance.DefaultWalkSpeed = converted;
 
         return converted;

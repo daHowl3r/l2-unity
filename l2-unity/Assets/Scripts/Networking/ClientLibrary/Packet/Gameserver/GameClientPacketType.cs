@@ -1,6 +1,7 @@
 public enum GameClientPacketType : byte
 {
     ProtocolVersion = 0x00,
+    RequestMoveDirection = 0x02,
     EnterWorld = 0x03,
     AuthRequest = 0x08,
     Disconnect = 0x09,
@@ -25,7 +26,6 @@ public enum GameClientPacketType : byte
     RequestMove = 0xF2,
     RequestRotate = 0xF3,
     RequestAnim = 0xF4,
-    RequestMoveDirection = 0xF5,
     RequestAutoAttack = 0xF7,
     RequestSetTarget = 0xF8,
 }

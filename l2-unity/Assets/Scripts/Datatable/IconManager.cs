@@ -27,7 +27,7 @@ public class IconTable
     public void Initialize()
     {
         _noImageIcon = GetNoImageIcon();
-        
+
         CacheIcons();
     }
 
@@ -36,19 +36,19 @@ public class IconTable
         foreach (Weapon weapon in ItemTable.Instance.Weapons.Values)
         {
             Texture2D icon = LoadTextureByName(weapon.Icon);
-            _icons.Add(weapon.Id, icon);
+            _icons.TryAdd(weapon.Id, icon);
         }
 
         foreach (Armor armor in ItemTable.Instance.Armors.Values)
         {
             Texture2D icon = LoadTextureByName(armor.Icon);
-            _icons.Add(armor.Id, icon);
+            _icons.TryAdd(armor.Id, icon);
         }
 
         foreach (EtcItem etcItem in ItemTable.Instance.EtcItems.Values)
         {
             Texture2D icon = LoadTextureByName(etcItem.Icon);
-            _icons.Add(etcItem.Id, icon);
+            _icons.TryAdd(etcItem.Id, icon);
         }
     }
 

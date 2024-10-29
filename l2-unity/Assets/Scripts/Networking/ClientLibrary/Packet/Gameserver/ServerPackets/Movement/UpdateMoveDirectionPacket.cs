@@ -1,17 +1,21 @@
 using System;
 using UnityEngine;
 
-public class UpdateMoveDirectionPacket : ServerPacket {
+public class UpdateMoveDirectionPacket : ServerPacket
+{
     public int Id { get; private set; }
     public int Speed { get; private set; }
     public Vector3 Direction { get; private set; }
 
-    public UpdateMoveDirectionPacket(byte[] d) : base(d) {
+    public UpdateMoveDirectionPacket(byte[] d) : base(d)
+    {
         Parse();
     }
 
-    public override void Parse() {
-        try {
+    public override void Parse()
+    {
+        try
+        {
             Id = ReadI();
             Speed = ReadI();
             Vector3 dir = new Vector3();
@@ -19,7 +23,9 @@ public class UpdateMoveDirectionPacket : ServerPacket {
             dir.y = ReadF();
             dir.z = ReadF();
             Direction = dir;
-        } catch(Exception e) {
+        }
+        catch (Exception e)
+        {
             Debug.LogError(e);
         }
     }

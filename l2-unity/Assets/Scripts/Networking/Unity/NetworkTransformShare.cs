@@ -69,9 +69,8 @@ public class NetworkTransformShare : MonoBehaviour
 
     public void SharePosition()
     {
-        return;
+        GameClient.Instance.ClientPacketHandler.ValidatePosition(transform.position, NetworkCharacterControllerShare.Instance.Heading);
 
-        GameClient.Instance.ClientPacketHandler.UpdatePosition(transform.position);
         _lastSharedPosTime = Time.time;
         _lastPos = transform.position;
 

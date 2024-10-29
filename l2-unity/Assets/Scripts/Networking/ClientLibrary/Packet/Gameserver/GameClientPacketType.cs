@@ -17,13 +17,13 @@ public enum GameClientPacketType : byte
     RequestShortcutDel = 0x35,
     RequestActionUse = 0x45,
     RequestRestart = 0x46,
+    ValidatePosition = 0x48,
     RequestDestroyItem = 0x59,
 
 
 
     Ping = 0xF0,
     SendMessage = 0xF1,
-    RequestMove = 0xF2,
     RequestRotate = 0xF3,
     RequestAnim = 0xF4,
     RequestAutoAttack = 0xF7,

@@ -117,6 +117,9 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.CharCreateFail:
                 OnCharCreateFail(data);
                 break;
+            case GameServerPacketType.ValidateLocation:
+                OnValidateLocation(data);
+                break;
             default:
                 Debug.LogWarning($"Received unhandled packet with OPCode [{packetType}].");
                 break;
@@ -315,6 +318,15 @@ public class GameServerPacketHandler : ServerPacketHandler
         World.Instance.UpdateObjectPosition(id, position);
     }
 
+    private void OnValidateLocation(byte[] data)
+    {
+        ValidateLocationPacket packet = new ValidateLocationPacket(data);
+        int id = packet.Id;
+        Vector3 position = packet.Location;
+        int heading = packet.Heading;
+        World.Instance.AdjustObjectPositionAndRotation(id, position, heading);
+    }
+
     private void OnRemoveObject(byte[] data)
     {
         RemoveObjectPacket packet = new RemoveObjectPacket(data);
@@ -365,7 +377,6 @@ public class GameServerPacketHandler : ServerPacketHandler
     {
         ObjectMoveToPacket packet = new ObjectMoveToPacket(data);
         World.Instance.UpdateObjectDestination(packet.Id, packet.CurrentPosition, packet.Destination);
-
     }
 
     private void OnUpdateMoveDirection(byte[] data)

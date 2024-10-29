@@ -423,6 +423,29 @@ public class World : MonoBehaviour
         });
     }
 
+    public Task AdjustObjectPositionAndRotation(int id, Vector3 position, int heading)
+    {
+        return ExecuteWithEntityAsync(id, e =>
+        {
+
+            e.Identity.Position = position;
+            e.Identity.Heading = heading;
+            e.transform.position = new Vector3(position.x, GetGroundHeight(position), position.z);
+
+            float rotation = VectorUtils.ConvertRotToUnity(heading);
+            Debug.LogWarning($"ADJUST POSITION AND ROTATION Pos:{position} Heading:{heading} Rotation:{rotation}");
+
+            if (id == GameClient.Instance.CurrentPlayerId)
+            {
+                NetworkCharacterControllerShare.Instance.Heading = heading;
+            }
+            else
+            {
+                ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetFinalRotation(rotation);
+            }
+        });
+    }
+
     public Task UpdateObjectRotation(int id, float angle)
     {
         return ExecuteWithEntityAsync(id, e =>
@@ -573,6 +596,12 @@ public class World : MonoBehaviour
     // Execute action after entity is loaded
     private async Task ExecuteWithEntityAsync(int id, Action<Entity> action)
     {
+        if (id == GameClient.Instance.CurrentPlayerId)
+        {
+            _eventProcessor.QueueEvent(() => action(PlayerEntity.Instance));
+            return;
+        }
+
         var entity = await GetEntityAsync(id);
         if (entity != null)
         {

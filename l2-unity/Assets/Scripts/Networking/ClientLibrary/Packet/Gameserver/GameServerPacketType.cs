@@ -14,6 +14,7 @@ public enum GameServerPacketType : int
     ShortcutRegister = 0x44,
     ShortcutInit = 0x45,
     RestartReponse = 0x5F,
+    ValidateLocation = 0x61,
     SystemMessage = 0x64,
 
 

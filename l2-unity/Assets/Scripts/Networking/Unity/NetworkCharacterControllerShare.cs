@@ -8,6 +8,9 @@ public class NetworkCharacterControllerShare : MonoBehaviour
     [SerializeField] private int _sharingLoopDelayMs = 100;
     [SerializeField] private Vector3 _lastDirection;
     [SerializeField] private long _lastSharingTimestamp = 0;
+    [SerializeField] private int _heading;
+
+    public int Heading { get { return _heading; } set { _heading = value; } }
 
     private static NetworkCharacterControllerShare _instance;
     public static NetworkCharacterControllerShare Instance { get { return _instance; } }
@@ -87,8 +90,20 @@ public class NetworkCharacterControllerShare : MonoBehaviour
 
     public void ShareMoveDirection(Vector3 moveDirection)
     {
+        if (!VectorUtils.IsVectorZero2D(moveDirection))
+        {
+            Heading = CalculateHeading(moveDirection);
+        }
+
         _lastDirection = moveDirection;
-        GameClient.Instance.ClientPacketHandler.UpdateMoveDirection(moveDirection);
+
+        GameClient.Instance.ClientPacketHandler.UpdateMoveDirection(moveDirection, Heading);
+    }
+
+    private int CalculateHeading(Vector3 moveDirection)
+    {
+        float directionAngle = VectorUtils.CalculateMoveDirectionAngle(moveDirection.x, moveDirection.z);
+        return (int)VectorUtils.ConvertRotToUnreal(directionAngle);
     }
 
     public void ForceShareMoveDirection()

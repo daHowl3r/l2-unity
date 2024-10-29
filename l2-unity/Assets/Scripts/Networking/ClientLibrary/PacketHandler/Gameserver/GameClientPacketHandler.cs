@@ -49,9 +49,9 @@ public class GameClientPacketHandler : ClientPacketHandler
         SendPacket(packet);
     }
 
-    public void UpdatePosition(Vector3 position)
+    public void ValidatePosition(Vector3 position, int heading)
     {
-        RequestMovePacket packet = new RequestMovePacket(position);
+        ValidatePositionPacket packet = new ValidatePositionPacket(position, heading);
         SendPacket(packet);
     }
 
@@ -79,9 +79,9 @@ public class GameClientPacketHandler : ClientPacketHandler
         SendPacket(packet);
     }
 
-    public void UpdateMoveDirection(Vector3 direction)
+    public void UpdateMoveDirection(Vector3 direction, int heading)
     {
-        RequestMoveDirectionPacket packet = new RequestMoveDirectionPacket(direction);
+        RequestMoveDirectionPacket packet = new RequestMoveDirectionPacket(direction, heading);
         SendPacket(packet);
     }
 

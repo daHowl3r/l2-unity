@@ -186,6 +186,10 @@ public class UserInfoPacket : ServerPacket
             Identity.IsMage = CharacterClassParser.IsMage((CharacterClass)Identity.PlayerClass);
             Identity.Owned = Identity.Id == GameClient.Instance.CurrentPlayerId;
 
+            Stats.RunSpeed = (int)(Stats.MoveSpeedMultiplier > 0 ? Stats.RunSpeed * Stats.MoveSpeedMultiplier : Stats.RunSpeed);
+            Stats.WalkSpeed = (int)(Stats.MoveSpeedMultiplier > 0 ? Stats.WalkSpeed * Stats.MoveSpeedMultiplier : Stats.WalkSpeed);
+            Stats.PAtkSpd = (int)(Stats.AttackSpeedMultiplier > 0 ? Stats.PAtkSpd * Stats.AttackSpeedMultiplier : Stats.PAtkSpd);
+
             // Identity.PlayerClass = ReadB();
             // Identity.IsMage = ReadB() == 1;
             // Identity.Heading = ReadF();

@@ -56,10 +56,10 @@ public abstract class Entity : MonoBehaviour
             _referenceHolder = GetComponent<EntityReferenceHolder>();
         }
 
-        UpdatePAtkSpeed(_stats.PAtkSpd, _stats.AttackSpeedMultiplier);
+        UpdatePAtkSpeed(_stats.PAtkSpd);
         UpdateMAtkSpeed(_stats.MAtkSpd);
-        UpdateRunSpeed(_stats.RunSpeed, _stats.MoveSpeedMultiplier);
-        UpdateWalkSpeed(_stats.WalkSpeed, _stats.MoveSpeedMultiplier);
+        UpdateRunSpeed(_stats.RunSpeed);
+        UpdateWalkSpeed(_stats.WalkSpeed);
 
         EquipAllWeapons();
         EquipAllArmors();
@@ -78,12 +78,12 @@ public abstract class Entity : MonoBehaviour
         UpdateMoveType(!walking);
     }
 
-    public virtual float UpdatePAtkSpeed(int pAtkSpd, float multiplier)
+    public virtual float UpdatePAtkSpeed(int pAtkSpd)
     {
         _stats.PAtkSpd = pAtkSpd;
 
         float stat = StatsConverter.Instance.ConvertStat(Stat.PHYS_ATTACK_SPEED, pAtkSpd);
-        AnimationController.SetPAtkSpd(stat * multiplier);
+        AnimationController.SetPAtkSpd(stat);
 
         return stat;
     }
@@ -98,29 +98,26 @@ public abstract class Entity : MonoBehaviour
         return stat;
     }
 
-    public virtual float UpdateRunSpeed(int speed, float multiplier)
+    public virtual float UpdateRunSpeed(int speed)
     {
         float scaled = StatsConverter.Instance.ConvertStat(Stat.SPEED, speed);
         _stats.RunSpeed = speed;
         _stats.ScaledRunSpeed = scaled;
 
-        float stat = StatsConverter.Instance.ConvertStat(Stat.SPEED, speed);
-        AnimationController.SetRunSpeed(stat * multiplier);
+        AnimationController.SetRunSpeed(scaled);
 
-        return stat;
+        return scaled;
     }
 
-    public virtual float UpdateWalkSpeed(int speed, float multiplier)
+    public virtual float UpdateWalkSpeed(int speed)
     {
         float scaled = StatsConverter.Instance.ConvertStat(Stat.SPEED, speed);
         _stats.WalkSpeed = speed;
         _stats.ScaledWalkSpeed = scaled;
 
-        float stat = StatsConverter.Instance.ConvertStat(Stat.SPEED, speed);
+        AnimationController.SetWalkSpeed(scaled);
 
-        AnimationController.SetWalkSpeed(stat * multiplier);
-
-        return stat;
+        return scaled;
     }
 
     public virtual void UpdateWaitType(ChangeWaitTypePacket.WaitType moveType)

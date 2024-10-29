@@ -181,10 +181,10 @@ public class World : MonoBehaviour
         ((PlayerAppearance)entity.Appearance).UpdateAppearance(appearance);
         entity.UpdateMoveType(running);
 
-        entity.UpdatePAtkSpeed(stats.PAtkSpd, stats.AttackSpeedMultiplier);
+        entity.UpdatePAtkSpeed(stats.PAtkSpd);
         entity.UpdateMAtkSpeed(stats.MAtkSpd);
-        entity.UpdateWalkSpeed(stats.WalkSpeed, stats.MoveSpeedMultiplier);
-        entity.UpdateRunSpeed(stats.RunSpeed, stats.MoveSpeedMultiplier);
+        entity.UpdateWalkSpeed(stats.WalkSpeed);
+        entity.UpdateRunSpeed(stats.RunSpeed);
         entity.EquipAllWeapons();
         entity.EquipAllArmors();
 
@@ -263,10 +263,10 @@ public class World : MonoBehaviour
         entity.Running = running;
         ((PlayerAppearance)entity.Appearance).UpdateAppearance(appearance);
 
-        entity.UpdatePAtkSpeed(stats.PAtkSpd, stats.AttackSpeedMultiplier);
+        entity.UpdatePAtkSpeed(stats.PAtkSpd);
         entity.UpdateMAtkSpeed(stats.MAtkSpd);
-        entity.UpdateWalkSpeed(stats.WalkSpeed, stats.MoveSpeedMultiplier);
-        entity.UpdateRunSpeed(stats.RunSpeed, stats.MoveSpeedMultiplier);
+        entity.UpdateWalkSpeed(stats.WalkSpeed);
+        entity.UpdateRunSpeed(stats.RunSpeed);
         entity.EquipAllWeapons();
         ((NetworkHumanoidEntity)entity).EquipAllArmors();
     }
@@ -397,10 +397,10 @@ public class World : MonoBehaviour
 
         //entity.Appearance.UpdateAppearance(appearance);
 
-        entity.UpdatePAtkSpeed(stats.PAtkSpd, stats.AttackSpeedMultiplier);
+        entity.UpdatePAtkSpeed(stats.PAtkSpd);
         entity.UpdateMAtkSpeed(stats.MAtkSpd);
-        entity.UpdateWalkSpeed(stats.WalkSpeed, stats.MoveSpeedMultiplier);
-        entity.UpdateRunSpeed(stats.RunSpeed, stats.MoveSpeedMultiplier);
+        entity.UpdateWalkSpeed(stats.WalkSpeed);
+        entity.UpdateRunSpeed(stats.RunSpeed);
         entity.EquipAllWeapons();
     }
 

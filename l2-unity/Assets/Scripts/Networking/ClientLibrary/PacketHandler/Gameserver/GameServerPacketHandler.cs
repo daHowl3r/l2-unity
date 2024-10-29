@@ -27,7 +27,7 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.CharSelectionInfo:
                 OnCharSelectionInfoReceive(data);
                 break;
-            case GameServerPacketType.MessagePacket:
+            case GameServerPacketType.CreatureSay:
                 OnMessageReceive(data);
                 break;
             case GameServerPacketType.SystemMessage:
@@ -242,9 +242,20 @@ public class GameServerPacketHandler : ServerPacketHandler
 
     private void OnMessageReceive(byte[] data)
     {
-        ReceiveMessagePacket packet = new ReceiveMessagePacket(data);
+        CreatureSayPacket packet = new CreatureSayPacket(data);
+        if (packet.MessageType == MessageType.BOAT)
+        {
+            SystemMessageDat messageData = SystemMessageTable.Instance.GetSystemMessage(packet.SystemMessageId);
+            SystemMessage systemMessage = new SystemMessage(null, messageData);
+            _eventProcessor.QueueEvent(() => ChatWindow.Instance.ReceiveSystemMessage(systemMessage));
+            //TODO: Handle packet SysStringId
+            return;
+        }
+
         String sender = packet.Sender;
         String text = packet.Text;
+
+        //TODO: Handle message channel colors
         ChatMessage message = new ChatMessage(sender, text);
         _eventProcessor.QueueEvent(() => ChatWindow.Instance.ReceiveChatMessage(message));
     }

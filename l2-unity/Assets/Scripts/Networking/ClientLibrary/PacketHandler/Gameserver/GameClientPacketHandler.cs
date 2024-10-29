@@ -45,7 +45,7 @@ public class GameClientPacketHandler : ClientPacketHandler
 
     public void SendMessage(string message)
     {
-        SendMessagePacket packet = new SendMessagePacket(message);
+        SendMessagePacket packet = new SendMessagePacket(message, MessageType.ALL, 0);
         SendPacket(packet);
     }
 

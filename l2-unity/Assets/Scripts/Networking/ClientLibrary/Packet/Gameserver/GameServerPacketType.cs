@@ -13,13 +13,13 @@ public enum GameServerPacketType : int
     InventoryItemList = 0x1b,
     ShortcutRegister = 0x44,
     ShortcutInit = 0x45,
+    CreatureSay = 0x4a,
     RestartReponse = 0x5F,
     ValidateLocation = 0x61,
     SystemMessage = 0x64,
 
 
 
-    MessagePacket = 0xFF4,
     ObjectPosition = 0xFF7,
     RemoveObject = 0xFF8,
     ObjectRotation = 0xFF9,

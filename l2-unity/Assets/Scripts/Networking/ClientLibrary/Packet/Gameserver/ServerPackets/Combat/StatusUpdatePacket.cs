@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Diagnostics;
+using UnityEngine;
 
 public class StatusUpdatePacket : ServerPacket
 {
@@ -81,6 +81,7 @@ public class StatusUpdatePacket : ServerPacket
             byte attributeId = (byte)ReadI();
             int attributeValue = ReadI();
 
+            Debug.LogWarning($"AttributeId:{attributeId} AttributeValue:{attributeValue}");
             _attributes.Add(new Attribute(attributeId, attributeValue));
         }
     }

@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
 
-public class NetworkTransformReceive : MonoBehaviour {
+public class NetworkTransformReceive : MonoBehaviour
+{
     [SerializeField] private Vector3 _serverPosition;
     private Vector3 _lastPos;
     private float _newRotation;
@@ -16,8 +17,10 @@ public class NetworkTransformReceive : MonoBehaviour {
     [SerializeField] private long _lastDesyncDuration = 0;
     private long _maximumAllowedDesyncTimeMs = 0;
 
-    void Start() {
-        if(World.Instance.OfflineMode) {
+    void Start()
+    {
+        if (World.Instance.OfflineMode)
+        {
             this.enabled = false;
             return;
         }
@@ -28,15 +31,18 @@ public class NetworkTransformReceive : MonoBehaviour {
         _positionSyncPaused = false;
     }
 
-    void FixedUpdate() {
-        if(_positionSyncProtection && !_positionSyncPaused) {
+    void FixedUpdate()
+    {
+        if (_positionSyncProtection && !_positionSyncPaused)
+        {
             UpdatePosition();
         }
         UpdateRotation();
     }
 
     /* Set new theorical position */
-    public void SetNewPosition(Vector3 pos) {
+    public void SetNewPosition(Vector3 pos)
+    {
         /* adjust y to ground height */
         pos.y = World.Instance.GetGroundHeight(pos);
 
@@ -49,19 +55,24 @@ public class NetworkTransformReceive : MonoBehaviour {
 
     /* Safety measure to keep the transform position synced */
 
-    public void UpdatePosition() {
+    private void UpdatePosition()
+    {
         /* Check if client transform position is synced with server's */
         _positionDelta = VectorUtils.Distance2D(transform.position, _serverPosition);
-        if(_positionDelta > Geodata.Instance.NodeSize * _positionSyncNodesThreshold && _positionSynced) {
+        if (_positionDelta > Geodata.Instance.NodeSize * _positionSyncNodesThreshold && _positionSynced)
+        {
             _lastDesyncTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             _positionSynced = false;
         }
 
-        if(!_positionSynced) {
+        if (!_positionSynced)
+        {
 
             _lastDesyncDuration = DateTimeOffset.Now.ToUnixTimeMilliseconds() - _lastDesyncTime;
-            if(_lastDesyncDuration > _maximumAllowedDesyncTimeMs) {
-                if(_positionDelta <= Geodata.Instance.NodeSize / 10f) {
+            if (_lastDesyncDuration > _maximumAllowedDesyncTimeMs)
+            {
+                if (_positionDelta <= Geodata.Instance.NodeSize / 10f)
+                {
                     _positionSynced = true;
                     return;
                 }
@@ -70,38 +81,46 @@ public class NetworkTransformReceive : MonoBehaviour {
                 _posLerpValue += (1 / _lerpDuration) * Time.deltaTime;
             }
 
-        }   
+        }
     }
 
     /* Ajust rotation */
-    private void UpdateRotation() {
+    private void UpdateRotation()
+    {
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(Vector3.up * _newRotation), Time.deltaTime * 7.5f);
     }
 
-    public void SetFinalRotation(float finalRotation) {
+    public void SetFinalRotation(float finalRotation)
+    {
         _newRotation = finalRotation;
     }
 
-    public void LookAt(Transform target) {
-        if (target != null) {
+    public void LookAt(Transform target)
+    {
+        if (target != null)
+        {
             _newRotation = VectorUtils.CalculateMoveDirectionAngle(transform.position, target.position);
         }
     }
 
-    public void LookAt(Vector3 position) {
+    public void LookAt(Vector3 position)
+    {
         _newRotation = VectorUtils.CalculateMoveDirectionAngle(transform.position, position);
     }
 
-    public bool IsPositionSynced() {
+    public bool IsPositionSynced()
+    {
         return _positionSynced;
     }
 
-    public void PausePositionSync() {
+    public void PausePositionSync()
+    {
         _positionSyncPaused = true;
         _positionSynced = true;
     }
 
-    public void ResumePositionSync() {
+    public void ResumePositionSync()
+    {
         _positionSyncPaused = false;
     }
 }

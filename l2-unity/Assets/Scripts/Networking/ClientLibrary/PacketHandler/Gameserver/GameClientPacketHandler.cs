@@ -165,6 +165,7 @@ public class GameClientPacketHandler : ClientPacketHandler
         RequestDropItemPacket packet = new RequestDropItemPacket(objectId, quantity);
         SendPacket(packet);
     }
+
     public void RequestDisconnect()
     {
         DisconnectPacket packet = new DisconnectPacket();
@@ -191,7 +192,9 @@ public class GameClientPacketHandler : ClientPacketHandler
 
     public void RequestActionUse(int actionId)
     {
-        RequestActionUsePacket packet = new RequestActionUsePacket(actionId);
+        bool isControlPressed = false;
+        bool isShiftPressed = false;
+        RequestActionUsePacket packet = new RequestActionUsePacket(actionId, isControlPressed, isShiftPressed);
         SendPacket(packet);
     }
 

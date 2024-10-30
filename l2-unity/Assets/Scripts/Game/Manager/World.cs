@@ -567,11 +567,16 @@ public class World : MonoBehaviour
     }
 
 
-    public Task ChangeWaitType(int owner, ChangeWaitTypePacket.WaitType moveType, float posX, float posY, float posZ)
+    public Task ChangeWaitType(int owner, ChangeWaitTypePacket.WaitType moveType, Vector3 entityPosition)
     {
         return ExecuteWithEntityAsync(owner, e =>
         {
-            e.transform.position = new Vector3(posX, e.transform.position.y, posZ);
+            if (owner != GameClient.Instance.CurrentPlayerId)
+            {
+                ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(entityPosition);
+            }
+
+            e.transform.position = new Vector3(entityPosition.x, e.transform.position.y, entityPosition.z);
             e.UpdateWaitType(moveType);
         });
     }

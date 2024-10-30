@@ -1,10 +1,10 @@
+using UnityEngine;
+
 public class ChangeWaitTypePacket : ServerPacket
 {
     public int Owner { get; private set; }
     public WaitType MoveType { get; private set; }
-    public float PosX { get; private set; }
-    public float PosY { get; private set; }
-    public float PosZ { get; private set; }
+    public Vector3 EntityPosition { get; private set; }
 
     public enum WaitType
     {
@@ -25,8 +25,10 @@ public class ChangeWaitTypePacket : ServerPacket
     {
         Owner = ReadI();
         MoveType = (WaitType)ReadI();
-        PosX = ReadF();
-        PosY = ReadF();
-        PosZ = ReadF();
+        Vector3 currentPos = new Vector3();
+        currentPos.z = ReadI() / 52.5f;
+        currentPos.x = ReadI() / 52.5f;
+        currentPos.y = ReadI() / 52.5f;
+        EntityPosition = currentPos;
     }
 }

@@ -15,6 +15,7 @@ public enum GameServerPacketType : int
     EntityTargetSet = 0x29,
     EntityTargetUnset = 0x2a,
     ChangeMoveType = 0x2e,
+    ChangeWaitType = 0x2f,
     ShortcutRegister = 0x44,
     ShortcutInit = 0x45,
     CreatureSay = 0x4a,
@@ -45,7 +46,6 @@ public enum GameServerPacketType : int
     LeaveWorld = 0xFDA,
 
     SocialAction = 0xFDE,
-    ChangeWaitType = 0xFDF,
 
     Ping = 0xFE1,
 

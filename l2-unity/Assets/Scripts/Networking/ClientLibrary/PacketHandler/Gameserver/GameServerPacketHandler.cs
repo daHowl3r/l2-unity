@@ -505,7 +505,7 @@ public class GameServerPacketHandler : ServerPacketHandler
     {
         ChangeWaitTypePacket packet = new ChangeWaitTypePacket(data);
         Debug.Log("ChangeWaitType: " + packet.Owner + " " + packet.MoveType);
-        World.Instance.ChangeWaitType(packet.Owner, packet.MoveType, packet.PosX, packet.PosY, packet.PosZ);
+        World.Instance.ChangeWaitType(packet.Owner, packet.MoveType, packet.EntityPosition);
     }
 
     private void OnChangeMoveType(byte[] data)

@@ -27,6 +27,11 @@ public class L2GameUI : L2UI
         _openedWindows = new List<L2PopupWindow>();
     }
 
+    private void Start()
+    {
+        MouseOverUI = false;
+    }
+
     private void OnDestroy()
     {
         _instance = null;

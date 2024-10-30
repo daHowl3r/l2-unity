@@ -3,6 +3,8 @@ public enum GameClientPacketType : byte
     ProtocolVersion = 0x00,
     RequestMoveDirection = 0x02,
     EnterWorld = 0x03,
+    RequestAction = 0x04,
+    RequestSetTarget = 0x05,
     AuthRequest = 0x08,
     Disconnect = 0x09,
     RequestAttack = 0x0a,
@@ -15,6 +17,7 @@ public enum GameClientPacketType : byte
     UseItem = 0x14,
     RequestShortcutReg = 0x33,
     RequestShortcutDel = 0x35,
+    RequestUnsetTarget = 0x37,
     SendMessage = 0x38,
     RequestActionUse = 0x45,
     RequestRestart = 0x46,
@@ -26,6 +29,4 @@ public enum GameClientPacketType : byte
     Ping = 0xF0,
     RequestRotate = 0xF3,
     RequestAnim = 0xF4,
-    RequestAutoAttack = 0xF7,
-    RequestSetTarget = 0xF8,
 }

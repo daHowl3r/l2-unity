@@ -505,12 +505,31 @@ public class World : MonoBehaviour
         });
     }
 
-    public Task UpdateEntityTarget(int id, int targetId)
+    public Task UpdateEntityTarget(int id, int targetId, Vector3 position)
+    {
+        return ExecuteWithEntitiesAsync(id, targetId, (targeter, targeted) =>
+        {
+            targeter.GetComponent<NetworkTransformReceive>().SetNewPosition(position);
+            targeter.Combat.TargetId = targetId;
+            targeter.Combat.Target = targeted.transform;
+        });
+    }
+
+    public Task UpdateMyTarget(int id, int targetId)
     {
         return ExecuteWithEntitiesAsync(id, targetId, (targeter, targeted) =>
         {
             targeter.Combat.TargetId = targetId;
             targeter.Combat.Target = targeted.transform;
+        });
+    }
+
+    public Task UnsetEntityTarget(int id)
+    {
+        return ExecuteWithEntityAsync(id, e =>
+        {
+            e.Combat.TargetId = -1;
+            e.Combat.Target = null;
         });
     }
 

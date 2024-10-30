@@ -87,13 +87,19 @@ public class GameClientPacketHandler : ClientPacketHandler
 
     public void SendRequestSetTarget(int targetId)
     {
-        RequestSetTargetPacket packet = new RequestSetTargetPacket(targetId);
+        RequestSetTargetPacket packet = new RequestSetTargetPacket(targetId, false);
+        SendPacket(packet);
+    }
+
+    public void SendRequestUnsetTarget(bool cancelCast)
+    {
+        RequestUnsetTargetPacket packet = new RequestUnsetTargetPacket(cancelCast);
         SendPacket(packet);
     }
 
     public void SendRequestAutoAttack(int objectId)
     {
-        RequestAutoAttackPacket packet = new RequestAutoAttackPacket(objectId);
+        RequestActionPacket packet = new RequestActionPacket(objectId);
         SendPacket(packet);
     }
 

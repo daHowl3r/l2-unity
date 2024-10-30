@@ -208,7 +208,7 @@ public class TargetManager : MonoBehaviour
         {
             if (PlayerCombat.Instance.TargetId != -1)
             {
-                GameClient.Instance.ClientPacketHandler.SendRequestSetTarget(-1);
+                GameClient.Instance.ClientPacketHandler.SendRequestUnsetTarget(false);
                 PlayerCombat.Instance.TargetId = -1;
                 PlayerCombat.Instance.Target = null;
             }

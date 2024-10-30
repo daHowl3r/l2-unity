@@ -3438,6 +3438,17 @@ npc_begin	id=31226	name=[Arena Director]	nick=[]	nickcolor=9CE8A9FF	npc_end
 npc_begin	id=31255	name=[Puss the Cat]	nick=[Event Manager]	nickcolor=9CE8A9FF	npc_end
 npc_begin	id=31277	name=[Felix]	nick=[Master]	nickcolor=9CE8A9FF	npc_end
 npc_begin	id=31281	name=[Cerenas]	nick=[Priest]	nickcolor=9CE8A9FF	npc_end
+npc_begin	id=31413	name=[Antonio]	nick=[Spellbook Seller ]	nickcolor=9CE8A9FF	npc_end
+npc_begin	id=31414	name=[Lynn]	nick=[Spellbook Seller ]	nickcolor=9CE8A9FF	npc_end
+npc_begin	id=31415	name=[Triya]	nick=[Spellbook Seller ]	nickcolor=9CE8A9FF	npc_end
+npc_begin	id=31416	name=[Aren]	nick=[Spellbook Seller ]	nickcolor=9CE8A9FF	npc_end
+npc_begin	id=31417	name=[Berynel]	nick=[Spellbook Seller ]	nickcolor=9CE8A9FF	npc_end
+npc_begin	id=31418	name=[Rouke]	nick=[Spellbook Seller ]	nickcolor=9CE8A9FF	npc_end
+npc_begin	id=31419	name=[Lorel]	nick=[Spellbook Seller ]	nickcolor=9CE8A9FF	npc_end
+npc_begin	id=31420	name=[Tomanel]	nick=[Spellbook Seller ]	nickcolor=9CE8A9FF	npc_end
+npc_begin	id=31421	name=[Ratriya]	nick=[Spellbook Seller ]	nickcolor=9CE8A9FF	npc_end
+npc_begin	id=31422	name=[Migel]	nick=[Spellbook Seller ]	nickcolor=9CE8A9FF	npc_end
+npc_begin	id=31423	name=[Romas]	nick=[Spellbook Seller ]	nickcolor=9CE8A9FF	npc_end
 npc_begin	id=31445	name=[Shutner]	nick=[Mineral Trader]	nickcolor=9CE8A9FF	npc_end
 npc_begin	id=31580	name=[Galadrid]	nick=[Master]	nickcolor=9CE8A9FF	npc_end
 npc_begin	id=31581	name=[Anastia]	nick=[Magister]	nickcolor=9CE8A9FF	npc_end

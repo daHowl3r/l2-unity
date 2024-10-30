@@ -11,12 +11,20 @@ public enum GameServerPacketType : int
     InventoryUpdate = 0x27,
     CharCreateFail = 0x1a,
     InventoryItemList = 0x1b,
+    EntityTargetSet = 0x29,
+    EntityTargetUnset = 0x2a,
     ShortcutRegister = 0x44,
     ShortcutInit = 0x45,
     CreatureSay = 0x4a,
     RestartReponse = 0x5F,
     ValidateLocation = 0x61,
     SystemMessage = 0x64,
+    MyTargetSet = 0xA6,
+
+
+
+
+
 
 
 
@@ -27,7 +35,6 @@ public enum GameServerPacketType : int
     ApplyDamage = 0xFFB,
     ObjectMoveDirection = 0xFFF,
     GameTime = 0xFD0,
-    EntitySetTarget = 0xFD1,
     AutoAttackStart = 0xFD2,
     AutoAttackStop = 0xFD3,
     ActionFailed = 0xFD4,

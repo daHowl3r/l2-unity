@@ -66,8 +66,14 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.GameTime:
                 OnUpdateGameTime(data);
                 break;
-            case GameServerPacketType.EntitySetTarget:
-                OnEntitySetTarget(data);
+            case GameServerPacketType.EntityTargetSet:
+                OnEntityTargetSet(data);
+                break;
+            case GameServerPacketType.EntityTargetUnset:
+                OnEntityTargetUnset(data);
+                break;
+            case GameServerPacketType.MyTargetSet:
+                OnMyTargetSet(data);
                 break;
             case GameServerPacketType.AutoAttackStart:
                 OnEntityAutoAttackStart(data);
@@ -402,10 +408,22 @@ public class GameServerPacketHandler : ServerPacketHandler
         WorldClock.Instance.SynchronizeClock(packet.GameTicks, packet.TickDurationMs, packet.DayDurationMins);
     }
 
-    private void OnEntitySetTarget(byte[] data)
+    private void OnEntityTargetSet(byte[] data)
     {
-        EntitySetTargetPacket packet = new EntitySetTargetPacket(data);
-        World.Instance.UpdateEntityTarget(packet.EntityId, packet.TargetId);
+        EntityTargetSetPacket packet = new EntityTargetSetPacket(data);
+        World.Instance.UpdateEntityTarget(packet.EntityId, packet.TargetId, packet.EntityPosition);
+    }
+
+    private void OnEntityTargetUnset(byte[] data)
+    {
+        EntityTargetUnsetPacket packet = new EntityTargetUnsetPacket(data);
+        World.Instance.UnsetEntityTarget(packet.EntityId);
+    }
+
+    private void OnMyTargetSet(byte[] data)
+    {
+        MyTargetSetPacket packet = new MyTargetSetPacket(data);
+        World.Instance.UpdateMyTarget(GameClient.Instance.CurrentPlayerId, packet.TargetId);
     }
 
     private void OnEntityAutoAttackStart(byte[] data)

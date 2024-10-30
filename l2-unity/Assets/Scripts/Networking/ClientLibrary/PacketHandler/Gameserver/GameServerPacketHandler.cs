@@ -63,9 +63,9 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.ObjectMoveDirection:
                 OnUpdateMoveDirection(data);
                 break;
-            case GameServerPacketType.GameTime:
-                OnUpdateGameTime(data);
-                break;
+            // case GameServerPacketType.GameTime:
+            //     OnUpdateGameTime(data);
+            //     break;
             case GameServerPacketType.EntityTargetSet:
                 OnEntityTargetSet(data);
                 break;
@@ -296,19 +296,19 @@ public class GameServerPacketHandler : ServerPacketHandler
                 GameManager.Instance.OnCharacterSelect();
             });
         }
-        else
-        {
-            _eventProcessor.QueueEvent(() =>
-            {
-                GameClient.Instance.PlayerInfo = packet.PacketPlayerInfo;
-            });
-            World.Instance.OnReceivePlayerInfo(
-                packet.PacketPlayerInfo.Identity,
-                packet.PacketPlayerInfo.Status,
-                packet.PacketPlayerInfo.Stats,
-                packet.PacketPlayerInfo.Appearance,
-                packet.PacketPlayerInfo.Running);
-        }
+        // else
+        // {
+        //     _eventProcessor.QueueEvent(() =>
+        //     {
+        //         GameClient.Instance.PlayerInfo = packet.PacketPlayerInfo;
+        //     });
+        //     World.Instance.OnReceivePlayerInfo(
+        //         packet.PacketPlayerInfo.Identity,
+        //         packet.PacketPlayerInfo.Status,
+        //         packet.PacketPlayerInfo.Stats,
+        //         packet.PacketPlayerInfo.Appearance,
+        //         packet.PacketPlayerInfo.Running);
+        // }
     }
 
     private void OnUserInfoReceive(byte[] data)
@@ -400,12 +400,6 @@ public class GameServerPacketHandler : ServerPacketHandler
     {
         UpdateMoveDirectionPacket packet = new UpdateMoveDirectionPacket(data);
         World.Instance.UpdateObjectMoveDirection(packet.Id, packet.Speed, packet.Direction);
-    }
-
-    private void OnUpdateGameTime(byte[] data)
-    {
-        GameTimePacket packet = new GameTimePacket(data);
-        WorldClock.Instance.SynchronizeClock(packet.GameTicks, packet.TickDurationMs, packet.DayDurationMins);
     }
 
     private void OnEntityTargetSet(byte[] data)

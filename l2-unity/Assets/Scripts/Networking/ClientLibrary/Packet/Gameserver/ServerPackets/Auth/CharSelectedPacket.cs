@@ -5,6 +5,7 @@ public class CharSelectedPacket : ServerPacket
 {
     public struct PlayerInfo
     {
+        public int CurrentGameTime { get; set; } // Returns game time in minute format (0-1439).
         public NetworkIdentity Identity { get; set; }
         public PlayerStatus Status { get; set; }
         public PlayerStats Stats { get; set; }
@@ -70,7 +71,7 @@ public class CharSelectedPacket : ServerPacket
             ReadI();
             ReadI();
 
-            ReadI(); //Game time
+            _info.CurrentGameTime = ReadI(); //Game time
 
             ReadI();
 

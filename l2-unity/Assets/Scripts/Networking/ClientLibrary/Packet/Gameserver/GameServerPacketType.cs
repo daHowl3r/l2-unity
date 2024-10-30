@@ -3,6 +3,7 @@ public enum GameServerPacketType : int
     VersionCheck = 0x00,
     ObjectMoveTo = 0x01,
     UserInfo = 0x04,
+    StatusUpdate = 0x0e,
     CharSelectionInfo = 0x13,
     LoginFail = 0x14,
     CharSelected = 0x15,
@@ -40,7 +41,6 @@ public enum GameServerPacketType : int
     AutoAttackStop = 0xFD3,
     ActionFailed = 0xFD4,
     ServerClose = 0xFD5,
-    StatusUpdate = 0xFD6,
     ActionAllowed = 0xFD7,
     LeaveWorld = 0xFDA,
 

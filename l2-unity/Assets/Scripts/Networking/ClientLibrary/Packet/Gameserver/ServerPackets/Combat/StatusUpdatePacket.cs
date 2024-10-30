@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public class StatusUpdatePacket : ServerPacket
 {
-    public enum AttributeType : byte {
+    public enum AttributeType : byte
+    {
         LEVEL = 0x01,
         EXP = 0x02,
         STR = 0x03,
@@ -40,41 +42,46 @@ public class StatusUpdatePacket : ServerPacket
         MAX_CP = 0x22
     }
 
-    public class Attribute {
+    public class Attribute
+    {
         /**
          * id values 09 - current health 0a - max health 0b - current mana 0c - max mana
          */
         public int id;
         public int value;
 
-        public Attribute(byte pId, int pValue) {
+        public Attribute(byte pId, int pValue)
+        {
             id = pId;
             value = pValue;
         }
     }
 
     private int _objectId;
-    private byte _attributeCount;
+    private int _attributeCount;
     private List<Attribute> _attributes;
 
     public int ObjectId { get { return _objectId; } }
-    public byte AttributeCount { get { return _attributeCount; } }
+    public int AttributeCount { get { return _attributeCount; } }
     public List<Attribute> Attributes { get { return _attributes; } }
 
-    public StatusUpdatePacket(byte[] d) : base(d) {
-        _attributes = new List<Attribute> ();
+    public StatusUpdatePacket(byte[] d) : base(d)
+    {
+        _attributes = new List<Attribute>();
         Parse();
     }
 
-    public override void Parse() {
+    public override void Parse()
+    {
         _objectId = ReadI();
-        _attributeCount = ReadB();
+        _attributeCount = ReadI();
 
-        for (int i = 0; i < _attributeCount; i++) {
-            byte attributeId = ReadB();
+        for (int i = 0; i < _attributeCount; i++)
+        {
+            byte attributeId = (byte)ReadI();
             int attributeValue = ReadI();
 
-            _attributes.Add (new Attribute (attributeId, attributeValue));
+            _attributes.Add(new Attribute(attributeId, attributeValue));
         }
     }
 }

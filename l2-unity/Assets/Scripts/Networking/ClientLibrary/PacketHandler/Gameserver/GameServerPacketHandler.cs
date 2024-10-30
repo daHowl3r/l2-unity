@@ -63,9 +63,6 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.ObjectMoveDirection:
                 OnUpdateMoveDirection(data);
                 break;
-            // case GameServerPacketType.GameTime:
-            //     OnUpdateGameTime(data);
-            //     break;
             case GameServerPacketType.EntityTargetSet:
                 OnEntityTargetSet(data);
                 break;

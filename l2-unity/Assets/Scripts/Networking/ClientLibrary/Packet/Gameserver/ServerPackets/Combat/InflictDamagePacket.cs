@@ -1,31 +1,48 @@
 using UnityEngine;
 using System;
-public class InflictDamagePacket : ServerPacket {
+public class InflictDamagePacket : ServerPacket
+{
     private Hit[] _hits;
     public int SenderId { get; private set; }
-    public Hit[] Hits { get { return _hits; }}
+    public Hit[] Hits { get { return _hits; } }
+    public Vector3 AttackerPosition { get; private set; }
 
-    public InflictDamagePacket(byte[] d) : base(d) {
+    public InflictDamagePacket(byte[] d) : base(d)
+    {
         Parse();
     }
 
-    public override void Parse() {    
-        try {
+    public override void Parse()
+    {
+        try
+        {
             SenderId = ReadI();
+            int targetId = ReadI();
+            int damage = ReadI();
+            byte flags = ReadB();
 
+            Vector3 currentPos = new Vector3();
+            currentPos.z = ReadI() / 52.5f;
+            currentPos.x = ReadI() / 52.5f;
+            currentPos.y = ReadI() / 52.5f;
+            AttackerPosition = currentPos;
+
+            ReadB();
             byte hitCount = ReadB();
-            _hits = new Hit[hitCount];
+            _hits = new Hit[hitCount + 1];
+            _hits[0] = new Hit(targetId, damage, flags);
 
-            for (int i = 0; i < hitCount; i++) {
-                int targetId = ReadI();
-                int damage = ReadI();
-                int hitFlags = ReadI();
-
-                Hit hit = new Hit(targetId, damage, hitFlags);
-                _hits[i] = hit;
+            for (int i = 1; i < hitCount; i++)
+            {
+                targetId = ReadI();
+                damage = ReadI();
+                flags = ReadB();
+                _hits[i] = new Hit(targetId, damage, flags);
             }
 
-        } catch(Exception e) {
+        }
+        catch (Exception e)
+        {
             Debug.LogError(e);
         }
     }

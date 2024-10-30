@@ -431,8 +431,6 @@ public class World : MonoBehaviour
             e.transform.position = new Vector3(position.x, GetGroundHeight(position), position.z);
 
             float rotation = VectorUtils.ConvertRotToUnity(heading);
-            Debug.LogWarning($"ADJUST POSITION AND ROTATION Pos:{position} Heading:{heading} Rotation:{rotation}");
-
             if (id == GameClient.Instance.CurrentPlayerId)
             {
                 NetworkCharacterControllerShare.Instance.Heading = heading;
@@ -490,12 +488,21 @@ public class World : MonoBehaviour
         });
     }
 
-    public Task InflictDamageTo(int sender, Hit hit)
+    public Task InflictDamageTo(Vector3 attackerPosition, int sender, Hit hit)
     {
         return ExecuteWithEntitiesAsync(sender, hit.TargetId, (senderEntity, targetEntity) =>
         {
             if (senderEntity != null)
             {
+                if (sender != GameClient.Instance.CurrentPlayerId)
+                {
+                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(attackerPosition);
+                }
+                else
+                {
+                    senderEntity.transform.position = new Vector3(attackerPosition.x, GetGroundHeight(attackerPosition), attackerPosition.z);
+                }
+
                 WorldCombat.Instance.InflictAttack(senderEntity, targetEntity, hit);
             }
             else
@@ -575,8 +582,11 @@ public class World : MonoBehaviour
             {
                 ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(entityPosition);
             }
+            else
+            {
+                e.transform.position = new Vector3(entityPosition.x, GetGroundHeight(entityPosition), entityPosition.z);
+            }
 
-            e.transform.position = new Vector3(entityPosition.x, e.transform.position.y, entityPosition.z);
             e.UpdateWaitType(moveType);
         });
     }

@@ -376,7 +376,7 @@ public class GameServerPacketHandler : ServerPacketHandler
         {
             if (hits[i] != null)
             {
-                World.Instance.InflictDamageTo(packet.SenderId, hits[i]);
+                World.Instance.InflictDamageTo(packet.AttackerPosition, packet.SenderId, hits[i]);
             }
         }
     }

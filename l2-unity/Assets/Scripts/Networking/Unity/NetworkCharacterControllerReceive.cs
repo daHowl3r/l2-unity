@@ -7,6 +7,7 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
     private NetworkTransformReceive _networkTransformReceive;
     private Entity _entity;
     [SerializeField] private Vector3 _direction;
+    [SerializeField] private float _distanceToDestination;
     [SerializeField] private float _speed;
     [SerializeField] private Vector3 _destination;
     [SerializeField] private float _gravity = 28f;
@@ -46,7 +47,7 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
 
         if (_destination != null && _destination != Vector3.zero)
         {
-            SetMoveDirectionToDestination();
+            UpdateMoveDirection();
         }
 
         Vector3 ajustedDirection = _direction * _speed * _moveSpeedMultiplier + Vector3.down * _gravity;
@@ -66,21 +67,30 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
 
     public void SetDestination(Vector3 destination)
     {
+        CalculateDistanceAndDirectionToDestination();
+
+        if (_distanceToDestination > Geodata.Instance.NodeSize / 20f)
+        {
+            _networkTransformReceive.PausePositionSync();
+        }
+
         _speed = _entity.Running ? _entity.Stats.ScaledRunSpeed : _entity.Stats.ScaledWalkSpeed;
         _destination = destination;
     }
 
-    public void SetMoveDirectionToDestination()
+    private void CalculateDistanceAndDirectionToDestination()
     {
         Vector3 transformFlat = VectorUtils.To2D(transform.position);
         Vector3 destinationFlat = VectorUtils.To2D(_destination);
+        _distanceToDestination = Vector3.Distance(transformFlat, destinationFlat);
+        _direction = (destinationFlat - transformFlat).normalized;
+    }
 
-        if (Vector3.Distance(transformFlat, destinationFlat) > Geodata.Instance.NodeSize / 20f)
-        {
-            _networkTransformReceive.PausePositionSync();
-            _direction = (destinationFlat - transformFlat).normalized;
-        }
-        else
+    private void UpdateMoveDirection()
+    {
+        CalculateDistanceAndDirectionToDestination();
+
+        if (_distanceToDestination < Geodata.Instance.NodeSize / 20f)
         {
             if (_direction != Vector3.zero)
             {

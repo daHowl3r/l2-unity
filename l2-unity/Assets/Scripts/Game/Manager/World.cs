@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -237,14 +238,13 @@ public class World : MonoBehaviour
         user.RaceId = raceId;
         user.UpdateMoveType(running);
 
-        go.GetComponent<NetworkTransformReceive>().enabled = true;
+        ((NetworkEntityReferenceHolder)user.ReferenceHolder).NetworkTransformReceive.enabled = true;
 
         go.transform.name = identity.Name;
-
         go.SetActive(true);
 
-        user.GetComponent<NetworkAnimationController>().Initialize();
-        go.GetComponent<Gear>().Initialize(user.Identity.Id, user.RaceId);
+        user.ReferenceHolder.AnimationController.Initialize();
+        user.ReferenceHolder.Gear.Initialize(user.Identity.Id, user.RaceId);
         user.Initialize();
 
         go.transform.SetParent(_usersContainer.transform);
@@ -370,17 +370,15 @@ public class World : MonoBehaviour
         }
 
         npc.Identity.TitleColor = npcName.TitleColor;
-
         npc.Appearance = appearance;
 
         npcGo.transform.eulerAngles = new Vector3(npcGo.transform.eulerAngles.x, identity.Heading, npcGo.transform.eulerAngles.z);
-
         npcGo.transform.name = identity.Name;
-
         npcGo.SetActive(true);
 
-        npc.GetComponent<BaseAnimationController>().Initialize();
-        npcGo.GetComponent<Gear>().Initialize(npc.Identity.Id, npc.RaceId);
+        npc.ReferenceHolder.AnimationController.Initialize();
+        npc.ReferenceHolder.Gear.Initialize(npc.Identity.Id, npc.RaceId);
+
         npc.Initialize();
 
         _npcs.Add(identity.Id, npc);
@@ -419,7 +417,7 @@ public class World : MonoBehaviour
     {
         return ExecuteWithEntityAsync(id, e =>
         {
-            e.GetComponent<NetworkTransformReceive>().SetNewPosition(position);
+            ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(position);
         });
     }
 
@@ -450,7 +448,7 @@ public class World : MonoBehaviour
     {
         return ExecuteWithEntityAsync(id, e =>
         {
-            e.GetComponent<NetworkTransformReceive>().SetFinalRotation(angle);
+            ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetFinalRotation(angle);
         });
     }
 
@@ -458,18 +456,37 @@ public class World : MonoBehaviour
     {
         return ExecuteWithEntityAsync(id, e =>
         {
-            e.GetComponent<NetworkTransformReceive>().SetNewPosition(currentPosition);
-            e.GetComponent<NetworkCharacterControllerReceive>().SetDestination(destination);
-            e.GetComponent<NetworkTransformReceive>().LookAt(destination);
-            //e.OnStartMoving();
+            e.Identity.Position = currentPosition;
+            StartCoroutine(HandleUpdateDestination(e, currentPosition, destination));
         });
+    }
+
+    IEnumerator HandleUpdateDestination(Entity e, Vector3 currentPosition, Vector3 destination)
+    {
+        //sync current position with server
+        ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.ResumePositionSync();
+        ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(currentPosition);
+
+        //wait for position to be updated
+        yield return new WaitForFixedUpdate();
+
+        //tell the entity to move to location
+        ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.PausePositionSync();
+        ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkCharacterControllerReceive.SetDestination(destination);
+
+        //set the entity expected position to destination
+        ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(destination);
+
+        //look at destination
+        ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.LookAt(destination);
+
     }
 
     public Task UpdateObjectAnimation(int id, int animId, float value)
     {
         return ExecuteWithEntityAsync(id, e =>
         {
-            e.GetComponent<NetworkAnimationController>().SetAnimationProperty(animId, value);
+            e.ReferenceHolder.AnimationController.SetAnimationProperty(animId, value);
         });
     }
 
@@ -501,7 +518,7 @@ public class World : MonoBehaviour
                 // e.UpdateWalkSpeed(speed);
             }
 
-            e.GetComponent<NetworkCharacterControllerReceive>().UpdateMoveDirection(direction);
+            ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkCharacterControllerReceive.UpdateMoveDirection(direction);
         });
     }
 
@@ -509,7 +526,7 @@ public class World : MonoBehaviour
     {
         return ExecuteWithEntitiesAsync(id, targetId, (targeter, targeted) =>
         {
-            targeter.GetComponent<NetworkTransformReceive>().SetNewPosition(position);
+            ((NetworkEntityReferenceHolder)targeter.ReferenceHolder).NetworkTransformReceive.SetNewPosition(position);
             targeter.Combat.TargetId = targetId;
             targeter.Combat.Target = targeted.transform;
         });

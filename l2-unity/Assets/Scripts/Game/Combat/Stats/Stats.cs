@@ -3,18 +3,18 @@ using UnityEngine;
 [System.Serializable]
 public class Stats
 {
-    [SerializeField] private int _level;
-    [SerializeField] private int _runSpeed;
-    [SerializeField] private float _moveSpeedMultiplier;
-    [SerializeField] private int _walkSpeed;
-    [SerializeField] private float _scaledRunSpeed;
-    [SerializeField] private float _scaledWalkSpeed;
-    [SerializeField] private float _attackSpeedMultiplier;
-    [SerializeField] private int _pAtkSpd;
-    [SerializeField] private int _mAtkSpd;
-    [SerializeField] private int _maxHp;
-    [SerializeField] private int _maxMp;
-    [SerializeField] private int _maxCp;
+    [SerializeField] protected int _level;
+    [SerializeField] protected int _runSpeed;
+    [SerializeField] protected float _moveSpeedMultiplier;
+    [SerializeField] protected int _walkSpeed;
+    [SerializeField] protected float _scaledRunSpeed;
+    [SerializeField] protected float _scaledWalkSpeed;
+    [SerializeField] protected float _attackSpeedMultiplier;
+    [SerializeField] protected int _pAtkSpd;
+    [SerializeField] protected int _mAtkSpd;
+    [SerializeField] protected int _maxHp;
+    [SerializeField] protected int _maxMp;
+    [SerializeField] protected int _maxCp;
 
     public int Level { get => _level; set => _level = value; }
     public int RunSpeed { get => _runSpeed; set => _runSpeed = value; }
@@ -31,7 +31,6 @@ public class Stats
 
     public virtual void UpdateStats(Stats stats)
     {
-        _level = stats.Level;
         _runSpeed = stats.RunSpeed;
         _walkSpeed = stats.WalkSpeed;
         _scaledRunSpeed = stats.ScaledRunSpeed;
@@ -40,8 +39,6 @@ public class Stats
         _attackSpeedMultiplier = stats.AttackSpeedMultiplier;
         _pAtkSpd = stats.PAtkSpd;
         _mAtkSpd = stats.MAtkSpd;
-        _maxHp = stats.MaxHp;
-        _maxMp = stats.MaxMp;
-        _maxCp = stats.MaxCp;
     }
+
 }

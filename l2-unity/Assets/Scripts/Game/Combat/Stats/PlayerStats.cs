@@ -1,7 +1,8 @@
 using UnityEngine;
 
 [System.Serializable]
-public class PlayerStats : Stats {
+public class PlayerStats : Stats
+{
     [SerializeField] private int _pAtk;
     [SerializeField] private int _mAtk;
     [SerializeField] private int _pEvasion;
@@ -62,8 +63,16 @@ public class PlayerStats : Stats {
     public int PvpKills { get { return _pvpKills; } set { _pvpKills = value; } }
     public int PkKills { get { return _pkKills; } set { _pkKills = value; } }
 
-    public void UpdateStats(PlayerStats stats) {
+    public void UpdateStats(PlayerStats stats)
+    {
         base.UpdateStats(stats);
+
+        _level = stats.Level;
+        _pAtkSpd = stats.PAtkSpd;
+        _mAtkSpd = stats.MAtkSpd;
+        _maxHp = stats.MaxHp;
+        _maxMp = stats.MaxMp;
+        _maxCp = stats.MaxCp;
 
         _pAtk = stats.PAtk;
         _mAtk = stats.MAtk;

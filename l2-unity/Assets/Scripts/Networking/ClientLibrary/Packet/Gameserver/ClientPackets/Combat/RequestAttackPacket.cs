@@ -8,7 +8,6 @@
         WriteI(0);
         WriteB(0);
         BuildPacket();
-        BuildPacket();
     }
 }
 

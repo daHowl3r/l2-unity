@@ -6,7 +6,9 @@ public enum GameServerPacketType : int
     ApplyDamage = 0x05,
     DoDie = 0x06,
     Revive = 0x07,
+    ActionAllowed = 0x08,
     StatusUpdate = 0x0e,
+    RemoveObject = 0x12,
     CharSelectionInfo = 0x13,
     LoginFail = 0x14,
     CharSelected = 0x15,
@@ -34,13 +36,11 @@ public enum GameServerPacketType : int
 
 
     ObjectPosition = 0xFF7,
-    RemoveObject = 0xFF8,
     ObjectRotation = 0xFF9,
     ObjectAnimation = 0xFFA,
     ObjectMoveDirection = 0xFFF,
     GameTime = 0xFD0,
     ServerClose = 0xFD5,
-    // ActionAllowed = 0xFD7,
     LeaveWorld = 0xFDA,
 
     SocialAction = 0xFDE,

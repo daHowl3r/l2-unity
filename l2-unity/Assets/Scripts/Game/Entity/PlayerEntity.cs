@@ -53,6 +53,11 @@ public class PlayerEntity : Entity
         PlayerStateMachine.Instance.OnActionDenied();
     }
 
+    public void OnActionAllowed()
+    {
+        PlayerStateMachine.Instance.OnActionAllowed();
+    }
+
     // public  
 
     public override void UpdateWaitType(ChangeWaitTypePacket.WaitType moveType)

@@ -87,9 +87,9 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.StatusUpdate:
                 OnStatusUpdate(data);
                 break;
-            // case GameServerPacketType.ActionAllowed:
-            //     OnActionAllowed(data);
-            //     break;
+            case GameServerPacketType.ActionAllowed:
+                OnActionAllowed(data);
+                break;
             case GameServerPacketType.InventoryItemList:
                 OnInventoryItemList(data);
                 break;
@@ -353,7 +353,7 @@ public class GameServerPacketHandler : ServerPacketHandler
     private void OnRemoveObject(byte[] data)
     {
         RemoveObjectPacket packet = new RemoveObjectPacket(data);
-        _eventProcessor.QueueEvent(() => World.Instance.RemoveObject(packet.Id));
+        World.Instance.RemoveObject(packet.Id);
     }
 
     private void OnUpdateRotation(byte[] data)
@@ -446,11 +446,11 @@ public class GameServerPacketHandler : ServerPacketHandler
         _eventProcessor.QueueEvent(() => PlayerEntity.Instance.OnActionFailed());
     }
 
-    // private void OnActionAllowed(byte[] data)
-    // {
-    //     ActionAllowedPacket packet = new ActionAllowedPacket(data);
-    //     _eventProcessor.QueueEvent(() => PlayerEntity.Instance.OnActionAllowed(packet.PlayerAction));
-    // }
+    private void OnActionAllowed(byte[] data)
+    {
+        ActionAllowedPacket packet = new ActionAllowedPacket(data);
+        _eventProcessor.QueueEvent(() => PlayerEntity.Instance.OnActionAllowed());
+    }
 
     private void OnServerClose()
     {

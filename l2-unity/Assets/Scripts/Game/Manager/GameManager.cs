@@ -106,13 +106,14 @@ public class GameManager : MonoBehaviour
 
     public void OnWorldSceneLoaded()
     {
+        Debug.LogWarning("OnWorldSceneLoaded");
         GameObject.Destroy(L2LoginUI.Instance.gameObject);
 
         PlayerInfo playerInfo = GameClient.Instance.PlayerInfo;
 
         WorldClock.Instance.SynchronizeClock(playerInfo.CurrentGameTime);
 
-        World.Instance.SpawnPlayer(playerInfo.Identity, playerInfo.Status, playerInfo.Stats, playerInfo.Appearance, playerInfo.Running);
+        World.Instance.OnReceivePlayerInfo(playerInfo.Identity, playerInfo.Status, playerInfo.Stats, playerInfo.Appearance, playerInfo.Running);
 
         PlayerStateMachine.Instance.enabled = true;
 

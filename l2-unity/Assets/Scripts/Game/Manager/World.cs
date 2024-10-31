@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -18,9 +20,10 @@ public class World : MonoBehaviour
 
     private EventProcessor _eventProcessor;
 
-    private Dictionary<int, Entity> _players = new Dictionary<int, Entity>();
-    private Dictionary<int, Entity> _npcs = new Dictionary<int, Entity>();
-    private Dictionary<int, Entity> _objects = new Dictionary<int, Entity>();
+    private List<int> _idBag = new List<int>();
+    private ConcurrentDictionary<int, Entity> _players = new ConcurrentDictionary<int, Entity>();
+    private ConcurrentDictionary<int, Entity> _npcs = new ConcurrentDictionary<int, Entity>();
+    private ConcurrentDictionary<int, Entity> _objects = new ConcurrentDictionary<int, Entity>();
 
     [Header("Layer Masks")]
     [SerializeField] private LayerMask _entityMask;
@@ -85,16 +88,27 @@ public class World : MonoBehaviour
         _npcs.Clear();
     }
 
-    public void RemoveObject(int id)
+    public Task RemoveObject(int id)
     {
-        Entity transform;
-        if (_objects.TryGetValue(id, out transform))
+        Debug.LogWarning("DESTROY ID: " + id);
+        if (IsEntityPresent(id, true))
         {
-            _players.Remove(id);
-            _npcs.Remove(id);
-            _objects.Remove(id);
+            return ExecuteWithEntityAsync(id, e =>
+            {
+                _players.TryRemove(id, out Entity removed);
+                _npcs.TryRemove(id, out Entity removed2);
+                _objects.TryRemove(id, out Entity removed3);
 
-            Destroy(transform.gameObject);
+                Debug.LogWarning("Gameobject destroyed : " + e.gameObject.name);
+
+                NameplatesManager.Instance.RemoveNameplate(id);
+
+                Destroy(e.gameObject);
+            });
+        }
+        else
+        {
+            return null;
         }
     }
 
@@ -111,21 +125,42 @@ public class World : MonoBehaviour
 
     public void OnReceivePlayerInfo(NetworkIdentity identity, PlayerStatus status, PlayerStats stats, PlayerAppearance appearance, bool running)
     {
-        // Dont need to block thread
-        Task task = new Task(async () =>
+        if (!IsEntityPresent(identity.Id))
         {
-            var entity = await GetEntityAsync(identity.Id);
+            Debug.LogWarning("PLAYER NOT PRESENT");
+            _eventProcessor.QueueEvent(() => SpawnPlayer(identity, status, stats, appearance, running));
+        }
+        else
+        {
+            Debug.LogWarning("ENTITY PRESENT");
+            // Dont need to block thread
+            Task task = new Task(async () =>
+            {
+                var entity = await GetEntityAsync(identity.Id);
 
-            if (entity == null)
-            {
-                _eventProcessor.QueueEvent(() => SpawnPlayer(identity, status, stats, appearance, running));
-            }
-            else
-            {
-                _eventProcessor.QueueEvent(() => UpdatePlayer(entity, identity, status, stats, appearance, running));
-            }
-        });
-        task.Start();
+                if (entity != null)
+                {
+                    _eventProcessor.QueueEvent(() => UpdatePlayer(entity, identity, status, stats, appearance, running));
+                }
+            });
+            task.Start();
+        }
+
+        //         // Dont need to block thread
+        // Task task = new Task(async () =>
+        // {
+        //     var entity = await GetEntityAsync(identity.Id);
+
+        //     if (entity == null)
+        //     {
+        //         _eventProcessor.QueueEvent(() => SpawnPlayer(identity, status, stats, appearance, running));
+        //     }
+        //     else
+        //     {
+        //         _eventProcessor.QueueEvent(() => UpdatePlayer(entity, identity, status, stats, appearance, running));
+        //     }
+        // });
+        // task.Start();
     }
 
     public void SpawnPlayer(NetworkIdentity identity, PlayerStatus status, PlayerStats stats, PlayerAppearance appearance, bool running)
@@ -168,8 +203,8 @@ public class World : MonoBehaviour
 
         CharacterInfoWindow.Instance.UpdateValues();
 
-        _players.Add(identity.Id, player);
-        _objects.Add(identity.Id, player);
+        _players.TryAdd(identity.Id, player);
+        _objects.TryAdd(identity.Id, player);
     }
 
     public void UpdatePlayer(Entity entity, NetworkIdentity identity, PlayerStatus status, PlayerStats stats, PlayerAppearance appearance, bool running)
@@ -196,23 +231,43 @@ public class World : MonoBehaviour
 
     public void OnReceiveUserInfo(NetworkIdentity identity, PlayerStatus status, Stats stats, PlayerAppearance appearance, bool running)
     {
-        // Dont need to block thread
-        Debug.LogWarning("OnReceiveUserInfo");
-        Task task = new Task(async () =>
-        {
-            var entity = await GetEntityAsync(identity.Id);
+        // // Dont need to block thread
+        // Debug.LogWarning("OnReceiveUserInfo");
+        // Task task = new Task(async () =>
+        // {
+        //     var entity = await GetEntityAsync(identity.Id);
 
-            if (entity == null)
+        //     if (entity == null)
+        //     {
+        //         _eventProcessor.QueueEvent(() => SpawnUser(identity, status, stats, appearance, running));
+        //     }
+        //     else
+        //     {
+        //         Debug.LogWarning("UpdatePlayer");
+        //         _eventProcessor.QueueEvent(() => UpdateUser(entity, identity, status, stats, appearance, running));
+        //     }
+        // });
+        // task.Start();
+        if (!IsEntityPresent(identity.Id))
+        {
+            Debug.LogWarning("USER NOT PRESENT");
+            _eventProcessor.QueueEvent(() => SpawnUser(identity, status, stats, appearance, running));
+        }
+        else
+        {
+            Debug.LogWarning("USER PRESENT");
+            // Dont need to block thread
+            Task task = new Task(async () =>
             {
-                _eventProcessor.QueueEvent(() => SpawnUser(identity, status, stats, appearance, running));
-            }
-            else
-            {
-                Debug.LogWarning("UpdatePlayer");
-                _eventProcessor.QueueEvent(() => UpdateUser(entity, identity, status, stats, appearance, running));
-            }
-        });
-        task.Start();
+                var entity = await GetEntityAsync(identity.Id);
+
+                if (entity != null)
+                {
+                    _eventProcessor.QueueEvent(() => UpdateUser(entity, identity, status, stats, appearance, running));
+                }
+            });
+            task.Start();
+        }
     }
 
     public void SpawnUser(NetworkIdentity identity, Status status, Stats stats, PlayerAppearance appearance, bool running)
@@ -249,8 +304,8 @@ public class World : MonoBehaviour
 
         go.transform.SetParent(_usersContainer.transform);
 
-        _players.Add(identity.Id, user);
-        _objects.Add(identity.Id, user);
+        _players.TryAdd(identity.Id, user);
+        _objects.TryAdd(identity.Id, user);
     }
 
     public void UpdateUser(Entity entity, NetworkIdentity identity, PlayerStatus status, Stats stats, PlayerAppearance appearance, bool running)
@@ -273,21 +328,39 @@ public class World : MonoBehaviour
 
     public void OnReceiveNpcInfo(NetworkIdentity identity, NpcStatus status, Stats stats, Appearance appearance, bool running)
     {
-        // Dont need to block thread
-        Task task = new Task(async () =>
-        {
-            var entity = await GetEntityAsync(identity.Id);
+        // // Dont need to block thread
+        // Task task = new Task(async () =>
+        // {
+        //     var entity = await GetEntityAsync(identity.Id);
 
-            if (entity == null)
+        //     if (entity == null)
+        //     {
+        //         _eventProcessor.QueueEvent(() => SpawnNpc(identity, status, stats, appearance, running));
+        //     }
+        //     else
+        //     {
+        //         _eventProcessor.QueueEvent(() => UpdateNpc(entity, identity, status, stats, appearance, running));
+        //     }
+        // });
+        // task.Start();
+        if (!IsEntityPresent(identity.Id))
+        {
+            _eventProcessor.QueueEvent(() => SpawnNpc(identity, status, stats, appearance, running));
+        }
+        else
+        {
+            // Dont need to block thread
+            Task task = new Task(async () =>
             {
-                _eventProcessor.QueueEvent(() => SpawnNpc(identity, status, stats, appearance, running));
-            }
-            else
-            {
-                _eventProcessor.QueueEvent(() => UpdateNpc(entity, identity, status, stats, appearance, running));
-            }
-        });
-        task.Start();
+                var entity = await GetEntityAsync(identity.Id);
+
+                if (entity != null)
+                {
+                    _eventProcessor.QueueEvent(() => UpdateNpc(entity, identity, status, stats, appearance, running));
+                }
+            });
+            task.Start();
+        }
     }
 
     public void SpawnNpc(NetworkIdentity identity, NpcStatus status, Stats stats, Appearance appearance, bool running)
@@ -381,8 +454,8 @@ public class World : MonoBehaviour
 
         npc.Initialize();
 
-        _npcs.Add(identity.Id, npc);
-        _objects.Add(identity.Id, npc);
+        _npcs.TryAdd(identity.Id, npc);
+        _objects.TryAdd(identity.Id, npc);
     }
 
     public void UpdateNpc(Entity entity, NetworkIdentity identity, NpcStatus status, Stats stats, Appearance appearance, bool running)
@@ -555,34 +628,53 @@ public class World : MonoBehaviour
     private async Task<Entity> GetEntityAsync(int id)
     {
         Entity entity;
-        lock (_objects)
+        if (!_objects.TryGetValue(id, out entity))
         {
-            if (!_objects.TryGetValue(id, out entity))
-            {
-                //Debug.LogWarning($"GetEntityAsync - Entity {id} not found, retrying...");
-            }
+            Debug.LogWarning($"GetEntityAsync - Entity {id} not found, retrying...");
         }
 
         if (entity == null)
         {
-            await Task.Delay(500); // Wait for 150 ms retrying
-
-            lock (_objects)
+            await Task.Delay(300);
+            if (!_objects.TryGetValue(id, out entity))
             {
-                if (!_objects.TryGetValue(id, out entity))
-                {
-                    Debug.LogWarning($"GetEntityAsync - Entity {id} not found after retry");
-                    return null;
-                }
-                else
-                {
-                    // Debug.LogWarning($"GetEntityAsync - Entity {id} found after retry");
-                }
+                Debug.LogWarning($"GetEntityAsync - Entity {id} not found after retry");
+                return null;
+            }
+            else
+            {
+                // Debug.LogWarning($"GetEntityAsync - Entity {id} found after retry");
             }
         }
 
         return entity;
     }
+
+    private bool IsEntityPresent(int id)
+    {
+        return IsEntityPresent(id, false);
+    }
+
+    private bool IsEntityPresent(int id, bool remove)
+    {
+        lock (_idBag)
+        {
+            if (_idBag.Contains(id))
+            {
+                if (remove)
+                {
+                    _idBag.Remove(id);
+                }
+                return true;
+            }
+            else
+            {
+                _idBag.Add(id);
+                return false;
+            }
+        }
+    }
+
 
     // Execute action after entity is loaded
     public async Task ExecuteWithEntityAsync(int id, Action<Entity> action)

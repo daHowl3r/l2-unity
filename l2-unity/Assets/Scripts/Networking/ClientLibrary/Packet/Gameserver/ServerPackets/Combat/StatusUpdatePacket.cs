@@ -81,7 +81,6 @@ public class StatusUpdatePacket : ServerPacket
             byte attributeId = (byte)ReadI();
             int attributeValue = ReadI();
 
-            Debug.LogWarning($"AttributeId:{attributeId} AttributeValue:{attributeValue}");
             _attributes.Add(new Attribute(attributeId, attributeValue));
         }
     }

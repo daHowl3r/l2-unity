@@ -84,6 +84,9 @@ public class NpcInfoPacket : ServerPacket
             ReadI(); //enchant effct
             ReadI(); //flying
 
+            Stats.RunSpeed = (int)(Stats.MoveSpeedMultiplier > 0 ? Stats.RunSpeed * Stats.MoveSpeedMultiplier : Stats.RunSpeed);
+            Stats.WalkSpeed = (int)(Stats.MoveSpeedMultiplier > 0 ? Stats.WalkSpeed * Stats.MoveSpeedMultiplier : Stats.WalkSpeed);
+
             Debug.LogWarning(ToString());
         }
         catch (Exception e)

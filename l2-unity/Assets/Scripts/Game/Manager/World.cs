@@ -488,30 +488,6 @@ public class World : MonoBehaviour
         });
     }
 
-    public Task InflictDamageTo(Vector3 attackerPosition, int sender, Hit hit)
-    {
-        return ExecuteWithEntitiesAsync(sender, hit.TargetId, (senderEntity, targetEntity) =>
-        {
-            if (senderEntity != null)
-            {
-                if (sender != GameClient.Instance.CurrentPlayerId)
-                {
-                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(attackerPosition);
-                }
-                else
-                {
-                    senderEntity.transform.position = new Vector3(attackerPosition.x, GetGroundHeight(attackerPosition), attackerPosition.z);
-                }
-
-                WorldCombat.Instance.InflictAttack(senderEntity, targetEntity, hit);
-            }
-            else
-            {
-                WorldCombat.Instance.InflictAttack(targetEntity, hit);
-            }
-        });
-    }
-
     public Task UpdateObjectMoveDirection(int id, int speed, Vector3 direction)
     {
         return ExecuteWithEntityAsync(id, e =>
@@ -528,51 +504,6 @@ public class World : MonoBehaviour
             ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkCharacterControllerReceive.UpdateMoveDirection(direction);
         });
     }
-
-    public Task UpdateEntityTarget(int id, int targetId, Vector3 position)
-    {
-        return ExecuteWithEntitiesAsync(id, targetId, (targeter, targeted) =>
-        {
-            ((NetworkEntityReferenceHolder)targeter.ReferenceHolder).NetworkTransformReceive.SetNewPosition(position);
-            targeter.Combat.TargetId = targetId;
-            targeter.Combat.Target = targeted.transform;
-        });
-    }
-
-    public Task UpdateMyTarget(int id, int targetId)
-    {
-        return ExecuteWithEntitiesAsync(id, targetId, (targeter, targeted) =>
-        {
-            targeter.Combat.TargetId = targetId;
-            targeter.Combat.Target = targeted.transform;
-        });
-    }
-
-    public Task UnsetEntityTarget(int id)
-    {
-        return ExecuteWithEntityAsync(id, e =>
-        {
-            e.Combat.TargetId = -1;
-            e.Combat.Target = null;
-        });
-    }
-
-    public Task EntityStartAutoAttacking(int id)
-    {
-        return ExecuteWithEntityAsync(id, e =>
-        {
-            WorldCombat.Instance.EntityStartAutoAttacking(e);
-        });
-    }
-
-    public Task EntityStopAutoAttacking(int id)
-    {
-        return ExecuteWithEntityAsync(id, e =>
-        {
-            WorldCombat.Instance.EntityStopAutoAttacking(e);
-        });
-    }
-
 
     public Task ChangeWaitType(int owner, ChangeWaitTypePacket.WaitType moveType, Vector3 entityPosition)
     {
@@ -591,24 +522,33 @@ public class World : MonoBehaviour
         });
     }
 
-    public Task StatusUpdate(int id, List<StatusUpdatePacket.Attribute> attributes)
-    {
-        return ExecuteWithEntityAsync(id, e =>
-        {
-            WorldCombat.Instance.StatusUpdate(e, attributes);
-            if (e == PlayerEntity.Instance)
-            {
-                CharacterInfoWindow.Instance.UpdateValues();
-            }
-        });
-    }
-
     public Task ChangeMoveType(int owner, bool running)
     {
         return ExecuteWithEntityAsync(owner, e =>
                 {
                     e.UpdateMoveType(running);
                 });
+    }
+
+    public Task EntityTeleported(int entityId, Vector3 teleportTo, bool loadingScreen)
+    {
+        return ExecuteWithEntityAsync(entityId, e =>
+        {
+            if (loadingScreen)
+            {
+                Debug.LogWarning("TODO: HANDLE TELEPORT LOADING SCREEN");
+            }
+
+            Vector3 adjustedPosition = new Vector3(teleportTo.x, GetGroundHeight(teleportTo), teleportTo.z);
+
+            if (entityId != GameClient.Instance.CurrentPlayerId)
+            {
+                ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(adjustedPosition);
+            }
+
+            e.transform.position = adjustedPosition;
+            e.Identity.Position = teleportTo;
+        });
     }
 
     // Wait for entity to be fully loaded
@@ -645,7 +585,7 @@ public class World : MonoBehaviour
     }
 
     // Execute action after entity is loaded
-    private async Task ExecuteWithEntityAsync(int id, Action<Entity> action)
+    public async Task ExecuteWithEntityAsync(int id, Action<Entity> action)
     {
         if (id == GameClient.Instance.CurrentPlayerId)
         {
@@ -668,7 +608,7 @@ public class World : MonoBehaviour
     }
 
     // Execute action after 2 entities are loaded
-    private async Task ExecuteWithEntitiesAsync(int id1, int id2, Action<Entity, Entity> action)
+    public async Task ExecuteWithEntitiesAsync(int id1, int id2, Action<Entity, Entity> action)
     {
         var entity1Task = GetEntityAsync(id1);
         var entity2Task = GetEntityAsync(id2);
@@ -690,4 +630,5 @@ public class World : MonoBehaviour
             }
         }
     }
+
 }

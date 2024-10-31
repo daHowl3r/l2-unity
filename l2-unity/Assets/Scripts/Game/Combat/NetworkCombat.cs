@@ -5,7 +5,7 @@ public abstract class NetworkCombat : Combat
     protected NetworkCharacterControllerReceive NetworkCharacterControllerReceive { get { return ReferenceHolder.NetworkCharacterControllerReceive; } }
     protected NetworkIdentity Identity { get { return _referenceHolder.Entity.Identity; } }
 
-    protected override void OnDeath()
+    public override void OnDeath()
     {
         if (AnimationController != null)
         {
@@ -18,6 +18,22 @@ public abstract class NetworkCombat : Combat
         if (NetworkCharacterControllerReceive != null)
         {
             NetworkCharacterControllerReceive.enabled = false;
+        }
+    }
+
+    public override void OnRevive()
+    {
+        if (AnimationController != null)
+        {
+            AnimationController.enabled = true;
+        }
+        if (NetworkTransformReceive != null)
+        {
+            NetworkTransformReceive.enabled = true;
+        }
+        if (NetworkCharacterControllerReceive != null)
+        {
+            NetworkCharacterControllerReceive.enabled = true;
         }
     }
 

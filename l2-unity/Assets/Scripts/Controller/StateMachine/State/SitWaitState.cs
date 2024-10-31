@@ -12,6 +12,9 @@ public class SitWaitState : StateBase
                     _stateMachine.ChangeState(PlayerState.STANDING);
                 }
                 break;
+            case Event.DEAD:
+                _stateMachine.ChangeState(PlayerState.DEAD);
+                break;
         }
     }
 }

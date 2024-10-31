@@ -2,6 +2,7 @@ public enum Event
 {
     THINK,
     DEAD,
+    REVIVED,
     ARRIVED,
     MOVE_INPUT_PRESSED,
     ATTACKED,

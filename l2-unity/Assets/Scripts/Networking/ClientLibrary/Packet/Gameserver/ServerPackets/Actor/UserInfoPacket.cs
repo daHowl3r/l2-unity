@@ -191,37 +191,6 @@ public class UserInfoPacket : ServerPacket
             Stats.PAtkSpd = (int)(Stats.AttackSpeedMultiplier > 0 ? Stats.PAtkSpd * Stats.AttackSpeedMultiplier : Stats.PAtkSpd);
             Stats.AttackRange = ReadI() / 52.5f;
 
-            // Identity.PlayerClass = ReadB();
-            // Identity.IsMage = ReadB() == 1;
-            // Identity.Heading = ReadF();
-            // Identity.SetPosX(ReadF());
-            // Identity.SetPosY(ReadF());
-            // Identity.SetPosZ(ReadF());
-            // Identity.Owned = Identity.Name == GameClient.Instance.CurrentPlayer;
-            // // Status
-            // Stats.Level = ReadI();
-            // // Stats
-            // Stats.RunSpeed = ReadI();
-            // Stats.WalkSpeed = ReadI();
-            // Stats.PAtkSpd = ReadI();
-            // Stats.MAtkSpd = ReadI();
-            // // Appearance
-            // Appearance.CollisionHeight = ReadF();
-            // Appearance.CollisionRadius = ReadF();
-            // Appearance.Race = ReadB();
-            // Appearance.Sex = ReadB();
-            // Appearance.Face = ReadB();
-            // Appearance.HairStyle = ReadB();
-            // Appearance.HairColor = ReadB();
-            // // Gear
-            // Appearance.LHand = ReadI();
-            // Appearance.RHand = ReadI();
-            // Appearance.Chest = ReadI();
-            // Appearance.Legs = ReadI();
-            // Appearance.Gloves = ReadI();
-            // Appearance.Feet = ReadI();
-
-            // Running = ReadI() == 1;
             Debug.LogWarning(ToString());
         }
         catch (Exception e)

@@ -48,20 +48,9 @@ public class PlayerEntity : Entity
         return converted;
     }
 
-    public void OnActionFailed(PlayerAction action)
+    public void OnActionFailed()
     {
-        switch (action)
-        {
-            case PlayerAction.SetTarget:
-                TargetManager.Instance.ClearTarget();
-                break;
-            case PlayerAction.AutoAttack:
-                PlayerStateMachine.Instance.OnActionDenied();
-                break;
-            case PlayerAction.Move:
-                PlayerStateMachine.Instance.OnActionDenied();
-                break;
-        }
+        PlayerStateMachine.Instance.OnActionDenied();
     }
 
     public void OnActionAllowed(PlayerAction action)

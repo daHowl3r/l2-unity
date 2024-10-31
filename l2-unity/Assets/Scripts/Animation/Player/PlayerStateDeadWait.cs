@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerStateDeadWait : PlayerStateBase
+public class PlayerStateDeadWait : PlayerStateAction
 {
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -10,7 +10,10 @@ public class PlayerStateDeadWait : PlayerStateBase
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (ShouldIdle())
+        {
 
+        }
     }
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

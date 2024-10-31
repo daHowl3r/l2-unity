@@ -51,7 +51,7 @@ public class ClickManager : MonoBehaviour
 
     void Update()
     {
-        if (L2GameUI.Instance.MouseOverUI)
+        if (L2GameUI.Instance.MouseOverUI || PlayerStateMachine.Instance.State == PlayerState.DEAD)
         {
             return;
         }

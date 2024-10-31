@@ -97,6 +97,10 @@ public class L2GameUI : L2UI
             ActionWindow.Instance.AddWindow(_rootVisualContainer);
             ActionWindow.Instance.HideWindow();
         }
+        if (RestartLocationWindow.Instance != null)
+        {
+            RestartLocationWindow.Instance.AddWindow(_rootVisualContainer);
+        }
         if (TargetWindow.Instance != null)
         {
             TargetWindow.Instance.AddWindow(_rootVisualContainer);

@@ -36,7 +36,8 @@ public class IdleState : StateBase
 
                     if (TargetManager.Instance.IsAttackTargetSet())
                     {
-                        GameClient.Instance.ClientPacketHandler.SendRequestAutoAttack(-1);
+                        // GameClient.Instance.ClientPacketHandler.SendRequestAutoAttack(-1); //TODO: Change this
+                        GameClient.Instance.ClientPacketHandler.SendRequestAutoAttack(TargetManager.Instance.AttackTarget.Identity.Id); //TODO: Change this
                     }
                     else
                     {
@@ -62,6 +63,9 @@ public class IdleState : StateBase
                 }
                 break;
             case Event.ACTION_DENIED:
+                break;
+            case Event.DEAD:
+                _stateMachine.ChangeState(PlayerState.DEAD);
                 break;
 
         }

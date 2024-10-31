@@ -61,4 +61,17 @@ public abstract class L2PopupWindow : L2Window
     {
         _windowEle.SendToBack();
     }
+
+    public void CenterWindow()
+    {
+        float root_width = _root.worldBound.width / 2;
+        float window_width = _windowEle.worldBound.width / 2;
+        float width = root_width - window_width;
+
+        float root_height = _root.worldBound.height / 2;
+        float window_height = _windowEle.worldBound.height / 2;
+        float height = root_height - window_height;
+        Vector2 center = new Vector2(_root.worldBound.x + width, _root.worldBound.y + height);
+        _windowEle.transform.position = center;
+    }
 }

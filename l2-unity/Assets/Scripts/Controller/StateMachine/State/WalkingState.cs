@@ -30,6 +30,9 @@ public class WalkingState : StateBase
                     _stateMachine.ChangeState(PlayerState.RUNNING);
                 }
                 break;
+            case Event.DEAD:
+                _stateMachine.ChangeState(PlayerState.DEAD);
+                break;
         }
     }
 

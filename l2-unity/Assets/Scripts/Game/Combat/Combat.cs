@@ -81,10 +81,10 @@ public abstract class Combat : MonoBehaviour
         Status.Hp = Mathf.Max(Status.Hp - hit.Damage, 0);
 
 
-        if (Status.Hp <= 0)
-        {
-            OnDeath();
-        }
+        // if (Status.Hp <= 0)
+        // {
+        //     OnDeath();
+        // }
     }
 
     public bool IsDead()
@@ -95,7 +95,9 @@ public abstract class Combat : MonoBehaviour
     /* Notify server that entity got attacked */
     public virtual void InflictAttack(AttackType attackType) { }
 
-    protected virtual void OnDeath() { }
+    public virtual void OnDeath() { }
+
+    public virtual void OnRevive() { }
 
     protected virtual void OnHit(Hit hit)
     {

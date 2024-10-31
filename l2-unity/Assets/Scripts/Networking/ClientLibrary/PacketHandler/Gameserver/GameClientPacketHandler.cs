@@ -203,4 +203,10 @@ public class GameClientPacketHandler : ClientPacketHandler
         RequestCharCreatePacket packet = new RequestCharCreatePacket(name, race, sex, clazz, hairstyle, haircolor, face);
         SendPacket(packet);
     }
+
+    public void SendRequestRestartPoint(int restartPoint)
+    {
+        RequestRestartPointPacket packet = new RequestRestartPointPacket(restartPoint);
+        SendPacket(packet);
+    }
 }

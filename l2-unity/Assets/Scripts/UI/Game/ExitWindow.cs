@@ -44,7 +44,7 @@ public class ExitWindow : L2PopupWindow
     {
         InitWindow(root);
 
-       // root.Add(_windowEle);
+        // root.Add(_windowEle);
 
         yield return new WaitForEndOfFrame();
 
@@ -63,11 +63,9 @@ public class ExitWindow : L2PopupWindow
         DragManipulator drag = new DragManipulator(_boxHeader, _windowEle);
         _boxHeader.AddManipulator(drag);
 
-        float root_width = root.worldBound.width / 2;
-        float exit_width = _windowEle.worldBound.width / 2;
-        float width = root_width - exit_width;
-        Vector2 center = new Vector2(root.worldBound.x + width, root.worldBound.y);
-        _windowEle.transform.position = center;
+        yield return new WaitForEndOfFrame();
+
+        CenterWindow();
 
         HideWindow();
 

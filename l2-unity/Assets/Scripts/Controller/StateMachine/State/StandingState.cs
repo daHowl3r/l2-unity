@@ -12,6 +12,7 @@ public class StandingState : StateBase
         switch (evt)
         {
             case Event.DEAD:
+                _stateMachine.ChangeState(PlayerState.DEAD);
                 break;
         }
     }

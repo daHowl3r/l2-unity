@@ -123,6 +123,15 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.ValidateLocation:
                 OnValidateLocation(data);
                 break;
+            case GameServerPacketType.DoDie:
+                OnEntityDie(data);
+                break;
+            case GameServerPacketType.Revive:
+                OnEntityRevive(data);
+                break;
+            case GameServerPacketType.TeleportToLocation:
+                OnTeleportToLocation(data);
+                break;
             default:
                 Debug.LogWarning($"Received unhandled packet with OPCode [{packetType}].");
                 break;
@@ -376,7 +385,7 @@ public class GameServerPacketHandler : ServerPacketHandler
         {
             if (hits[i] != null)
             {
-                World.Instance.InflictDamageTo(packet.AttackerPosition, packet.SenderId, hits[i]);
+                WorldCombat.Instance.InflictDamageTo(packet.AttackerPosition, packet.SenderId, hits[i]);
             }
         }
     }
@@ -402,39 +411,39 @@ public class GameServerPacketHandler : ServerPacketHandler
     private void OnEntityTargetSet(byte[] data)
     {
         EntityTargetSetPacket packet = new EntityTargetSetPacket(data);
-        World.Instance.UpdateEntityTarget(packet.EntityId, packet.TargetId, packet.EntityPosition);
+        WorldCombat.Instance.UpdateEntityTarget(packet.EntityId, packet.TargetId, packet.EntityPosition);
     }
 
     private void OnEntityTargetUnset(byte[] data)
     {
         EntityTargetUnsetPacket packet = new EntityTargetUnsetPacket(data);
-        World.Instance.UnsetEntityTarget(packet.EntityId);
+        WorldCombat.Instance.UnsetEntityTarget(packet.EntityId);
     }
 
     private void OnMyTargetSet(byte[] data)
     {
         MyTargetSetPacket packet = new MyTargetSetPacket(data);
-        World.Instance.UpdateMyTarget(GameClient.Instance.CurrentPlayerId, packet.TargetId);
+        WorldCombat.Instance.UpdateMyTarget(GameClient.Instance.CurrentPlayerId, packet.TargetId);
     }
 
     private void OnEntityAutoAttackStart(byte[] data)
     {
         Debug.Log("OnEntityAutoAttackStart");
         AutoAttackStartPacket packet = new AutoAttackStartPacket(data);
-        World.Instance.EntityStartAutoAttacking(packet.EntityId);
+        WorldCombat.Instance.EntityStartAutoAttacking(packet.EntityId);
     }
 
     private void OnEntityAutoAttackStop(byte[] data)
     {
         AutoAttackStopPacket packet = new AutoAttackStopPacket(data);
-        World.Instance.EntityStopAutoAttacking(packet.EntityId);
+        WorldCombat.Instance.EntityStopAutoAttacking(packet.EntityId);
     }
 
     private void OnActionFailed(byte[] data)
     {
         ActionFailedPacket packet = new ActionFailedPacket(data);
-        Debug.Log($"Action failed: " + packet.PlayerAction);
-        _eventProcessor.QueueEvent(() => PlayerEntity.Instance.OnActionFailed(packet.PlayerAction));
+        Debug.Log($"Action failed");
+        _eventProcessor.QueueEvent(() => PlayerEntity.Instance.OnActionFailed());
     }
 
     private void OnActionAllowed(byte[] data)
@@ -452,7 +461,7 @@ public class GameServerPacketHandler : ServerPacketHandler
     private void OnStatusUpdate(byte[] data)
     {
         StatusUpdatePacket packet = new StatusUpdatePacket(data);
-        World.Instance.StatusUpdate(packet.ObjectId, packet.Attributes);
+        WorldCombat.Instance.StatusUpdate(packet.ObjectId, packet.Attributes);
     }
 
     private void OnInventoryItemList(byte[] data)
@@ -513,5 +522,23 @@ public class GameServerPacketHandler : ServerPacketHandler
         ChangeMoveTypePacket packet = new ChangeMoveTypePacket(data);
         Debug.Log("ChangeMoveType: " + packet.Owner + " running? " + packet.Running);
         World.Instance.ChangeMoveType(packet.Owner, packet.Running);
+    }
+
+    private void OnEntityDie(byte[] data)
+    {
+        DoDiePacket packet = new DoDiePacket(data);
+        WorldCombat.Instance.EntityDied(packet.EntityId, packet.ToVillageAllowed, packet.ToClanHallAllowed, packet.ToCastleAllowed, packet.ToSiegeHQAllowed, packet.Sweepable, packet.FixedResAllowed);
+    }
+
+    private void OnEntityRevive(byte[] data)
+    {
+        RevivePacket packet = new RevivePacket(data);
+        WorldCombat.Instance.EntityRevived(packet.EntityId);
+    }
+
+    private void OnTeleportToLocation(byte[] data)
+    {
+        TeleportToLocationPacket packet = new TeleportToLocationPacket(data);
+        World.Instance.EntityTeleported(packet.EntityId, packet.TeleportTo, packet.LoadingScreen);
     }
 }

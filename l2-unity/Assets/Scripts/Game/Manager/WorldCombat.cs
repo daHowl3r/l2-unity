@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using FMODUnity;
 using UnityEngine;
 using static StatusUpdatePacket;
@@ -122,6 +123,108 @@ public class WorldCombat : MonoBehaviour
     //     go.transform.eulerAngles = new Vector3(0, go.transform.eulerAngles.y + 180f, 0);
     // }
 
+    public Task UpdateEntityTarget(int id, int targetId, Vector3 position)
+    {
+        return World.Instance.ExecuteWithEntitiesAsync(id, targetId, (targeter, targeted) =>
+        {
+            ((NetworkEntityReferenceHolder)targeter.ReferenceHolder).NetworkTransformReceive.SetNewPosition(position);
+            targeter.Combat.TargetId = targetId;
+            targeter.Combat.Target = targeted.transform;
+        });
+    }
+
+    public Task UpdateMyTarget(int id, int targetId)
+    {
+        return World.Instance.ExecuteWithEntitiesAsync(id, targetId, (targeter, targeted) =>
+        {
+            targeter.Combat.TargetId = targetId;
+            targeter.Combat.Target = targeted.transform;
+        });
+    }
+
+    public Task UnsetEntityTarget(int id)
+    {
+        return World.Instance.ExecuteWithEntityAsync(id, e =>
+        {
+            e.Combat.TargetId = -1;
+            e.Combat.Target = null;
+        });
+    }
+
+    public Task StatusUpdate(int id, List<StatusUpdatePacket.Attribute> attributes)
+    {
+        return World.Instance.ExecuteWithEntityAsync(id, e =>
+        {
+            StatusUpdate(e, attributes);
+            if (e == PlayerEntity.Instance)
+            {
+                CharacterInfoWindow.Instance.UpdateValues();
+            }
+        });
+    }
+
+    public Task EntityStartAutoAttacking(int id)
+    {
+        return World.Instance.ExecuteWithEntityAsync(id, e =>
+        {
+            EntityStartAutoAttacking(e);
+        });
+    }
+
+    public Task EntityDied(int id, bool toVillageAllowed, bool toClanHallAllowed, bool toCastleAllowed, bool toSiegeHQAllowed, bool sweepable, bool fixedResAllowed)
+    {
+        return World.Instance.ExecuteWithEntityAsync(id, e =>
+        {
+            if (id == GameClient.Instance.CurrentPlayerId)
+            {
+                PlayerController.Instance.ResetDestination(false);
+                RestartLocationWindow.Instance.ShowWindowWithParams(toVillageAllowed, toClanHallAllowed, toCastleAllowed, toSiegeHQAllowed, fixedResAllowed);
+            }
+
+            e.ReferenceHolder.Combat.OnDeath();
+        });
+    }
+
+    public Task EntityRevived(int id)
+    {
+        return World.Instance.ExecuteWithEntityAsync(id, e =>
+        {
+            e.ReferenceHolder.Combat.OnRevive();
+        });
+    }
+
+    public Task EntityStopAutoAttacking(int id)
+    {
+        return World.Instance.ExecuteWithEntityAsync(id, e =>
+        {
+            EntityStopAutoAttacking(e);
+        });
+    }
+
+    public Task InflictDamageTo(Vector3 attackerPosition, int sender, Hit hit)
+    {
+        return World.Instance.ExecuteWithEntitiesAsync(sender, hit.TargetId, (senderEntity, targetEntity) =>
+        {
+            if (senderEntity != null)
+            {
+                if (sender != GameClient.Instance.CurrentPlayerId)
+                {
+                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(attackerPosition);
+                }
+                else
+                {
+                    senderEntity.transform.position = new Vector3(attackerPosition.x, World.Instance.GetGroundHeight(attackerPosition), attackerPosition.z);
+                }
+
+                InflictAttack(senderEntity, targetEntity, hit);
+            }
+            else
+            {
+                InflictAttack(targetEntity, hit);
+            }
+        });
+    }
+
     public void StatusUpdate(Entity entity, List<Attribute> attributes)
     {
         // Debug.Log("Word combat: Status update");
@@ -225,7 +328,6 @@ public class WorldCombat : MonoBehaviour
                 case AttributeType.MAX_CP:
                     stats.MaxCp = attribute.value;
                     break;
-                    //TODO: Where speed?
             }
         }
     }

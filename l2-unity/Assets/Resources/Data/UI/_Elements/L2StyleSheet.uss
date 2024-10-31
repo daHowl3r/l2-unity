@@ -3380,3 +3380,57 @@
     -unity-text-align: middle-left;
     font-size: 12px;
 }
+
+.restart-location-window {
+    flex-grow: 0;
+    width: 135px;
+    height: 175px;
+    flex-shrink: 0;
+    background-image: resource('Data/UI/Assets/Windows/Windows_DF_Drawer_Bg_Darker');
+    -unity-slice-bottom: 10;
+    -unity-slice-left: 27;
+    -unity-slice-top: 10;
+    -unity-slice-right: 20;
+    margin-top: auto;
+    margin-right: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    padding-top: 8px;
+    padding-right: 9px;
+    padding-bottom: 0;
+    padding-left: 9px;
+}
+
+.restart-location-window-buttons {
+    flex-grow: 1;
+    flex-direction: column;
+    -unity-text-align: upper-left;
+    justify-content: flex-start;
+    margin-top: 0;
+    flex-shrink: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    align-items: stretch;
+    align-self: auto;
+}
+
+.restart-location-window-button {
+    height: 20px;
+    background-color: rgba(188, 188, 188, 0);
+    width: auto;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.restart-location-window-button-label {
+    letter-spacing: 0;
+}
+
+.restart-location-window-button {
+    margin-bottom: 4px;
+}
+
+.restart-location-window-button {
+    display: none;
+}

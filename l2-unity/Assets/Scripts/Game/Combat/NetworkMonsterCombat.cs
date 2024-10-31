@@ -5,11 +5,16 @@ public class NetworkMonsterCombat : NetworkCombat
 {
     public MonsterAnimationController MonsterAnimationController { get { return (MonsterAnimationController)_referenceHolder.AnimationController; } }
 
-    protected override void OnDeath()
+    public override void OnDeath()
     {
         base.OnDeath();
         Debug.LogWarning("DEAD");
         MonsterAnimationController.SetBool(MonsterAnimationEvent.death, true);
+    }
+
+    public override void OnRevive()
+    {
+        MonsterAnimationController.SetBool(MonsterAnimationEvent.wait, true);
     }
 
     protected override void OnHit(Hit hit)

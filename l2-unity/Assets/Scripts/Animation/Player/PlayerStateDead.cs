@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerStateDead : PlayerStateBase
+public class PlayerStateDead : PlayerStateAction
 {
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {

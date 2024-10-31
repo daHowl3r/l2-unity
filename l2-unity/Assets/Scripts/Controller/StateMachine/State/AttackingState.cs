@@ -16,6 +16,10 @@ public class AttackingState : StateBase
         {
             _stateMachine.ChangeIntention(Intention.INTENTION_MOVE_TO);
         }
+        else if (!TargetManager.Instance.HasAttackTarget() || TargetManager.Instance.HasAttackTarget() && TargetManager.Instance.AttackTarget.Status.Hp <= 0)
+        {
+            _stateMachine.ChangeIntention(Intention.INTENTION_IDLE);
+        }
     }
 
     public override void HandleEvent(Event evt)
@@ -51,6 +55,9 @@ public class AttackingState : StateBase
                 {
                     _stateMachine.ChangeIntention(Intention.INTENTION_ATTACK, AttackIntentionType.ChangeTarget);
                 }
+                break;
+            case Event.DEAD:
+                _stateMachine.ChangeState(PlayerState.DEAD);
                 break;
         }
     }

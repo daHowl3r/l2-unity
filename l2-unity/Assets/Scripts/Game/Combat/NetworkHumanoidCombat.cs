@@ -5,10 +5,15 @@ public class NetworkHumanoidCombat : NetworkCombat
     public HumanoidAnimationController HumanoidAnimationController { get { return (HumanoidAnimationController)_referenceHolder.AnimationController; } }
     public HumanoidGear Gear { get { return (HumanoidGear)_referenceHolder.Gear; } }
 
-    protected override void OnDeath()
+    public override void OnDeath()
     {
         base.OnDeath();
         HumanoidAnimationController.SetBool(HumanoidAnimType.death, true);
+    }
+
+    public override void OnRevive()
+    {
+        HumanoidAnimationController.SetBool(HumanoidAnimType.wait, true);
     }
 
     protected override void OnHit(Hit hit)

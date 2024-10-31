@@ -23,6 +23,7 @@ public enum GameClientPacketType : byte
     RequestRestart = 0x46,
     ValidatePosition = 0x48,
     RequestDestroyItem = 0x59,
+    RequestRestartPoint = 0x6d,
 
 
 

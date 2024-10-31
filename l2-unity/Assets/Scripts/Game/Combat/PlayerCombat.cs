@@ -20,10 +20,16 @@ public class PlayerCombat : Combat
         }
     }
 
-    protected override void OnDeath()
+    public override void OnDeath()
     {
         base.OnDeath();
         PlayerStateMachine.Instance.NotifyEvent(Event.DEAD);
+    }
+
+    public override void OnRevive()
+    {
+        base.OnDeath();
+        PlayerStateMachine.Instance.NotifyEvent(Event.REVIVED);
     }
 
     protected override void OnHit(Hit hit)

@@ -44,10 +44,4 @@ public abstract class NetworkCombat : Combat
             NetworkTransformReceive.LookAt(_attackTarget);
         }
     }
-
-    /* Notify server that entity got attacked */
-    public override void InflictAttack(AttackType attackType)
-    {
-        GameClient.Instance.ClientPacketHandler.InflictAttack(Identity.Id, attackType);
-    }
 }

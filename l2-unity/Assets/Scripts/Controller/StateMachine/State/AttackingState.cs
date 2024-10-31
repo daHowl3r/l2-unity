@@ -53,7 +53,8 @@ public class AttackingState : StateBase
 
                 if (_stateMachine.Intention == Intention.INTENTION_FOLLOW)
                 {
-                    _stateMachine.ChangeIntention(Intention.INTENTION_ATTACK, AttackIntentionType.ChangeTarget);
+                    // _stateMachine.ChangeIntention(Intention.INTENTION_ATTACK, AttackIntentionType.ChangeTarget);
+                    _stateMachine.ChangeIntention(Intention.INTENTION_ATTACK);
                 }
                 break;
             case Event.DEAD:
@@ -65,6 +66,7 @@ public class AttackingState : StateBase
     public enum AttackIntentionType
     {
         ChangeTarget,
+        ForceAttack,
         AttackInput,
         TargetReached
     }

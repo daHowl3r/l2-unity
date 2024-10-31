@@ -73,9 +73,9 @@ public class GameClientPacketHandler : ClientPacketHandler
         SendPacket(packet);
     }
 
-    public void InflictAttack(int targetId, AttackType type)
+    public void RequestAttackForce(int targetId)
     {
-        RequestAttackPacket packet = new RequestAttackPacket(targetId, type);
+        RequestAttackPacket packet = new RequestAttackPacket(targetId);
         SendPacket(packet);
     }
 
@@ -97,7 +97,7 @@ public class GameClientPacketHandler : ClientPacketHandler
         SendPacket(packet);
     }
 
-    public void SendRequestAutoAttack(int objectId)
+    public void SendRequestAction(int objectId)
     {
         RequestActionPacket packet = new RequestActionPacket(objectId);
         SendPacket(packet);

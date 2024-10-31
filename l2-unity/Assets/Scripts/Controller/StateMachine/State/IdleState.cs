@@ -23,6 +23,7 @@ public class IdleState : StateBase
     {
         switch (evt)
         {
+            case Event.READY_TO_ATTACK:
             case Event.READY_TO_ACT:
                 if (TargetManager.Instance.HasAttackTarget() && !_stateMachine.WaitingForServerReply)
                 {
@@ -36,13 +37,14 @@ public class IdleState : StateBase
 
                     if (TargetManager.Instance.IsAttackTargetSet())
                     {
-                        // GameClient.Instance.ClientPacketHandler.SendRequestAutoAttack(-1); //TODO: Change this
-                        GameClient.Instance.ClientPacketHandler.SendRequestAutoAttack(TargetManager.Instance.AttackTarget.Identity.Id); //TODO: Change this
-                    }
-                    else
-                    {
-                        Debug.LogWarning("[StateMachine] Attacking a target which is not current target.");
-                        GameClient.Instance.ClientPacketHandler.SendRequestAutoAttack(TargetManager.Instance.AttackTarget.Identity.Id);
+                        if (PlayerCombat.Instance.IsForcedAction)
+                        {
+                            GameClient.Instance.ClientPacketHandler.RequestAttackForce(TargetManager.Instance.AttackTarget.Identity.Id);
+                        }
+                        else
+                        {
+                            GameClient.Instance.ClientPacketHandler.SendRequestAction(TargetManager.Instance.AttackTarget.Identity.Id);
+                        }
                     }
 
                     _stateMachine.SetWaitingForServerReply(true);

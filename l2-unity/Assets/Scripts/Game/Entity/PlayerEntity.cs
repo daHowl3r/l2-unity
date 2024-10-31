@@ -53,20 +53,7 @@ public class PlayerEntity : Entity
         PlayerStateMachine.Instance.OnActionDenied();
     }
 
-    public void OnActionAllowed(PlayerAction action)
-    {
-        Debug.LogWarning("Action allowed: " + action);
-        switch (action)
-        {
-            case PlayerAction.SetTarget:
-                break;
-            case PlayerAction.AutoAttack:
-                break;
-            case PlayerAction.Move:
-                PlayerStateMachine.Instance.OnActionAllowed();
-                break;
-        }
-    }
+    // public  
 
     public override void UpdateWaitType(ChangeWaitTypePacket.WaitType moveType)
     {

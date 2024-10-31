@@ -33,11 +33,6 @@ public enum GameServerPacketType : int
 
 
 
-
-
-
-
-
     ObjectPosition = 0xFF7,
     RemoveObject = 0xFF8,
     ObjectRotation = 0xFF9,
@@ -45,7 +40,7 @@ public enum GameServerPacketType : int
     ObjectMoveDirection = 0xFFF,
     GameTime = 0xFD0,
     ServerClose = 0xFD5,
-    ActionAllowed = 0xFD7,
+    // ActionAllowed = 0xFD7,
     LeaveWorld = 0xFDA,
 
     SocialAction = 0xFDE,

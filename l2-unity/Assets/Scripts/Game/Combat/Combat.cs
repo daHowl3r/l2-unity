@@ -92,9 +92,6 @@ public abstract class Combat : MonoBehaviour
         return Status.Hp <= 0;
     }
 
-    /* Notify server that entity got attacked */
-    public virtual void InflictAttack(AttackType attackType) { }
-
     public virtual void OnDeath() { }
 
     public virtual void OnRevive() { }

@@ -11,8 +11,6 @@ public class AttackIntention : IntentionBase
 
         if (target == null)
         {
-            Debug.Log("Target is null, CANCEL event sent");
-            // _stateMachine.NotifyEvent(Event.CANCEL);
             return;
         }
 
@@ -20,31 +18,24 @@ public class AttackIntention : IntentionBase
         {
             if (TargetManager.Instance.IsAttackTargetSet())
             {
-                // Already attacking target
                 return;
             }
             else
             {
-                // if (!_stateMachine.WaitingForServerReply)
-                // {
-                //     _stateMachine.SetWaitingForServerReply(true);
-                //     GameClient.Instance.ClientPacketHandler.UpdateMoveDirection(Vector3.zero);
-                // }
-
                 _stateMachine.ChangeIntention(Intention.INTENTION_FOLLOW);
-
                 return;
             }
         }
 
-        AttackIntentionType type = (AttackIntentionType)arg0;
+        // AttackIntentionType type = (AttackIntentionType)arg0;
 
-        Debug.LogWarning((AttackIntentionType)arg0);
+        // Debug.LogWarning((AttackIntentionType)arg0);
 
-        if (type != AttackIntentionType.TargetReached)
-        {
-            TargetManager.Instance.SetAttackTarget();
-        }
+        // if (type != AttackIntentionType.TargetReached)
+        // {
+        //     TargetManager.Instance.SetAttackTarget();
+        // }
+        TargetManager.Instance.SetAttackTarget();
 
         Vector3 targetPos = TargetManager.Instance.AttackTarget.Data.ObjectTransform.position;
 
@@ -56,7 +47,10 @@ public class AttackIntention : IntentionBase
         if (distance <= attackRange * 0.9f && !_stateMachine.WaitingForServerReply)
         {
             _stateMachine.ChangeState(PlayerState.IDLE);
-            _stateMachine.NotifyEvent(Event.READY_TO_ACT);
+
+
+            _stateMachine.NotifyEvent(Event.READY_TO_ATTACK);
+
         }
         else
         {

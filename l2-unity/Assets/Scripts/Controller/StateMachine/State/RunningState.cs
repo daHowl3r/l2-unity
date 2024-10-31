@@ -11,7 +11,8 @@ public class RunningState : StateBase
             case Event.ARRIVED:
                 if (TargetManager.Instance.HasAttackTarget())
                 {
-                    _stateMachine.ChangeIntention(Intention.INTENTION_ATTACK, AttackIntentionType.TargetReached);
+                    // _stateMachine.ChangeIntention(Intention.INTENTION_ATTACK, AttackIntentionType.TargetReached);
+                    _stateMachine.ChangeIntention(Intention.INTENTION_ATTACK);
                 }
                 else
                 {

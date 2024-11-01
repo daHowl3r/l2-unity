@@ -33,7 +33,7 @@ public class IdleState : StateBase
 
                     NetworkTransformShare.Instance.SharePosition();
 
-                    NetworkCharacterControllerShare.Instance.ForceShareMoveDirection();
+                    NetworkCharacterControllerShare.Instance.ShareMoveDirection(Vector3.zero);
 
                     if (TargetManager.Instance.IsAttackTargetSet())
                     {

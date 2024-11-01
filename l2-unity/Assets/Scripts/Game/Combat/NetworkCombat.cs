@@ -12,6 +12,8 @@ public abstract class NetworkCombat : Combat
 
     public override void OnDeath()
     {
+        base.OnDeath();
+
         if (AnimationController != null)
         {
             AnimationController.enabled = false;

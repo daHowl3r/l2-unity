@@ -55,8 +55,8 @@ public class World : MonoBehaviour
         _eventProcessor = EventProcessor.Instance;
         _playerPlaceholder = Resources.Load<GameObject>("Prefab/Player_FDarkElf");
         _userPlaceholder = Resources.Load<GameObject>("Prefab/User_FDarkElf");
-        _npcPlaceHolder = Resources.Load<GameObject>("Prefab/Npc");
-        _monsterPlaceholder = Resources.Load<GameObject>("Data/Animations/LineageMonsters/gremlin/gremlin_prefab");
+        // _npcPlaceHolder = Resources.Load<GameObject>("Prefab/Npc");
+        // _monsterPlaceholder = Resources.Load<GameObject>("Data/Animations/LineageMonsters/gremlin/gremlin_prefab");
         _npcsContainer = GameObject.Find("Npcs");
         _monstersContainer = GameObject.Find("Monsters");
         _usersContainer = GameObject.Find("Users");
@@ -377,18 +377,27 @@ public class World : MonoBehaviour
             return;
         }
 
+        identity.EntityType = npcgrp.Type;
+
         GameObject go = ModelTable.Instance.GetNpc(npcgrp.Mesh);
         if (go == null)
         {
-            Debug.LogError($"Npc {identity.NpcId} could not be loaded correctly.");
-            return;
+            if (identity.EntityType == EntityType.Monster)
+            {
+                go = _monsterPlaceholder;
+            }
+            else
+            {
+                go = _npcPlaceHolder;
+            }
+
+            Debug.LogError($"Npc {identity.NpcId} could not be loaded correctly, loaded placeholder instead.");
         }
 
         identity.SetPosY(GetGroundHeight(identity.Position));
         GameObject npcGo = Instantiate(go, identity.Position, Quaternion.identity);
         //NpcData npcData = new NpcData(npcName, npcgrp);
 
-        identity.EntityType = npcgrp.Type;
 
         Entity npc;
 

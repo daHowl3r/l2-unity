@@ -72,10 +72,13 @@ public abstract class Combat : MonoBehaviour
 
     public bool IsDead()
     {
-        return Status.Hp <= 0;
+        return Status.IsDead;
     }
 
-    public virtual void OnDeath() { }
+    public virtual void OnDeath()
+    {
+        Status.IsDead = true;
+    }
 
     public virtual void OnRevive() { }
 

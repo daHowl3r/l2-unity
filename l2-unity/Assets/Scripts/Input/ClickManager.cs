@@ -114,7 +114,7 @@ public class ClickManager : MonoBehaviour
         float angle = Vector3.Angle(hit.normal, Vector3.up);
         if (angle < 85f)
         {
-            PlaceLocator(_lastClickPosition, hit.normal);
+            StartCoroutine(PlaceLocator(_lastClickPosition, hit.normal));
         }
         else
         {
@@ -130,6 +130,7 @@ public class ClickManager : MonoBehaviour
 
     private IEnumerator PlaceLocator(Vector3 position, Vector3 normal)
     {
+        Debug.LogWarning("PlaceLocator");
         _locator.SetActive(true);
 
         _locator.gameObject.transform.position = position;
@@ -143,6 +144,7 @@ public class ClickManager : MonoBehaviour
 
     public void HideLocator(bool targetReached)
     {
+        Debug.LogWarning("HideLocator");
         if (targetReached)
         {
             Vector3 normal = _locatorBaseEffect.GetComponent<ParticleTimerResetGroup>().SurfaceNormal;

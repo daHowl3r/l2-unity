@@ -23,32 +23,21 @@ public class NetworkMonsterCombat : NetworkCombat
         //AudioHandler.PlaySound(EntitySoundEvent.Dmg);
     }
 
-    public override bool StartAutoAttacking()
+    public override void StartAutoAttacking()
     {
-        if (base.StartAutoAttacking())
-        {
-            MonsterAnimationController.SetBool(MonsterAnimationEvent.atk01, true);
-        }
+        base.StartAutoAttacking();
 
-        if (NetworkCharacterControllerReceive != null)
-        {
-            // Should stop moving if autoattacking
-            NetworkCharacterControllerReceive.SetDestination(transform.position);
-        }
-
-        return true;
+        MonsterAnimationController.SetBool(MonsterAnimationEvent.atk01, true);
+        // LookAtTarget();
     }
 
-    public override bool StopAutoAttacking()
+    public override void StopAutoAttacking()
     {
-        if (base.StopAutoAttacking())
-        {
-            if (!IsDead())
-            {
-                MonsterAnimationController.SetBool(MonsterAnimationEvent.atkwait, true);
-            }
-        }
+        base.StopAutoAttacking();
 
-        return true;
+        // if (!IsDead())
+        // {
+        //     MonsterAnimationController.SetBool(MonsterAnimationEvent.atkwait, true);
+        // }
     }
 }

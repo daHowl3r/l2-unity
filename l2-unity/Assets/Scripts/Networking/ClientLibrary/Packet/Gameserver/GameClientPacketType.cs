@@ -15,6 +15,7 @@ public enum GameClientPacketType : byte
     RequestUnEquip = 0x11,
     RequestDropItem = 0x12,
     UseItem = 0x14,
+    Appearing = 0x30,
     RequestShortcutReg = 0x33,
     RequestShortcutDel = 0x35,
     RequestUnsetTarget = 0x37,

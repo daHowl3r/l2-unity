@@ -8,16 +8,16 @@ public class NetworkTransformReceive : MonoBehaviour
     private float _newRotation;
     private float _posLerpValue;
     [SerializeField] private bool _positionSyncProtection = true;
-    private float _positionSyncNodesThreshold = 3f;
     [SerializeField] private bool _positionSynced = false;
     [SerializeField] private bool _positionSyncPaused = false;
     private float _lerpDuration = 0.1f;
     [SerializeField] private float _positionDelta;
+    private float _finalLerpDelta = 0.05f;
     [SerializeField] private long _lastDesyncTime = 0;
     [SerializeField] private long _lastDesyncDuration = 0;
     private long _maximumAllowedDesyncTimeMs = 0;
 
-    void Start()
+    protected virtual void Start()
     {
         if (World.Instance.OfflineMode)
         {
@@ -43,8 +43,22 @@ public class NetworkTransformReceive : MonoBehaviour
     /* Set new theorical position */
     public void SetNewPosition(Vector3 pos)
     {
-        /* adjust y to ground height */
-        pos.y = World.Instance.GetGroundHeight(pos);
+        SetNewPosition(pos, true);
+    }
+
+    public virtual void SetNewPosition(Vector3 pos, bool calculateY)
+    {
+        Debug.LogWarning($"[{transform.name}] SetNewPosition");
+
+        if (calculateY)
+        {
+            /* adjust y to ground height */
+            pos.y = World.Instance.GetGroundHeight(pos);
+        }
+        else
+        {
+            pos.y = transform.position.y;
+        }
 
         _serverPosition = pos;
 
@@ -59,52 +73,67 @@ public class NetworkTransformReceive : MonoBehaviour
     {
         /* Check if client transform position is synced with server's */
         _positionDelta = VectorUtils.Distance2D(transform.position, _serverPosition);
-        if (_positionDelta > Geodata.Instance.NodeSize * _positionSyncNodesThreshold && _positionSynced)
+        if (_positionDelta > GameClient.Instance.PositionSyncThreshold && _positionSynced)
         {
             _lastDesyncTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             _positionSynced = false;
         }
 
-        if (!_positionSynced)
+        if (_positionSynced)
         {
+            OnPositionSynced();
+        }
+        else
+        {
+            OnPositionNotSynced();
+        }
+    }
 
-            _lastDesyncDuration = DateTimeOffset.Now.ToUnixTimeMilliseconds() - _lastDesyncTime;
-            if (_lastDesyncDuration > _maximumAllowedDesyncTimeMs)
+    protected virtual void OnPositionSynced()
+    {
+
+    }
+
+    protected virtual void OnPositionNotSynced()
+    {
+        _lastDesyncDuration = DateTimeOffset.Now.ToUnixTimeMilliseconds() - _lastDesyncTime;
+        if (_lastDesyncDuration > _maximumAllowedDesyncTimeMs)
+        {
+            if (_positionDelta < _finalLerpDelta)
             {
-                if (_positionDelta <= Geodata.Instance.NodeSize / 10f)
-                {
-                    _positionSynced = true;
-                    return;
-                }
-
-                transform.position = Vector3.Lerp(_lastPos, _serverPosition, _posLerpValue);
-                _posLerpValue += (1 / _lerpDuration) * Time.deltaTime;
+                _positionSynced = true;
+                return;
             }
 
+            transform.position = Vector3.Lerp(_lastPos, _serverPosition, _posLerpValue);
+            _posLerpValue += (1 / _lerpDuration) * Time.deltaTime;
         }
     }
 
     /* Ajust rotation */
-    private void UpdateRotation()
+    protected virtual void UpdateRotation()
     {
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(Vector3.up * _newRotation), Time.deltaTime * 7.5f);
     }
 
-    public void SetFinalRotation(float finalRotation)
+    public virtual void SetFinalRotation(float finalRotation)
     {
+        Debug.Log($"[{transform.name}]Setting new final rotation: {finalRotation}");
         _newRotation = finalRotation;
     }
 
-    public void LookAt(Transform target)
+    public virtual void LookAt(Transform target)
     {
+        Debug.LogWarning("LookAt");
         if (target != null)
         {
             _newRotation = VectorUtils.CalculateMoveDirectionAngle(transform.position, target.position);
         }
     }
 
-    public void LookAt(Vector3 position)
+    public virtual void LookAt(Vector3 position)
     {
+        Debug.LogWarning("LookAt");
         _newRotation = VectorUtils.CalculateMoveDirectionAngle(transform.position, position);
     }
 

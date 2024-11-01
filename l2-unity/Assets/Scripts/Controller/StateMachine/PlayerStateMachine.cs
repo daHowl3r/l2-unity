@@ -43,7 +43,7 @@ public class PlayerStateMachine : MonoBehaviour
 
     public void SetWaitingForServerReply(bool value)
     {
-        Debug.LogWarning($"[StateMachine] Waiting for server reply: {value}");
+        // Debug.LogWarning($"[StateMachine] Waiting for server reply: {value}");
         _waitingForServerReply = value;
     }
 

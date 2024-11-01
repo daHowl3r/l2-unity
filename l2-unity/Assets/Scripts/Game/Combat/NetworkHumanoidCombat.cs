@@ -22,27 +22,22 @@ public class NetworkHumanoidCombat : NetworkCombat
         //AudioHandler.PlaySound(EntitySoundEvent.Dmg);
     }
 
-    public override bool StartAutoAttacking()
+    public override void StartAutoAttacking()
     {
-        if (base.StartAutoAttacking())
-        {
-            HumanoidAnimationController.SetBool(HumanoidAnimType.atk01, true);
-        }
+        base.StartAutoAttacking();
 
-        return true;
+        HumanoidAnimationController.SetBool(HumanoidAnimType.atk01, true);
+        // LookAtTarget();
     }
 
-    public override bool StopAutoAttacking()
+    public override void StopAutoAttacking()
     {
-        if (base.StopAutoAttacking())
-        {
-            HumanoidAnimationController.SetBool(HumanoidAnimType.atk01, false);
-            if (!NetworkCharacterControllerReceive.IsMoving() && !IsDead())
-            {
-                HumanoidAnimationController.SetBool(HumanoidAnimType.atkwait, true);
-            }
-        }
+        base.StopAutoAttacking();
 
-        return true;
+        HumanoidAnimationController.SetBool(HumanoidAnimType.atk01, false);
+        if (!NetworkCharacterControllerReceive.IsMoving() && !IsDead())
+        {
+            HumanoidAnimationController.SetBool(HumanoidAnimType.atkwait, true);
+        }
     }
 }

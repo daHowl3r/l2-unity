@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MonsterStateAtk : MonsterStateBase
+public class MonsterStateAtk : MonsterStateAction
 {
     private float _lastNormalizedTime;
 
@@ -30,6 +30,21 @@ public class MonsterStateAtk : MonsterStateBase
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         SetBool(MonsterAnimationEvent.atk01, false);
+
+        if (IsMoving())
+        {
+            if (Entity.Running)
+            {
+                SetBool(MonsterAnimationEvent.run, true);
+            }
+            else
+            {
+                SetBool(MonsterAnimationEvent.walk, true);
+            }
+
+            return;
+        }
+
         if ((stateInfo.normalizedTime - _lastNormalizedTime) >= 1f)
         {
             _lastNormalizedTime = stateInfo.normalizedTime;

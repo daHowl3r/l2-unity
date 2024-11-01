@@ -462,6 +462,7 @@ public class World : MonoBehaviour
     {
         entity.Identity.UpdateEntityPartial(identity);
         ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(identity.Position);
+        ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetFinalRotation(identity.Heading);
         //entity.Status.UpdateStatus(status);
         entity.Stats.UpdateStats(stats);
         entity.Running = running;
@@ -478,7 +479,7 @@ public class World : MonoBehaviour
     public float GetGroundHeight(Vector3 pos)
     {
         RaycastHit hit;
-        if (Physics.Raycast(pos + Vector3.up * 1.0f, Vector3.down, out hit, 2.5f, _groundMask))
+        if (Physics.Raycast(pos + Vector3.up * 1.5f, Vector3.down, out hit, 3.5f, _groundMask))
         {
             return hit.point.y;
         }
@@ -501,16 +502,17 @@ public class World : MonoBehaviour
 
             e.Identity.Position = position;
             e.Identity.Heading = heading;
-            e.transform.position = new Vector3(position.x, GetGroundHeight(position), position.z);
 
             float rotation = VectorUtils.ConvertRotToUnity(heading);
             if (id == GameClient.Instance.CurrentPlayerId)
             {
+                PlayerTransformReceive.Instance.SetNewPosition(position);
                 NetworkCharacterControllerShare.Instance.Heading = heading;
             }
             else
             {
                 ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetFinalRotation(rotation);
+                ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(position);
             }
         });
     }
@@ -550,7 +552,6 @@ public class World : MonoBehaviour
 
         //look at destination
         ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.LookAt(destination);
-
     }
 
     public Task UpdateObjectAnimation(int id, int animId, float value)
@@ -588,7 +589,7 @@ public class World : MonoBehaviour
             }
             else
             {
-                e.transform.position = new Vector3(entityPosition.x, GetGroundHeight(entityPosition), entityPosition.z);
+                PlayerTransformReceive.Instance.SetNewPosition(entityPosition);
             }
 
             e.UpdateWaitType(moveType);
@@ -607,19 +608,20 @@ public class World : MonoBehaviour
     {
         return ExecuteWithEntityAsync(entityId, e =>
         {
-            if (loadingScreen)
-            {
-                Debug.LogWarning("TODO: HANDLE TELEPORT LOADING SCREEN");
-            }
-
-            Vector3 adjustedPosition = new Vector3(teleportTo.x, GetGroundHeight(teleportTo), teleportTo.z);
-
             if (entityId != GameClient.Instance.CurrentPlayerId)
             {
-                ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(adjustedPosition);
+                ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(teleportTo);
+            }
+            else
+            {
+                if (loadingScreen)
+                {
+                    Debug.LogWarning("TODO: HANDLE TELEPORT LOADING SCREEN");
+                }
+                PlayerTransformReceive.Instance.SetNewPosition(teleportTo);
+                GameClient.Instance.ClientPacketHandler.NotifyAppearing();
             }
 
-            e.transform.position = adjustedPosition;
             e.Identity.Position = teleportTo;
         });
     }

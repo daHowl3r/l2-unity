@@ -209,4 +209,10 @@ public class GameClientPacketHandler : ClientPacketHandler
         RequestRestartPointPacket packet = new RequestRestartPointPacket(restartPoint);
         SendPacket(packet);
     }
+
+    public void NotifyAppearing()
+    {
+        AppearingPacket packet = new AppearingPacket();
+        SendPacket(packet);
+    }
 }

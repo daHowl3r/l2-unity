@@ -4,10 +4,8 @@ public class AttackingState : StateBase
 
     public override void Enter()
     {
-        if (PlayerCombat.Instance.StartAutoAttacking())
-        {
-            PlayerController.Instance.StartLookAt(TargetManager.Instance.AttackTarget.Data.ObjectTransform);
-        }
+        PlayerCombat.Instance.StartAutoAttacking();
+        PlayerController.Instance.StartLookAt(TargetManager.Instance.AttackTarget.Data.ObjectTransform);
     }
 
     public override void Update()

@@ -15,6 +15,7 @@ public class NetworkMonsterEntity : NetworkEntity
 
     public override void OnStopMoving()
     {
+        base.OnStopMoving();
         // if (MonsterAnimationController.GetBool(MonsterAnimationEvent.atk01) == false)
         // {
         //     Debug.LogWarning("On stop moving valid monster");

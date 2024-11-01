@@ -209,11 +209,15 @@ public class WorldCombat : MonoBehaviour
             {
                 if (sender != GameClient.Instance.CurrentPlayerId)
                 {
-                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(attackerPosition);
+                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(attackerPosition, false);
+                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).NetworkCharacterControllerReceive.SetDestination(senderEntity.transform.position);
+
+                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).Combat.Target = targetEntity.transform;
+                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).Combat.AttackTarget = targetEntity.transform;
                 }
                 else
                 {
-                    senderEntity.transform.position = new Vector3(attackerPosition.x, World.Instance.GetGroundHeight(attackerPosition), attackerPosition.z);
+                    PlayerTransformReceive.Instance.SetNewPosition(attackerPosition);
                 }
 
                 InflictAttack(senderEntity, targetEntity, hit);

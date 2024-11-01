@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MonsterStateWait : MonsterStateBase
+public class MonsterStateWait : MonsterStateAction
 {
     public int playBreatheSoundChancePercent = 100;
     bool started = false;
@@ -17,6 +17,19 @@ public class MonsterStateWait : MonsterStateBase
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (IsMoving())
+        {
+            if (Entity.Running)
+            {
+                SetBool(MonsterAnimationEvent.run, true);
+            }
+            else
+            {
+                SetBool(MonsterAnimationEvent.walk, true);
+            }
+            return;
+        }
+
         if ((stateInfo.normalizedTime % 1) >= 0.90f && started)
         {
             started = false;

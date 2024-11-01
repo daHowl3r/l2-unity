@@ -9,6 +9,8 @@ public class GameClient : DefaultClient
     [SerializeField] protected int _serverId;
     [SerializeField] private int _playKey1;
     [SerializeField] private int _playKey2;
+    [SerializeField] private float _positionSyncThreshold;
+
     private GameCrypt _gameCrypt;
 
     public PlayerInfo PlayerInfo { get { return _playerInfo; } set { _playerInfo = value; } }
@@ -16,6 +18,8 @@ public class GameClient : DefaultClient
     public int ServerId { get { return _serverId; } set { _serverId = value; } }
     public int PlayKey1 { get { return _playKey1; } set { _playKey1 = value; } }
     public int PlayKey2 { get { return _playKey2; } set { _playKey2 = value; } }
+    public float PositionSyncThreshold { get { return _positionSyncThreshold; } set { _positionSyncThreshold = value; } }
+
     public GameCrypt GameCrypt { get { return _gameCrypt; } }
 
     private GameClientPacketHandler clientPacketHandler;

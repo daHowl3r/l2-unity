@@ -37,4 +37,10 @@ public abstract class NetworkEntity : Entity
         AnimationController.SetWalkSpeed(converted);
         return converted;
     }
+
+    public override void OnStopMoving()
+    {
+        base.OnStopMoving();
+        Combat.OnStopMoving();
+    }
 }

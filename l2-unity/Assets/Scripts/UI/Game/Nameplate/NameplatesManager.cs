@@ -225,8 +225,10 @@ public class NameplatesManager : MonoBehaviour
 
     public void RemoveNameplate(int id)
     {
-        _rootElement.Remove(_nameplates[id].NameplateEle);
-        _nameplates.TryRemove(id, out var removed);
+        if (_nameplates.TryRemove(id, out var removed))
+        {
+            _rootElement.Remove(removed.NameplateEle);
+        }
     }
 
     private void UpdateNameplateStyle(Nameplate nameplate)

@@ -40,31 +40,32 @@ public abstract class Combat : MonoBehaviour
         }
     }
 
-    public virtual bool StartAutoAttacking()
+    public virtual void StartAutoAttacking()
     {
-        if (_target == null)
-        {
-            Debug.LogWarning("Trying to attack a null target");
-            return false;
-        }
+        // if (_target == null)
+        // {
+        //     Debug.LogWarning("Trying to attack a null target");
+        //     return false;
+        // }
 
         _startAutoAttackTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        _attackTarget = _target;
 
-        return true;
+        if (_target != null)
+        {
+            _attackTarget = _target;
+        }
     }
 
-    public virtual bool StopAutoAttacking()
+    public virtual void StopAutoAttacking()
     {
-        Debug.Log($"[{transform.name}] Stop autoattacking");
-        if (_attackTarget == null)
-        {
-            return false;
-        }
+        // Debug.Log($"[{transform.name}] Stop autoattacking");
+        // if (_attackTarget == null)
+        // {
+        //     return false;
+        // }
 
         _stopAutoAttackTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         _attackTarget = null;
-        return true;
     }
 
     // Called when ApplyDamage packet is received 
@@ -128,5 +129,9 @@ public abstract class Combat : MonoBehaviour
         // voice_sound_weapon -> play voice based on current weapon equiped (random)
         // defense sound -> only when soulshot is not activated
         // Swish sound -> only when attack missed (attacker)
+    }
+
+    public virtual void OnStopMoving()
+    {
     }
 }

@@ -32,6 +32,13 @@ public class PlayerStateAtk : PlayerStateAction
             return;
         }
 
+        // Safety for when player is still attacking but no new attack packet received
+        if (DidAttackTimeout())
+        {
+            SetBool(HumanoidAnimType.atkwait, true);
+            return;
+        }
+
         if (ShouldAttack())
         {
             return;

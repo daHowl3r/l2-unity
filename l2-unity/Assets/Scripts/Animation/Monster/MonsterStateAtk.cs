@@ -61,7 +61,7 @@ public class MonsterStateAtk : MonsterStateAction
         {
             SetBool(MonsterAnimationEvent.atkwait, true);
             SetBool(MonsterAnimationEvent.atk01, false);
-            Debug.LogWarning("Should ATK WAIT! (StopAttack)");
+            // Debug.LogWarning("Should ATK WAIT! (StopAttack)");
         }
     }
 

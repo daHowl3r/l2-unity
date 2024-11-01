@@ -61,10 +61,10 @@ public class IdleState : StateBase
                 }
                 break;
             case Event.ACTION_ALLOWED:
-                if (_stateMachine.Intention == Intention.INTENTION_ATTACK) //TODO maybe delete
-                {
-                    _stateMachine.ChangeState(PlayerState.ATTACKING);
-                }
+                // if (_stateMachine.Intention == Intention.INTENTION_ATTACK) //TODO maybe delete
+                // {
+                //     _stateMachine.ChangeState(PlayerState.ATTACKING);
+                // }
                 if (_stateMachine.Intention == Intention.INTENTION_SIT)
                 {
                     _stateMachine.ChangeState(PlayerState.SITTING);

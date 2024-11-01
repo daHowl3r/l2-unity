@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public class PlayerStateAction : PlayerStateBase
 {
@@ -69,7 +70,6 @@ public class PlayerStateAction : PlayerStateBase
         return false;
     }
 
-
     protected bool ShouldAttack()
     {
         if (PlayerStateMachine.Instance.State == PlayerState.ATTACKING)
@@ -115,17 +115,28 @@ public class PlayerStateAction : PlayerStateBase
         return false;
     }
 
+    protected bool DidAttackTimeout()
+    {
+        long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        if (now > ((long)_referenceHolder.AnimationController.PAtkSpd) + _referenceHolder.Combat.CombatTimestamp)
+        {
+            // Debug.LogWarning("Should ATK WAIT! (StopAttack)");
+            return true;
+        }
+
+        return false;
+    }
+
     protected bool ShouldAtkWait()
     {
         long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+        // Debug.LogWarning($"Now:{now} TimStap:{PlayerCombat.Instance.CombatTimestamp} Gap:{now - PlayerCombat.Instance.CombatTimestamp}");
         if (PlayerStateMachine.Instance.State == PlayerState.IDLE
              && now - PlayerCombat.Instance.CombatTimestamp < 5000)
         {
-            if (PlayerCombat.Instance.AttackTarget == null)
-            {
-                SetBool(HumanoidAnimType.atkwait, true, false);
-                return true;
-            }
+            SetBool(HumanoidAnimType.atkwait, true, false);
+            return true;
         }
 
         return false;

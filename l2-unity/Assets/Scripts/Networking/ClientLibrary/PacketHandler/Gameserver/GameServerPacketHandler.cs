@@ -48,8 +48,8 @@ public class GameServerPacketHandler : ServerPacketHandler
             // case GameServerPacketType.ObjectAnimation:
             //     OnUpdateAnimation(data);
             //     break;
-            case GameServerPacketType.ApplyDamage:
-                OnInflictDamage(data);
+            case GameServerPacketType.Attack:
+                OnEntityAttack(data);
                 break;
             case GameServerPacketType.NpcInfo:
                 OnNpcInfoReceive(data);
@@ -73,10 +73,10 @@ public class GameServerPacketHandler : ServerPacketHandler
                 OnMyTargetSet(data);
                 break;
             case GameServerPacketType.AutoAttackStart:
-                OnEntityAutoAttackStart(data);
+                OnEntityAttackStanceStart(data);
                 break;
             case GameServerPacketType.AutoAttackStop:
-                OnEntityAutoAttackStop(data);
+                OnEntityAttackStanceEnd(data);
                 break;
             case GameServerPacketType.ActionFailed:
                 OnActionFailed(data);
@@ -379,7 +379,7 @@ public class GameServerPacketHandler : ServerPacketHandler
     //     World.Instance.UpdateObjectAnimation(id, animId, value);
     // }
 
-    private void OnInflictDamage(byte[] data)
+    private void OnEntityAttack(byte[] data)
     {
         InflictDamagePacket packet = new InflictDamagePacket(data);
         Hit[] hits = packet.Hits;
@@ -388,7 +388,7 @@ public class GameServerPacketHandler : ServerPacketHandler
         {
             if (hits[i] != null)
             {
-                WorldCombat.Instance.InflictDamageTo(packet.AttackerPosition, packet.SenderId, hits[i]);
+                WorldCombat.Instance.EntityAttacks(packet.AttackerPosition, packet.SenderId, hits[i]);
             }
         }
     }
@@ -429,17 +429,17 @@ public class GameServerPacketHandler : ServerPacketHandler
         WorldCombat.Instance.UpdateMyTarget(GameClient.Instance.CurrentPlayerId, packet.TargetId);
     }
 
-    private void OnEntityAutoAttackStart(byte[] data)
+    private void OnEntityAttackStanceStart(byte[] data)
     {
-        Debug.Log("OnEntityAutoAttackStart");
-        AutoAttackStartPacket packet = new AutoAttackStartPacket(data);
-        WorldCombat.Instance.EntityStartAutoAttacking(packet.EntityId);
+        Debug.Log("OnEntityAttackStanceStart");
+        AttackStanceStartPacket packet = new AttackStanceStartPacket(data);
+        WorldCombat.Instance.EntityAttackStanceStart(packet.EntityId);
     }
 
-    private void OnEntityAutoAttackStop(byte[] data)
+    private void OnEntityAttackStanceEnd(byte[] data)
     {
-        AutoAttackStopPacket packet = new AutoAttackStopPacket(data);
-        WorldCombat.Instance.EntityStopAutoAttacking(packet.EntityId);
+        AttackStanceEndPacket packet = new AttackStanceEndPacket(data);
+        WorldCombat.Instance.EntityAttackStanceEnd(packet.EntityId);
     }
 
     private void OnActionFailed(byte[] data)

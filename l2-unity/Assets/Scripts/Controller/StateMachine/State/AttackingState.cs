@@ -4,7 +4,7 @@ public class AttackingState : StateBase
 
     public override void Enter()
     {
-        PlayerCombat.Instance.StartAutoAttacking();
+        // PlayerCombat.Instance.StartAttackStance();
         PlayerController.Instance.StartLookAt(TargetManager.Instance.AttackTarget.Data.ObjectTransform);
     }
 
@@ -61,18 +61,9 @@ public class AttackingState : StateBase
         }
     }
 
-    public enum AttackIntentionType
-    {
-        ChangeTarget,
-        ForceAttack,
-        AttackInput,
-        TargetReached
-    }
-
-
     public override void Exit()
     {
-        PlayerCombat.Instance.StopAutoAttacking();
+        // PlayerCombat.Instance.StopAttackStance();
         PlayerController.Instance.StopLookAt();
     }
 }

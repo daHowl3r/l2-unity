@@ -475,8 +475,8 @@ public class World : MonoBehaviour
     {
         entity.Identity.UpdateEntityPartial(identity);
         ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(identity.Position);
-        float rotation = VectorUtils.ConvertRotToUnity(identity.Heading);
-        ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetFinalRotation(rotation);
+        // float rotation = VectorUtils.ConvertRotToUnity(identity.Heading);
+        // ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetFinalRotation(rotation);
         //entity.Status.UpdateStatus(status);
         entity.Stats.UpdateStats(stats);
         entity.Running = running;
@@ -572,7 +572,7 @@ public class World : MonoBehaviour
         }
         else
         {
-            referenceHolder.NetworkCharacterControllerReceive.SetDestination(destination, e.Stats.AttackRange);
+            referenceHolder.NetworkCharacterControllerReceive.SetDestination(destination, WorldCombat.Instance.GetRealAttackRange(e, e.Combat.AttackTarget));
         }
 
         //look at destination

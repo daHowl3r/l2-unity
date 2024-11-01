@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
 
-public class AutoAttackStopPacket : ServerPacket
+public class AttackStanceStartPacket : ServerPacket
 {
     public int EntityId { get; private set; }
 
-    public AutoAttackStopPacket(byte[] d) : base(d)
+    public AttackStanceStartPacket(byte[] d) : base(d)
     {
         Parse();
     }

@@ -135,6 +135,13 @@ public class PlayerStateMachine : MonoBehaviour
         NotifyEvent(Event.ACTION_ALLOWED);
     }
 
+    public void OnAttackAllowed()
+    {
+        if (_enableLogs) Debug.Log("[StateMachine] Attack allowed");
+        SetWaitingForServerReply(false);
+        NotifyEvent(Event.ATTACK_ALLOWED);
+    }
+
     public void OnActionDenied()
     {
         if (_enableLogs) Debug.Log("[StateMachine] Action denied");

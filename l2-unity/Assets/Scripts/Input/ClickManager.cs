@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ClickManager : MonoBehaviour
 {
@@ -86,6 +87,11 @@ public class ClickManager : MonoBehaviour
                 }
             }
         }
+
+        if (InputManager.Instance.Move || InputManager.Instance.MoveForward)
+        {
+            HideLocator(false);
+        }
     }
 
     public void OnClickToMove(RaycastHit hit)
@@ -123,6 +129,7 @@ public class ClickManager : MonoBehaviour
 
     public void PlaceLocator(Vector3 position, Vector3 normal)
     {
+        _locator.SetActive(true);
         _locator.gameObject.transform.position = position;
         _locatorBaseEffect.GetComponent<ParticleTimerResetGroup>().SurfaceNormal = normal;
         _locatorReachedEffect.SetActive(false);
@@ -140,6 +147,7 @@ public class ClickManager : MonoBehaviour
         }
         else
         {
+            _locator.SetActive(false);
             _locatorReachedEffect.SetActive(false);
         }
 

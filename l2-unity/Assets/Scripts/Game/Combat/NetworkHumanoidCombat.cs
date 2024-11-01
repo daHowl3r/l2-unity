@@ -21,21 +21,21 @@ public class NetworkHumanoidCombat : NetworkCombat
         base.OnHit(hit);
     }
 
-    public override void StartAutoAttacking()
-    {
-        base.StartAutoAttacking();
+    // public override void StartAttackStance()
+    // {
+    //     base.StartAttackStance();
 
-        HumanoidAnimationController.SetBool(HumanoidAnimType.atk01, true);
-    }
+    //     HumanoidAnimationController.SetBool(HumanoidAnimType.atk01, true);
+    // }
 
-    public override void StopAutoAttacking()
-    {
-        base.StopAutoAttacking();
+    // public override void StopAttackStance()
+    // {
+    //     base.StopAttackStance();
 
-        HumanoidAnimationController.SetBool(HumanoidAnimType.atk01, false);
-        if (!NetworkCharacterControllerReceive.IsMoving() && !IsDead())
-        {
-            HumanoidAnimationController.SetBool(HumanoidAnimType.atkwait, true);
-        }
-    }
+    //     HumanoidAnimationController.SetBool(HumanoidAnimType.atk01, false);
+    //     if (!NetworkCharacterControllerReceive.IsMoving() && !IsDead())
+    //     {
+    //         HumanoidAnimationController.SetBool(HumanoidAnimType.atkwait, true);
+    //     }
+    // }
 }

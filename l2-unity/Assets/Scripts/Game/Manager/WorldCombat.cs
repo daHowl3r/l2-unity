@@ -6,6 +6,8 @@ using static StatusUpdatePacket;
 
 public class WorldCombat : MonoBehaviour
 {
+    [SerializeField] private List<Hit> _hits;
+
     private static WorldCombat _instance;
     public static WorldCombat Instance { get { return _instance; } }
 
@@ -19,6 +21,8 @@ public class WorldCombat : MonoBehaviour
         {
             Destroy(this);
         }
+
+        _hits = new List<Hit>();
     }
 
     void OnDestroy()
@@ -26,11 +30,29 @@ public class WorldCombat : MonoBehaviour
         _instance = null;
     }
 
-
-    public void InflictAttack(Entity target, Hit hit)
+    void FixedUpdate()
     {
-        ApplyDamage(target, hit);
+        ApplyHits();
     }
+
+    private void ApplyHits()
+    {
+        float now = Time.time;
+        for (int i = _hits.Count - 1; i >= 0; i--)
+        {
+            Hit hit = _hits[i];
+            if (now >= hit.HitTime)
+            {
+                _hits.RemoveAt(i);
+                InflictAttack(hit.Attacker, hit.Target, hit);
+            }
+        }
+    }
+
+    // public void InflictAttack(Entity target, Hit hit)
+    // {
+    //     ApplyDamage(target, hit);
+    // }
 
     public void InflictAttack(Entity attacker, Entity target, Hit hit)
     {
@@ -54,27 +76,27 @@ public class WorldCombat : MonoBehaviour
 
     public void EntityStartAutoAttacking(Entity entity)
     {
-        if (entity == PlayerEntity.Instance)
-        {
-            PlayerStateMachine.Instance.OnActionAllowed();
-        }
-        else
-        {
-            entity.Combat.StartAutoAttacking();
-        }
+        // if (entity == PlayerEntity.Instance)
+        // {
+        //     PlayerStateMachine.Instance.OnActionAllowed();
+        // }
+        // else
+        // {
+        //     entity.Combat.StartAttackStance();
+        // }
     }
 
     public void EntityStopAutoAttacking(Entity entity)
     {
-        Debug.LogWarning($"[{entity.transform.name}] EntityStopAutoAttacking");
-        if (entity == PlayerEntity.Instance)
-        {
-            PlayerStateMachine.Instance.OnStopAutoAttack();
-        }
-        else
-        {
-            entity.Combat.StopAutoAttacking();
-        }
+        // Debug.LogWarning($"[{entity.transform.name}] EntityStopAutoAttacking");
+        // if (entity == PlayerEntity.Instance)
+        // {
+        //     PlayerStateMachine.Instance.OnStopAutoAttack();
+        // }
+        // else
+        // {
+        //     entity.Combat.StopAttackStance();
+        // }
     }
 
     public void EntityCastSkill(Entity entity, int skillId)
@@ -164,11 +186,19 @@ public class WorldCombat : MonoBehaviour
         });
     }
 
-    public Task EntityStartAutoAttacking(int id)
+    public Task EntityAttackStanceStart(int id)
     {
         return World.Instance.ExecuteWithEntityAsync(id, e =>
         {
-            EntityStartAutoAttacking(e);
+            // EntityStartAutoAttacking(e);
+        });
+    }
+
+    public Task EntityAttackStanceEnd(int id)
+    {
+        return World.Instance.ExecuteWithEntityAsync(id, e =>
+        {
+            // EntityStopAutoAttacking(e);
         });
     }
 
@@ -194,59 +224,52 @@ public class WorldCombat : MonoBehaviour
         });
     }
 
-    public Task EntityStopAutoAttacking(int id)
-    {
-        return World.Instance.ExecuteWithEntityAsync(id, e =>
-        {
-            EntityStopAutoAttacking(e);
-        });
-    }
-
-    public Task InflictDamageTo(Vector3 attackerPosition, int sender, Hit hit)
+    public Task EntityAttacks(Vector3 attackerPosition, int sender, Hit hit)
     {
         return World.Instance.ExecuteWithEntitiesAsync(sender, hit.TargetId, (senderEntity, targetEntity) =>
         {
-            if (senderEntity != null)
+            //TODO: Handle AOE
+
+            hit.Attacker = senderEntity;
+            hit.Target = targetEntity;
+            hit.HitTime = Time.time + senderEntity.AnimationController.PAtkSpd / 2f / 1000f;
+            _hits.Add(hit);
+
+            Debug.Log($"Hit scheduled in {senderEntity.AnimationController.PAtkSpd / 2f} ms - Now: {Time.time} - HitTime: {hit.HitTime}");
+
+            if (sender != GameClient.Instance.CurrentPlayerId)
             {
-                if (sender != GameClient.Instance.CurrentPlayerId)
+                NetworkEntityReferenceHolder referenceHolder = (NetworkEntityReferenceHolder)senderEntity.ReferenceHolder;
+
+                // Update attacker target 
+                if (referenceHolder.Combat.Target != targetEntity)
                 {
-                    NetworkEntityReferenceHolder referenceHolder = (NetworkEntityReferenceHolder)senderEntity.ReferenceHolder;
-
-                    // Update attacker target 
-                    if (referenceHolder.Combat.Target != targetEntity)
-                    {
-                        referenceHolder.Combat.Target = targetEntity;
-                        referenceHolder.Combat.AttackTarget = targetEntity;
-                    }
-
-                    Debug.LogWarning("Attacker position: " + attackerPosition);
-                    referenceHolder.NetworkTransformReceive.SetNewPosition(attackerPosition, false);
-                    referenceHolder.NetworkCharacterControllerReceive.ResetDestination();
-
-                    senderEntity.OnStopMoving();
-
-                }
-                else
-                {
-                    PlayerTransformReceive.Instance.SetNewPosition(attackerPosition);
+                    referenceHolder.Combat.Target = targetEntity;
+                    referenceHolder.Combat.AttackTarget = targetEntity;
                 }
 
-                // Update attacked target 
-                if (hit.TargetId != GameClient.Instance.CurrentPlayerId)
-                {
-                    if (((NetworkEntityReferenceHolder)targetEntity.ReferenceHolder).Combat.Target == null)
-                    {
-                        ((NetworkEntityReferenceHolder)targetEntity.ReferenceHolder).Combat.Target = senderEntity;
-                        ((NetworkEntityReferenceHolder)targetEntity.ReferenceHolder).Combat.AttackTarget = senderEntity;
-                    }
-                }
-
-                InflictAttack(senderEntity, targetEntity, hit);
+                Debug.LogWarning("Attacker position: " + attackerPosition);
+                referenceHolder.NetworkTransformReceive.SetNewPosition(attackerPosition, false);
+                referenceHolder.NetworkCharacterControllerReceive.ResetDestination();
             }
             else
             {
-                InflictAttack(targetEntity, hit);
+                PlayerTransformReceive.Instance.SetNewPosition(attackerPosition);
             }
+
+            // Update attacked target 
+            if (hit.TargetId != GameClient.Instance.CurrentPlayerId)
+            {
+                if (((NetworkEntityReferenceHolder)targetEntity.ReferenceHolder).Combat.Target == null)
+                {
+                    ((NetworkEntityReferenceHolder)targetEntity.ReferenceHolder).Combat.Target = senderEntity;
+                    ((NetworkEntityReferenceHolder)targetEntity.ReferenceHolder).Combat.AttackTarget = senderEntity;
+                }
+            }
+
+            senderEntity.OnStopMoving();
+            senderEntity.AttackTargetOnce();
+            // InflictAttack(senderEntity, targetEntity, hit);
         });
     }
 
@@ -355,5 +378,12 @@ public class WorldCombat : MonoBehaviour
                     break;
             }
         }
+    }
+
+    public float GetRealAttackRange(Entity attacker, Entity target)
+    {
+        // return attacker.Appearance.CollisionRadius + target.Appearance.CollisionRadius + attacker.Stats.AttackRange;
+        // return attacker.Appearance.CollisionRadius + target.Appearance.CollisionRadius;
+        return attacker.Stats.AttackRange;
     }
 }

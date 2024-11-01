@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -10,14 +12,14 @@ public abstract class Combat : MonoBehaviour
     [SerializeField] private int _targetId;
     [SerializeField] protected Entity _target;
     [SerializeField] protected Entity _attackTarget;
-    [SerializeField] private long _stopAutoAttackTime;
-    [SerializeField] private long _startAutoAttackTime;
+    // [SerializeField] private long _stopAutoAttackTime;
+    [SerializeField] private long _combatTimestamp;
 
     public int TargetId { get => _targetId; set => _targetId = value; }
     public Entity Target { get { return _target; } set { _target = value; } }
     public Entity AttackTarget { get { return _attackTarget; } set { _attackTarget = value; } }
-    public long StopAutoAttackTime { get { return _stopAutoAttackTime; } }
-    public long StartAutoAttackTime { get { return _startAutoAttackTime; } }
+    // public long StopAutoAttackTime { get { return _stopAutoAttackTime; } }
+    public long CombatTimestamp { get { return _combatTimestamp; } }
     protected Status Status { get { return _referenceHolder.Entity.Status; } }
     protected BaseAnimationAudioHandler AudioHandler { get { return _referenceHolder.AudioHandler; } }
     protected BaseAnimationController AnimationController { get { return _referenceHolder.AnimationController; } }
@@ -40,21 +42,21 @@ public abstract class Combat : MonoBehaviour
         }
     }
 
-    public virtual void StartAutoAttacking()
-    {
-        _startAutoAttackTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+    // public virtual void StartAttackStance()
+    // {
+    //     _startAutoAttackTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
-        if (_target != null)
-        {
-            _attackTarget = _target;
-        }
-    }
+    //     if (_target != null)
+    //     {
+    //         _attackTarget = _target;
+    //     }
+    // }
 
-    public virtual void StopAutoAttacking()
-    {
-        _stopAutoAttackTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        _attackTarget = null;
-    }
+    // public virtual void StopAttackStance()
+    // {
+    //     _stopAutoAttackTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+    //     _attackTarget = null;
+    // }
 
     // Called when ApplyDamage packet is received 
     public void ApplyDamage(Hit hit)
@@ -84,6 +86,8 @@ public abstract class Combat : MonoBehaviour
 
     protected virtual void OnHit(Hit hit)
     {
+        _combatTimestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
         if (!hit.isMiss())
         {
             AudioHandler.PlayDamageSound();
@@ -106,7 +110,6 @@ public abstract class Combat : MonoBehaviour
             }
         }
 
-
         // voice_sound_weapon -> play voice based on current weapon equiped (random)
         // defense sound -> only when soulshot is not activated
         // Swish sound -> only when attack missed (attacker)
@@ -114,5 +117,15 @@ public abstract class Combat : MonoBehaviour
 
     public virtual void OnStopMoving()
     {
+    }
+
+    public virtual void AttackOnce()
+    {
+        _combatTimestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+        if (_target != null)
+        {
+            _attackTarget = _target;
+        }
     }
 }

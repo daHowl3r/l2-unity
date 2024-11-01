@@ -12,6 +12,7 @@ public enum Event
     CANCEL,
     TARGET_REACHED,
     ACTION_ALLOWED,
+    ATTACK_ALLOWED,
     ACTION_DENIED,
     MOVE_TYPE_UPDATED
 }

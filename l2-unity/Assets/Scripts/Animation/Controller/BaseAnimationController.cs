@@ -24,6 +24,8 @@ public abstract class BaseAnimationController : MonoBehaviour
     protected float _lastAtkClipLength;
     protected float _pAtkSpd;
 
+    public float PAtkSpd { get { return _pAtkSpd; } }
+
     public virtual void Initialize()
     {
         if (_entityReferenceHolder == null)

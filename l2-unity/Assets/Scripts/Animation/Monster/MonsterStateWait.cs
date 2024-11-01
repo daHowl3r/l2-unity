@@ -16,8 +16,9 @@ public class MonsterStateSpWait : MonsterStateAction
     {
         SetBool(MonsterAnimationEvent.wait, false);
 
-        if (Entity.IsDead)
+        if (IsDead())
         {
+            SetBool(MonsterAnimationEvent.death, true);
             return;
         }
 

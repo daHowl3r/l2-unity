@@ -119,7 +119,7 @@ public class PlayerStateAction : PlayerStateBase
     {
         long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         if (PlayerStateMachine.Instance.State == PlayerState.IDLE
-             && now - PlayerCombat.Instance.StopAutoAttackTime < 5000)
+             && now - PlayerCombat.Instance.CombatTimestamp < 5000)
         {
             if (PlayerCombat.Instance.AttackTarget == null)
             {

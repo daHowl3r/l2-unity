@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 
 public class MonsterStateAtk : MonsterStateAction
 {
     private float _lastNormalizedTime;
+    private float clipLength;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -14,10 +16,13 @@ public class MonsterStateAtk : MonsterStateAction
             clipInfos = animator.GetCurrentAnimatorClipInfo(0);
         }
 
-        AnimController.UpdateAnimatorAtkSpdMultiplier(clipInfos[0].clip.length);
+        clipLength = clipInfos[0].clip.length;
+
+        AnimController.UpdateAnimatorAtkSpdMultiplier(clipLength);
 
         SetBool(MonsterAnimationEvent.wait, false);
         SetBool(MonsterAnimationEvent.atkwait, false);
+        SetBool(MonsterAnimationEvent.atk01, false);
 
         PlaySoundAtRatio(EntitySoundEvent.Atk, AudioHandler.AtkRatio);
         PlaySoundAtRatio(EntitySoundEvent.Swish, AudioHandler.SwishRatio);
@@ -28,10 +33,14 @@ public class MonsterStateAtk : MonsterStateAction
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (IsDead())
+        {
+            SetBool(MonsterAnimationEvent.death, true);
+            return;
+        }
+
         if (IsMoving())
         {
-            SetBool(MonsterAnimationEvent.atk01, false);
-
             if (Entity.Running)
             {
                 SetBool(MonsterAnimationEvent.run, true);
@@ -44,17 +53,19 @@ public class MonsterStateAtk : MonsterStateAction
             return;
         }
 
-        if ((stateInfo.normalizedTime - _lastNormalizedTime) >= 1f)
+        long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+        // Check if AtkOnce was called, otherwise switch to AtkWait state
+        // Add the attack duration and the last auto attack packet timestamp
+        if (now > ((long)_referenceHolder.AnimationController.PAtkSpd) + _referenceHolder.Combat.CombatTimestamp)
         {
+            SetBool(MonsterAnimationEvent.atkwait, true);
             SetBool(MonsterAnimationEvent.atk01, false);
-            _lastNormalizedTime = stateInfo.normalizedTime;
-            PlaySoundAtRatio(EntitySoundEvent.Atk, AudioHandler.AtkRatio);
-            PlaySoundAtRatio(EntitySoundEvent.Swish, AudioHandler.SwishRatio);
+            Debug.LogWarning("Should ATK WAIT! (StopAttack)");
         }
     }
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        SetBool(MonsterAnimationEvent.atk01, false);
     }
 }

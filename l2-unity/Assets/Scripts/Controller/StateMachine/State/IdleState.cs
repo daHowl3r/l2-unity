@@ -54,8 +54,14 @@ public class IdleState : StateBase
                     _stateMachine.ChangeIntention(Intention.INTENTION_IDLE);
                 }
                 break;
-            case Event.ACTION_ALLOWED:
+            case Event.ATTACK_ALLOWED:
                 if (_stateMachine.Intention == Intention.INTENTION_ATTACK)
+                {
+                    _stateMachine.ChangeState(PlayerState.ATTACKING);
+                }
+                break;
+            case Event.ACTION_ALLOWED:
+                if (_stateMachine.Intention == Intention.INTENTION_ATTACK) //TODO maybe delete
                 {
                     _stateMachine.ChangeState(PlayerState.ATTACKING);
                 }

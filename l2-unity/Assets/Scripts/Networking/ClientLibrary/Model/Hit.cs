@@ -13,6 +13,9 @@ public class Hit
 
     public int TargetId { get { return _targetId; } }
     public int Damage { get { return _damage; } }
+    public Entity Attacker { get; set; }
+    public Entity Target { get; set; }
+    public float HitTime { get; set; }
 
     public Hit(int targetId, int damage, int flags)
     {

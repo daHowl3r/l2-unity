@@ -57,42 +57,51 @@ public abstract class NetworkCombat : Combat
         if (_attackStance)
         {
             //Refresh autoattack animation
-            Debug.LogWarning($"[{transform.name}] Reached destination resuming autoattack animation");
+            // Debug.LogWarning($"[{transform.name}] Reached destination resuming autoattack animation");
 
-            if (AttackTarget != null && !AttackTarget.ReferenceHolder.Combat.IsDead())
-            {
-                StartAutoAttacking();
-            }
-            else
-            {
-                StopAutoAttacking();
-            }
+            // if (AttackTarget != null && !AttackTarget.ReferenceHolder.Combat.IsDead())
+            // {
+            //     StartAutoAttacking();
+            // }
+            // else
+            // {
+            //     StopAutoAttacking();
+            // }
         }
     }
 
-    public override void StartAutoAttacking()
+    // public override void StartAttackStance()
+    // {
+    //     base.StartAttackStance();
+
+    //     // LookAtTarget();
+
+    //     // Debug.LogWarning($"[{transform.name}] StartAutoattacking");
+
+    //     // _attackStance = true;
+
+    //     // if (NetworkCharacterControllerReceive != null)
+    //     // {
+    //     //     // Should stop moving if autoattacking
+    //     //     NetworkCharacterControllerReceive.SetDestination(
+    //     //         transform.position,
+    //     //         WorldCombat.Instance.GetRealAttackRange(_referenceHolder.Entity, AttackTarget));
+    //     // }
+    // }
+
+    // public override void StopAttackStance()
+    // {
+    //     // base.StopAttackStance();
+
+    //     // Debug.LogWarning($"[{transform.name}] StopAutoattacking");
+
+    //     // _attackStance = false;
+    // }
+
+    public override void AttackOnce()
     {
-        base.StartAutoAttacking();
+        base.AttackOnce();
 
         LookAtTarget();
-
-        Debug.LogWarning($"[{transform.name}] StartAutoattacking");
-
-        _attackStance = true;
-
-        if (NetworkCharacterControllerReceive != null)
-        {
-            // Should stop moving if autoattacking
-            NetworkCharacterControllerReceive.SetDestination(transform.position, _referenceHolder.Entity.Stats.AttackRange);
-        }
-    }
-
-    public override void StopAutoAttacking()
-    {
-        base.StopAutoAttacking();
-
-        Debug.LogWarning($"[{transform.name}] StopAutoattacking");
-
-        _attackStance = false;
     }
 }

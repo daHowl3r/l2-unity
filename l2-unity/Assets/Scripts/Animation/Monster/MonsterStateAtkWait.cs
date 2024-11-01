@@ -14,7 +14,11 @@ public class MonsterStateAtkWait : MonsterStateAction
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         SetBool(MonsterAnimationEvent.atkwait, false);
-
+        if (IsDead())
+        {
+            SetBool(MonsterAnimationEvent.death, true);
+            return;
+        }
         if (IsMoving())
         {
             SetBool(MonsterAnimationEvent.run, true);
@@ -31,6 +35,7 @@ public class MonsterStateAtkWait : MonsterStateAction
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        SetBool(MonsterAnimationEvent.wait, false);
         SetBool(MonsterAnimationEvent.atkwait, false);
     }
 }

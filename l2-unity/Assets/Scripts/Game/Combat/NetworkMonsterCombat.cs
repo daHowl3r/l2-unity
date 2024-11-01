@@ -22,20 +22,27 @@ public class NetworkMonsterCombat : NetworkCombat
         base.OnHit(hit);
     }
 
-    public override void StartAutoAttacking()
+    // public override void StartAttackStance()
+    // {
+    //     base.StartAttackStance();
+
+    //     // MonsterAnimationController.SetBool(MonsterAnimationEvent.atk01, true);
+    // }
+
+    // public override void StopAttackStance()
+    // {
+    //     base.StopAttackStance();
+
+    //     // if (!IsDead())
+    //     // {
+    //     //     MonsterAnimationController.SetBool(MonsterAnimationEvent.atkwait, true);
+    //     // }
+    // }
+
+    public override void AttackOnce()
     {
-        base.StartAutoAttacking();
+        base.AttackOnce();
 
         MonsterAnimationController.SetBool(MonsterAnimationEvent.atk01, true);
-    }
-
-    public override void StopAutoAttacking()
-    {
-        base.StopAutoAttacking();
-
-        if (!IsDead())
-        {
-            MonsterAnimationController.SetBool(MonsterAnimationEvent.atkwait, true);
-        }
     }
 }

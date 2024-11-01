@@ -38,4 +38,11 @@ public class PlayerCombat : Combat
     {
         base.OnHit(hit);
     }
+
+    public override void AttackOnce()
+    {
+        base.AttackOnce();
+
+        PlayerStateMachine.Instance.OnAttackAllowed();
+    }
 }

@@ -12,10 +12,15 @@ public class MonsterStateAction : MonsterStateBase
         return AnimController.GetBool(MonsterAnimationEvent.atk01);
     }
 
+    public bool IsDead()
+    {
+        return Entity.IsDead;
+    }
+
     protected bool ShouldAtkWait()
     {
         long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        if (now - Entity.Combat.StopAutoAttackTime < 5000)
+        if (now - Entity.Combat.CombatTimestamp < 5000)
         {
             if (Entity.Combat.AttackTarget == null)
             {

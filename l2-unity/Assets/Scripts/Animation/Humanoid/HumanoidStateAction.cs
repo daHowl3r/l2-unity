@@ -15,7 +15,7 @@ public class HumanoidStateAction : HumanoidStateBase
     protected bool ShouldAtkWait()
     {
         long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        if (now - Entity.Combat.StopAutoAttackTime < 5000)
+        if (now - Entity.Combat.CombatTimestamp < 5000)
         {
             if (Entity.Combat.AttackTarget == null)
             {

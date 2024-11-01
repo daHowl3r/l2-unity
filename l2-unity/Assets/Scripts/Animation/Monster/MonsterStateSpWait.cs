@@ -17,6 +17,11 @@ public class MonsterStateWait : MonsterStateAction
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (IsDead())
+        {
+            SetBool(MonsterAnimationEvent.death, true);
+            return;
+        }
         if (IsMoving())
         {
             if (Entity.Running)

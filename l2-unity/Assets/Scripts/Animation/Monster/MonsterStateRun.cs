@@ -23,8 +23,9 @@ public class MonsterStateRun : MonsterStateAction
     {
         SetBool(MonsterAnimationEvent.run, false);
 
-        if (Entity.IsDead)
+        if (IsDead())
         {
+            SetBool(MonsterAnimationEvent.death, true);
             return;
         }
 

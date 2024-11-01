@@ -42,12 +42,6 @@ public abstract class Combat : MonoBehaviour
 
     public virtual void StartAutoAttacking()
     {
-        // if (_target == null)
-        // {
-        //     Debug.LogWarning("Trying to attack a null target");
-        //     return false;
-        // }
-
         _startAutoAttackTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
         if (_target != null)
@@ -58,12 +52,6 @@ public abstract class Combat : MonoBehaviour
 
     public virtual void StopAutoAttacking()
     {
-        // Debug.Log($"[{transform.name}] Stop autoattacking");
-        // if (_attackTarget == null)
-        // {
-        //     return false;
-        // }
-
         _stopAutoAttackTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         _attackTarget = null;
     }
@@ -80,12 +68,6 @@ public abstract class Combat : MonoBehaviour
         }
 
         Status.Hp = Mathf.Max(Status.Hp - hit.Damage, 0);
-
-
-        // if (Status.Hp <= 0)
-        // {
-        //     OnDeath();
-        // }
     }
 
     public bool IsDead()
@@ -99,11 +81,7 @@ public abstract class Combat : MonoBehaviour
 
     protected virtual void OnHit(Hit hit)
     {
-        if (hit.isMiss())
-        {
-            // AudioHandler.PlaySwishSound(); //TODO: Play on attacker instead ?
-        }
-        else
+        if (!hit.isMiss())
         {
             AudioHandler.PlayDamageSound();
 

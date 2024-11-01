@@ -124,7 +124,6 @@ public class NetworkTransformReceive : MonoBehaviour
 
     public virtual void LookAt(Transform target)
     {
-        // Debug.LogWarning("LookAt");
         if (target != null)
         {
             _newRotation = VectorUtils.CalculateMoveDirectionAngle(transform.position, target.position);
@@ -133,7 +132,6 @@ public class NetworkTransformReceive : MonoBehaviour
 
     public virtual void LookAt(Vector3 position)
     {
-        // Debug.LogWarning("LookAt");
         _newRotation = VectorUtils.CalculateMoveDirectionAngle(transform.position, position);
     }
 

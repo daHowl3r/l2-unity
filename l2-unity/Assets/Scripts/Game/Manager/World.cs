@@ -554,7 +554,7 @@ public class World : MonoBehaviour
         //tell the entity to move to location
         referenceHolder.NetworkTransformReceive.PausePositionSync();
 
-        if (e.Combat.AttackTarget != null)
+        if (e.Combat.AttackTarget == null)
         {
             referenceHolder.NetworkCharacterControllerReceive.SetDestination(destination, 0);
 
@@ -570,27 +570,10 @@ public class World : MonoBehaviour
         referenceHolder.NetworkTransformReceive.LookAt(destination);
     }
 
-    // public Task UpdateObjectAnimation(int id, int animId, float value)
-    // {
-    //     return ExecuteWithEntityAsync(id, e =>
-    //     {
-    //         e.ReferenceHolder.AnimationController.SetAnimationProperty(animId, value);
-    //     });
-    // }
-
     public Task UpdateObjectMoveDirection(int id, int speed, Vector3 direction)
     {
         return ExecuteWithEntityAsync(id, e =>
         {
-            if (e.Running && speed != e.Stats.RunSpeed)
-            {
-                // e.UpdateRunSpeed(speed);
-            }
-            else if (!e.Running && speed != e.Stats.WalkSpeed)
-            {
-                // e.UpdateWalkSpeed(speed);
-            }
-
             ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkCharacterControllerReceive.UpdateMoveDirection(direction);
         });
     }
@@ -616,7 +599,7 @@ public class World : MonoBehaviour
             {
                 ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetFinalRotation(rotation);
                 ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(position);
-                ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkCharacterControllerReceive.SetDestination(e.transform.position, 0);
+                ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkCharacterControllerReceive.ResetDestination();
                 e.OnStopMoving();
             }
         });

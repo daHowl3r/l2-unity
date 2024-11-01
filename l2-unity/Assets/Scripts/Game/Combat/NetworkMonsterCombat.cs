@@ -20,7 +20,6 @@ public class NetworkMonsterCombat : NetworkCombat
     protected override void OnHit(Hit hit)
     {
         base.OnHit(hit);
-        //AudioHandler.PlaySound(EntitySoundEvent.Dmg);
     }
 
     public override void StartAutoAttacking()
@@ -28,17 +27,15 @@ public class NetworkMonsterCombat : NetworkCombat
         base.StartAutoAttacking();
 
         MonsterAnimationController.SetBool(MonsterAnimationEvent.atk01, true);
-        // LookAtTarget();
     }
 
     public override void StopAutoAttacking()
     {
         base.StopAutoAttacking();
 
-        MonsterAnimationController.SetBool(MonsterAnimationEvent.atkwait, true);
-        // if (!IsDead())
-        // {
-        //     MonsterAnimationController.SetBool(MonsterAnimationEvent.atkwait, true);
-        // }
+        if (!IsDead())
+        {
+            MonsterAnimationController.SetBool(MonsterAnimationEvent.atkwait, true);
+        }
     }
 }

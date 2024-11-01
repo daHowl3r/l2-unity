@@ -37,6 +37,5 @@ public class PlayerCombat : Combat
     protected override void OnHit(Hit hit)
     {
         base.OnHit(hit);
-        //AudioHandler.PlaySound(EntitySoundEvent.Dmg);
     }
 }

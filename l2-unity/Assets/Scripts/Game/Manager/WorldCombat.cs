@@ -210,16 +210,18 @@ public class WorldCombat : MonoBehaviour
             {
                 if (sender != GameClient.Instance.CurrentPlayerId)
                 {
+                    NetworkEntityReferenceHolder referenceHolder = (NetworkEntityReferenceHolder)senderEntity.ReferenceHolder;
+
                     // Update attacker target 
-                    if (((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).Combat.Target != targetEntity)
+                    if (referenceHolder.Combat.Target != targetEntity)
                     {
-                        ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).Combat.Target = targetEntity;
-                        ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).Combat.AttackTarget = targetEntity;
+                        referenceHolder.Combat.Target = targetEntity;
+                        referenceHolder.Combat.AttackTarget = targetEntity;
                     }
 
                     Debug.LogWarning("Attacker position: " + attackerPosition);
-                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(attackerPosition, false);
-                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).NetworkCharacterControllerReceive.SetDestination(senderEntity.transform.position, 0);
+                    referenceHolder.NetworkTransformReceive.SetNewPosition(attackerPosition, false);
+                    referenceHolder.NetworkCharacterControllerReceive.ResetDestination();
 
                     senderEntity.OnStopMoving();
 

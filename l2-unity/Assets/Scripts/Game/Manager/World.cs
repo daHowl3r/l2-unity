@@ -550,7 +550,7 @@ public class World : MonoBehaviour
 
     IEnumerator HandleUpdateDestination(Entity e, Vector3 currentPosition, Vector3 destination)
     {
-        Debug.LogWarning("Entity move to destination: " + destination);
+        // Debug.LogWarning("Entity move to destination: " + destination);
 
         NetworkEntityReferenceHolder referenceHolder = (NetworkEntityReferenceHolder)e.ReferenceHolder;
         //sync current position with server

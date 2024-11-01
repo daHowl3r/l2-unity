@@ -95,7 +95,6 @@ public class NetworkCharacterControllerShare : MonoBehaviour
 
     public void ShareMoveDirection(Vector3 moveDirection)
     {
-        Debug.LogWarning(_lastDirection + " - " + moveDirection);
         if (_lastDirection.x == moveDirection.x && _lastDirection.z == moveDirection.z)
         {
             return;

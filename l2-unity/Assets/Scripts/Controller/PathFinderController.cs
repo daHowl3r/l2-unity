@@ -105,11 +105,14 @@ public class PathFinderController : MonoBehaviour
         {
             if (Vector3.Distance(flatDestPos, flatTransformPos) < _currentDestinationThreshold)
             {
+                if (PlayerController.Instance.RunningToDestination)
+                {
+                    PlayerController.Instance.ResetDestination(true);
+                }
                 //   if(PlayerController.Instance.RunningToDestination && PlayerCombatController.Instance.RunningToTarget) {
                 //      PlayerCombatController.Instance.OnReachingTarget();
                 //   }
 
-                PlayerController.Instance.ResetDestination(true);
             }
         }
     }

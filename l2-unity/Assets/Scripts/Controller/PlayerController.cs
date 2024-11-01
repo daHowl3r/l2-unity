@@ -329,7 +329,7 @@ public class PlayerController : MonoBehaviour
 
     public void StopMoving()
     {
-        ResetDestination(false);
+        // ResetDestination(false);
         _moveDirection = new Vector3(0, _moveDirection.y, 0);
     }
 }

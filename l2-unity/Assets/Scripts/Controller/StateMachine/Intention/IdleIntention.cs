@@ -22,7 +22,7 @@ public class IdleIntention : IntentionBase
 
         // IdleIntention is not triggerable by player, no need to ask server for permission
         _stateMachine.ChangeState(PlayerState.IDLE);
-        PlayerController.Instance.StopMoving();
+        // PlayerController.Instance.StopMoving();
 
     }
 

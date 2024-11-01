@@ -53,15 +53,10 @@ public class MonsterStateAtk : MonsterStateAction
             return;
         }
 
-        long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-
-        // Check if AtkOnce was called, otherwise switch to AtkWait state
-        // Add the attack duration and the last auto attack packet timestamp
-        if (now > ((long)_referenceHolder.AnimationController.PAtkSpd) + _referenceHolder.Combat.CombatTimestamp)
+        if (DidAttackTimeout())
         {
             SetBool(MonsterAnimationEvent.atkwait, true);
             SetBool(MonsterAnimationEvent.atk01, false);
-            // Debug.LogWarning("Should ATK WAIT! (StopAttack)");
         }
     }
 

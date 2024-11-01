@@ -11,7 +11,8 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
     [SerializeField] private float _speed;
     [SerializeField] private Vector3 _destination;
     [SerializeField] private float _gravity = 28f;
-    private float _moveSpeedMultiplier = 1f;
+    [SerializeField] private float _moveSpeedMultiplier = 1f;
+    private float _stopAtRange = 0;
 
     public Vector3 MoveDirection { get { return _direction; } set { _direction = value; } }
 
@@ -25,25 +26,17 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
         _networkTransformReceive = GetComponent<NetworkTransformReceive>();
         _characterController = GetComponent<CharacterController>();
 
-        //adjust movespeed for player entities
-        //TODO: Should not need this for players to be synced...
-        // if (_entity.Identity.EntityType == EntityType.User)
-        // {
-        //     _moveSpeedMultiplier = 1.1f;
-        // }
-
         _direction = Vector3.zero;
         _destination = Vector3.zero;
     }
 
     private void FixedUpdate()
     {
-
-        if (!_networkTransformReceive.IsPositionSynced())
-        {
-            /* pause script during position sync */
-            return;
-        }
+        // if (!_networkTransformReceive.IsPositionSynced())
+        // {
+        //     /* pause script during position sync */
+        //     return;
+        // }
 
         if (_destination != null && _destination != Vector3.zero)
         {
@@ -67,8 +60,9 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
     }
 
     // Move to destination packets
-    public void SetDestination(Vector3 destination)
+    public void SetDestination(Vector3 destination, float stopAtRange)
     {
+        _stopAtRange = stopAtRange;
         _destination = destination;
         _speed = _entity.Running ? _entity.Stats.ScaledRunSpeed : _entity.Stats.ScaledWalkSpeed;
 
@@ -77,7 +71,7 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
         _distanceToDestination = Vector3.Distance(transformFlat, destinationFlat);
         _direction = (destinationFlat - transformFlat).normalized;
 
-        if (_distanceToDestination > 0.1f)
+        if (_distanceToDestination > 0.05f + stopAtRange)
         {
             _networkTransformReceive.PausePositionSync();
         }
@@ -87,7 +81,7 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
     {
         _distanceToDestination = Vector3.Distance(VectorUtils.To2D(transform.position), VectorUtils.To2D(_destination));
 
-        if (_distanceToDestination < 0.1f)
+        if (_distanceToDestination < 0.05f + _stopAtRange)
         {
             if (_direction != Vector3.zero)
             {
@@ -97,6 +91,12 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
 
             _direction = Vector3.zero;
             _networkTransformReceive.ResumePositionSync();
+
+            // adjust the network position with the attack range
+            if (_stopAtRange > 0)
+            {
+                _networkTransformReceive.SetNewPosition(transform.position);
+            }
         }
     }
 

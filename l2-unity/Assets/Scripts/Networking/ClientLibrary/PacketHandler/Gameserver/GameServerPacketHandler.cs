@@ -45,9 +45,9 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.ObjectRotation:
                 OnUpdateRotation(data);
                 break;
-            case GameServerPacketType.ObjectAnimation:
-                OnUpdateAnimation(data);
-                break;
+            // case GameServerPacketType.ObjectAnimation:
+            //     OnUpdateAnimation(data);
+            //     break;
             case GameServerPacketType.ApplyDamage:
                 OnInflictDamage(data);
                 break;
@@ -131,6 +131,9 @@ public class GameServerPacketHandler : ServerPacketHandler
                 break;
             case GameServerPacketType.TeleportToLocation:
                 OnTeleportToLocation(data);
+                break;
+            case GameServerPacketType.StopMove:
+                OnEntityStopMove(data);
                 break;
             default:
                 Debug.LogWarning($"Received unhandled packet with OPCode [{packetType}].");
@@ -364,17 +367,17 @@ public class GameServerPacketHandler : ServerPacketHandler
         World.Instance.UpdateObjectRotation(id, angle);
     }
 
-    private void OnUpdateAnimation(byte[] data)
-    {
-        UpdateAnimationPacket packet = new UpdateAnimationPacket(data);
-        int id = packet.Id;
-        int animId = packet.AnimId;
-        float value = packet.Value;
+    // private void OnUpdateAnimation(byte[] data)
+    // {
+    //     UpdateAnimationPacket packet = new UpdateAnimationPacket(data);
+    //     int id = packet.Id;
+    //     int animId = packet.AnimId;
+    //     float value = packet.Value;
 
-        Debug.Log($"ID: {id} AnimId: {(HumanoidAnimationEvent)animId} Value: {value}");
+    //     Debug.Log($"ID: {id} AnimId: {(HumanoidAnimationEvent)animId} Value: {value}");
 
-        World.Instance.UpdateObjectAnimation(id, animId, value);
-    }
+    //     World.Instance.UpdateObjectAnimation(id, animId, value);
+    // }
 
     private void OnInflictDamage(byte[] data)
     {
@@ -540,5 +543,11 @@ public class GameServerPacketHandler : ServerPacketHandler
     {
         TeleportToLocationPacket packet = new TeleportToLocationPacket(data);
         World.Instance.EntityTeleported(packet.EntityId, packet.TeleportTo, packet.LoadingScreen);
+    }
+
+    private void OnEntityStopMove(byte[] data)
+    {
+        ObjectStopMovePacket packet = new ObjectStopMovePacket(data);
+        World.Instance.ObjectStoppedMove(packet.Id, packet.CurrentPosition, packet.Heading);
     }
 }

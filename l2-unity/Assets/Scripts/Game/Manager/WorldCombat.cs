@@ -66,6 +66,7 @@ public class WorldCombat : MonoBehaviour
 
     public void EntityStopAutoAttacking(Entity entity)
     {
+        Debug.LogWarning($"[{entity.transform.name}] EntityStopAutoAttacking");
         if (entity == PlayerEntity.Instance)
         {
             PlayerStateMachine.Instance.OnStopAutoAttack();
@@ -129,7 +130,7 @@ public class WorldCombat : MonoBehaviour
         {
             ((NetworkEntityReferenceHolder)targeter.ReferenceHolder).NetworkTransformReceive.SetNewPosition(position);
             targeter.Combat.TargetId = targetId;
-            targeter.Combat.Target = targeted.transform;
+            targeter.Combat.Target = targeted;
         });
     }
 
@@ -138,7 +139,7 @@ public class WorldCombat : MonoBehaviour
         return World.Instance.ExecuteWithEntitiesAsync(id, targetId, (targeter, targeted) =>
         {
             targeter.Combat.TargetId = targetId;
-            targeter.Combat.Target = targeted.transform;
+            targeter.Combat.Target = targeted;
         });
     }
 
@@ -209,15 +210,33 @@ public class WorldCombat : MonoBehaviour
             {
                 if (sender != GameClient.Instance.CurrentPlayerId)
                 {
-                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(attackerPosition, false);
-                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).NetworkCharacterControllerReceive.SetDestination(senderEntity.transform.position);
+                    // Update attacker target 
+                    if (((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).Combat.Target != targetEntity)
+                    {
+                        ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).Combat.Target = targetEntity;
+                        ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).Combat.AttackTarget = targetEntity;
+                    }
 
-                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).Combat.Target = targetEntity.transform;
-                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).Combat.AttackTarget = targetEntity.transform;
+                    Debug.LogWarning("Attacker position: " + attackerPosition);
+                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(attackerPosition, false);
+                    ((NetworkEntityReferenceHolder)senderEntity.ReferenceHolder).NetworkCharacterControllerReceive.SetDestination(senderEntity.transform.position, 0);
+
+                    senderEntity.OnStopMoving();
+
                 }
                 else
                 {
                     PlayerTransformReceive.Instance.SetNewPosition(attackerPosition);
+                }
+
+                // Update attacked target 
+                if (hit.TargetId != GameClient.Instance.CurrentPlayerId)
+                {
+                    if (((NetworkEntityReferenceHolder)targetEntity.ReferenceHolder).Combat.Target == null)
+                    {
+                        ((NetworkEntityReferenceHolder)targetEntity.ReferenceHolder).Combat.Target = senderEntity;
+                        ((NetworkEntityReferenceHolder)targetEntity.ReferenceHolder).Combat.AttackTarget = senderEntity;
+                    }
                 }
 
                 InflictAttack(senderEntity, targetEntity, hit);

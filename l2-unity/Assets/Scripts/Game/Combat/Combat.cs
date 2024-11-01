@@ -8,14 +8,14 @@ public abstract class Combat : MonoBehaviour
 
     [Header("Combat")]
     [SerializeField] private int _targetId;
-    [SerializeField] protected Transform _target;
-    [SerializeField] protected Transform _attackTarget;
+    [SerializeField] protected Entity _target;
+    [SerializeField] protected Entity _attackTarget;
     [SerializeField] private long _stopAutoAttackTime;
     [SerializeField] private long _startAutoAttackTime;
 
     public int TargetId { get => _targetId; set => _targetId = value; }
-    public Transform Target { get { return _target; } set { _target = value; } }
-    public Transform AttackTarget { get { return _attackTarget; } set { _attackTarget = value; } }
+    public Entity Target { get { return _target; } set { _target = value; } }
+    public Entity AttackTarget { get { return _attackTarget; } set { _attackTarget = value; } }
     public long StopAutoAttackTime { get { return _stopAutoAttackTime; } }
     public long StartAutoAttackTime { get { return _startAutoAttackTime; } }
     protected Status Status { get { return _referenceHolder.Entity.Status; } }

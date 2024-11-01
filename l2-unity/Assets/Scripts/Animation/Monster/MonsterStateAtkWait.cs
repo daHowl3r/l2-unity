@@ -24,7 +24,6 @@ public class MonsterStateAtkWait : MonsterStateAction
         {
             if (!ShouldAtkWait())
             {
-                Debug.Log("Wait now");
                 SetBool(MonsterAnimationEvent.wait, true);
             }
         }

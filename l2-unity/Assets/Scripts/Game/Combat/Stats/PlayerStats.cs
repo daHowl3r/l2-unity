@@ -22,7 +22,6 @@ public class PlayerStats : Stats
     [SerializeField] private int _currWeight;
     [SerializeField] private int _maxWeight;
 
-    [SerializeField] private float _attackRange;
     [SerializeField] private byte _con;
     [SerializeField] private byte _dex;
     [SerializeField] private byte _str;
@@ -51,7 +50,6 @@ public class PlayerStats : Stats
     public int CurrWeight { get { return _currWeight; } set { _currWeight = value; } }
     public int MaxWeight { get { return _maxWeight; } set { _maxWeight = value; } }
 
-    public float AttackRange { get => _attackRange; set => _attackRange = value; }
     public byte Con { get { return _con; } set { _con = value; } }
     public byte Dex { get { return _dex; } set { _dex = value; } }
     public byte Str { get { return _str; } set { _str = value; } }
@@ -93,7 +91,6 @@ public class PlayerStats : Stats
         _currWeight = stats.CurrWeight;
         _maxWeight = stats.MaxWeight;
 
-        _attackRange = stats.AttackRange;
         _con = stats.Con;
         _dex = stats.Dex;
         _str = stats.Str;

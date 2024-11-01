@@ -27,6 +27,7 @@ public enum GameServerPacketType : int
     ChangeWaitType = 0x2f,
     ShortcutRegister = 0x44,
     ShortcutInit = 0x45,
+    StopMove = 0x47,
     CreatureSay = 0x4a,
     RestartReponse = 0x5F,
     ValidateLocation = 0x61,

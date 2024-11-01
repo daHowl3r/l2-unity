@@ -172,7 +172,10 @@ public class World : MonoBehaviour
         CharacterModelType raceId = CharacterModelTypeParser.ParseRace(race, appearance.Race, identity.IsMage);
 
         GameObject go = CharacterBuilder.Instance.BuildCharacterBase(raceId, appearance, identity.EntityType);
-        go.transform.eulerAngles = new Vector3(transform.eulerAngles.x, identity.Heading, transform.eulerAngles.z);
+
+        float rotation = VectorUtils.ConvertRotToUnity(identity.Heading);
+        go.transform.eulerAngles = new Vector3(transform.eulerAngles.x, rotation, transform.eulerAngles.z);
+
         go.transform.position = identity.Position;
         go.transform.name = "_Player";
         go.layer = LayerMask.NameToLayer("Invisible"); //Invisible
@@ -281,7 +284,8 @@ public class World : MonoBehaviour
 
         GameObject go = CharacterBuilder.Instance.BuildCharacterBase(raceId, appearance, identity.EntityType);
         go.transform.position = identity.Position;
-        go.transform.eulerAngles = new Vector3(transform.eulerAngles.x, identity.Heading, transform.eulerAngles.z);
+        float rotation = VectorUtils.ConvertRotToUnity(identity.Heading);
+        go.transform.eulerAngles = new Vector3(transform.eulerAngles.x, rotation, transform.eulerAngles.z);
 
         NetworkHumanoidEntity user = go.GetComponent<NetworkHumanoidEntity>();
 
@@ -462,7 +466,8 @@ public class World : MonoBehaviour
     {
         entity.Identity.UpdateEntityPartial(identity);
         ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(identity.Position);
-        ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetFinalRotation(identity.Heading);
+        float rotation = VectorUtils.ConvertRotToUnity(identity.Heading);
+        ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetFinalRotation(rotation);
         //entity.Status.UpdateStatus(status);
         entity.Stats.UpdateStats(stats);
         entity.Running = running;
@@ -536,31 +541,42 @@ public class World : MonoBehaviour
 
     IEnumerator HandleUpdateDestination(Entity e, Vector3 currentPosition, Vector3 destination)
     {
+        Debug.LogWarning("Entity move to destination: " + destination);
+
+        NetworkEntityReferenceHolder referenceHolder = (NetworkEntityReferenceHolder)e.ReferenceHolder;
         //sync current position with server
-        ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.ResumePositionSync();
-        ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(currentPosition);
+        referenceHolder.NetworkTransformReceive.ResumePositionSync();
+        referenceHolder.NetworkTransformReceive.SetNewPosition(currentPosition);
 
         //wait for position to be updated
         yield return new WaitForFixedUpdate();
 
         //tell the entity to move to location
-        ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.PausePositionSync();
-        ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkCharacterControllerReceive.SetDestination(destination);
+        referenceHolder.NetworkTransformReceive.PausePositionSync();
 
-        //set the entity expected position to destination
-        ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(destination);
+        if (e.Combat.AttackTarget != null)
+        {
+            referenceHolder.NetworkCharacterControllerReceive.SetDestination(destination, 0);
+
+            //set the entity expected position to destination
+            referenceHolder.NetworkTransformReceive.SetNewPosition(destination);
+        }
+        else
+        {
+            referenceHolder.NetworkCharacterControllerReceive.SetDestination(destination, e.Stats.AttackRange);
+        }
 
         //look at destination
-        ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.LookAt(destination);
+        referenceHolder.NetworkTransformReceive.LookAt(destination);
     }
 
-    public Task UpdateObjectAnimation(int id, int animId, float value)
-    {
-        return ExecuteWithEntityAsync(id, e =>
-        {
-            e.ReferenceHolder.AnimationController.SetAnimationProperty(animId, value);
-        });
-    }
+    // public Task UpdateObjectAnimation(int id, int animId, float value)
+    // {
+    //     return ExecuteWithEntityAsync(id, e =>
+    //     {
+    //         e.ReferenceHolder.AnimationController.SetAnimationProperty(animId, value);
+    //     });
+    // }
 
     public Task UpdateObjectMoveDirection(int id, int speed, Vector3 direction)
     {
@@ -576,6 +592,33 @@ public class World : MonoBehaviour
             }
 
             ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkCharacterControllerReceive.UpdateMoveDirection(direction);
+        });
+    }
+
+
+    public Task ObjectStoppedMove(int id, Vector3 position, int heading)
+    {
+        return ExecuteWithEntityAsync(id, e =>
+        {
+            Debug.LogWarning($"[{e.transform.name}] ObjectStoppedMove");
+            e.Identity.Position = position;
+            e.Identity.Heading = heading;
+
+            float rotation = VectorUtils.ConvertRotToUnity(heading);
+
+            if (id == GameClient.Instance.CurrentPlayerId)
+            {
+                Debug.LogWarning("Should not happen");
+                PlayerTransformReceive.Instance.SetNewPosition(position);
+                NetworkCharacterControllerShare.Instance.Heading = heading;
+            }
+            else
+            {
+                ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetFinalRotation(rotation);
+                ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(position);
+                ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkCharacterControllerReceive.SetDestination(e.transform.position, 0);
+                e.OnStopMoving();
+            }
         });
     }
 
@@ -724,5 +767,4 @@ public class World : MonoBehaviour
             }
         }
     }
-
 }

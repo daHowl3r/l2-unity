@@ -10,12 +10,14 @@ public class Stats
     [SerializeField] protected float _scaledRunSpeed;
     [SerializeField] protected float _scaledWalkSpeed;
     [SerializeField] protected float _attackSpeedMultiplier;
+    [SerializeField] private float _attackRange;
     [SerializeField] protected int _pAtkSpd;
     [SerializeField] protected int _mAtkSpd;
     [SerializeField] protected int _maxHp;
     [SerializeField] protected int _maxMp;
     [SerializeField] protected int _maxCp;
 
+    public float AttackRange { get => _attackRange; set => _attackRange = value; }
     public int Level { get => _level; set => _level = value; }
     public int RunSpeed { get => _runSpeed; set => _runSpeed = value; }
     public int WalkSpeed { get => _walkSpeed; set => _walkSpeed = value; }
@@ -31,6 +33,7 @@ public class Stats
 
     public virtual void UpdateStats(Stats stats)
     {
+        _attackRange = stats.AttackRange;
         _runSpeed = stats.RunSpeed;
         _walkSpeed = stats.WalkSpeed;
         _scaledRunSpeed = stats.ScaledRunSpeed;

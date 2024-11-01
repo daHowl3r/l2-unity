@@ -29,7 +29,7 @@ public class NpcInfoPacket : ServerPacket
             Identity.SetPosZ(ReadI() / 52.5f);
             Identity.SetPosX(ReadI() / 52.5f);
             Identity.SetPosY(ReadI() / 52.5f);
-            Identity.Heading = VectorUtils.ConvertRotToUnity(ReadI());
+            Identity.Heading = ReadI();
 
             ReadI();
 
@@ -87,6 +87,8 @@ public class NpcInfoPacket : ServerPacket
             Stats.RunSpeed = (int)(Stats.MoveSpeedMultiplier > 0 ? Stats.RunSpeed * Stats.MoveSpeedMultiplier : Stats.RunSpeed);
             Stats.WalkSpeed = (int)(Stats.MoveSpeedMultiplier > 0 ? Stats.WalkSpeed * Stats.MoveSpeedMultiplier : Stats.WalkSpeed);
 
+            Stats.AttackRange = ReadI() / 52.5f;
+
             Debug.LogWarning(ToString());
         }
         catch (Exception e)
@@ -111,6 +113,7 @@ public class NpcInfoPacket : ServerPacket
                $"RunSpeed = {Stats.RunSpeed}, " +
                $"WalkSpeed = {Stats.WalkSpeed}, " +
                $"MoveSpeedMultiplier = {Stats.MoveSpeedMultiplier:F2}, " +
+               $"AttackSpeedMultiplier = {Stats.AttackRange:F2}, " +
                $"AttackSpeedMultiplier = {Stats.AttackSpeedMultiplier:F2} }}\n" +
 
                $"Appearance: {{ " +

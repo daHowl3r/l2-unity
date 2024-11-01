@@ -18,7 +18,6 @@ public class MonsterStateAtk : MonsterStateAction
 
         SetBool(MonsterAnimationEvent.wait, false);
         SetBool(MonsterAnimationEvent.atkwait, false);
-        SetBool(MonsterAnimationEvent.atk01, false);
 
         PlaySoundAtRatio(EntitySoundEvent.Atk, AudioHandler.AtkRatio);
         PlaySoundAtRatio(EntitySoundEvent.Swish, AudioHandler.SwishRatio);
@@ -29,10 +28,10 @@ public class MonsterStateAtk : MonsterStateAction
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        SetBool(MonsterAnimationEvent.atk01, false);
-
         if (IsMoving())
         {
+            SetBool(MonsterAnimationEvent.atk01, false);
+
             if (Entity.Running)
             {
                 SetBool(MonsterAnimationEvent.run, true);
@@ -47,6 +46,7 @@ public class MonsterStateAtk : MonsterStateAction
 
         if ((stateInfo.normalizedTime - _lastNormalizedTime) >= 1f)
         {
+            SetBool(MonsterAnimationEvent.atk01, false);
             _lastNormalizedTime = stateInfo.normalizedTime;
             PlaySoundAtRatio(EntitySoundEvent.Atk, AudioHandler.AtkRatio);
             PlaySoundAtRatio(EntitySoundEvent.Swish, AudioHandler.SwishRatio);
@@ -55,6 +55,6 @@ public class MonsterStateAtk : MonsterStateAction
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-
+        SetBool(MonsterAnimationEvent.atk01, false);
     }
 }

@@ -9,7 +9,7 @@ public class MonsterStateAction : MonsterStateBase
 
     public bool IsAttacking()
     {
-        return AnimController.LastAnim == MonsterAnimationEvent.atk01;
+        return AnimController.GetBool(MonsterAnimationEvent.atk01);
     }
 
     protected bool ShouldAtkWait()

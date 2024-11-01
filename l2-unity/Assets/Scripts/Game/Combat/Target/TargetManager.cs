@@ -173,7 +173,7 @@ public class TargetManager : MonoBehaviour
         _target = new TargetData(target);
 
         PlayerCombat.Instance.TargetId = _target.Identity.Id;
-        PlayerCombat.Instance.Target = _target.Data.ObjectTransform;
+        PlayerCombat.Instance.Target = _target.Data.Entity;
         GameClient.Instance.ClientPacketHandler.SendRequestSetTarget(_target.Identity.Id);
     }
 

@@ -35,6 +35,7 @@ public class NetworkMonsterCombat : NetworkCombat
     {
         base.StopAutoAttacking();
 
+        MonsterAnimationController.SetBool(MonsterAnimationEvent.atkwait, true);
         // if (!IsDead())
         // {
         //     MonsterAnimationController.SetBool(MonsterAnimationEvent.atkwait, true);

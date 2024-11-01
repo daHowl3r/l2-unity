@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Linq;
 public class InflictDamagePacket : ServerPacket
 {
     private Hit[] _hits;
@@ -14,36 +15,42 @@ public class InflictDamagePacket : ServerPacket
 
     public override void Parse()
     {
-        try
+        SenderId = ReadI();
+        int targetId = ReadI();
+        int damage = ReadI();
+        byte flags = ReadB();
+
+        Vector3 currentPos = new Vector3();
+        currentPos.z = ReadI() / 52.5f;
+        currentPos.x = ReadI() / 52.5f;
+        currentPos.y = ReadI() / 52.5f;
+        AttackerPosition = currentPos;
+
+        ReadB();
+        byte hitCount = ReadB();
+        _hits = new Hit[hitCount + 1];
+        _hits[0] = new Hit(targetId, damage, flags);
+
+        for (int i = 1; i < hitCount; i++)
         {
-            SenderId = ReadI();
-            int targetId = ReadI();
-            int damage = ReadI();
-            byte flags = ReadB();
-
-            Vector3 currentPos = new Vector3();
-            currentPos.z = ReadI() / 52.5f;
-            currentPos.x = ReadI() / 52.5f;
-            currentPos.y = ReadI() / 52.5f;
-            AttackerPosition = currentPos;
-
-            ReadB();
-            byte hitCount = ReadB();
-            _hits = new Hit[hitCount + 1];
-            _hits[0] = new Hit(targetId, damage, flags);
-
-            for (int i = 1; i < hitCount; i++)
-            {
-                targetId = ReadI();
-                damage = ReadI();
-                flags = ReadB();
-                _hits[i] = new Hit(targetId, damage, flags);
-            }
-
+            targetId = ReadI();
+            damage = ReadI();
+            flags = ReadB();
+            _hits[i] = new Hit(targetId, damage, flags);
         }
-        catch (Exception e)
-        {
-            Debug.LogError(e);
-        }
+
+        Debug.LogWarning(ToString());
+    }
+
+    public override string ToString()
+    {
+        var hitsDescription = _hits != null
+            ? string.Join(", ", _hits.Select((hit, index) => $"Hit {index}: {hit}"))
+            : "No hits";
+
+        return $"InflictDamagePacket: \n" +
+               $"  SenderId: {SenderId}\n" +
+               $"  AttackerPosition: {AttackerPosition}\n" +
+               $"  Hits: [{hitsDescription}]";
     }
 }

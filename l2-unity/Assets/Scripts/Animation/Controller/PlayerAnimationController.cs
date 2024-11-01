@@ -35,17 +35,7 @@ public class PlayerAnimationController : HumanoidAnimationController
         {
             //Debug.LogWarning($"Set bool {name}={value}");
             SetBool(paramId, value);
-
-            if (!World.Instance.OfflineMode && share)
-            {
-                EmitAnimatorInfo(paramId, value ? 1 : 0);
-            }
         }
-    }
-
-    private void EmitAnimatorInfo(int paramId, float value)
-    {
-        NetworkTransformShare.Instance.ShareAnimation((byte)paramId, value);
     }
 }
 

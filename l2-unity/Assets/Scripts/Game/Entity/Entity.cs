@@ -30,7 +30,7 @@ public abstract class Entity : MonoBehaviour
     public EntityReferenceHolder ReferenceHolder { get { return _referenceHolder; } }
     public Gear Gear { get { return _referenceHolder.Gear; } }
     public Combat Combat { get { return _referenceHolder.Combat; } }
-    public bool IsDead { get { return _referenceHolder.Combat.IsDead(); } }
+    public bool IsDead { get { return Status.IsDead; } }
 
     private void Awake()
     {
@@ -70,7 +70,7 @@ public abstract class Entity : MonoBehaviour
 
     public virtual void OnStopMoving()
     {
-        Debug.LogWarning("On stop moving base");
+        // Debug.LogWarning("On stop moving base");
     }
 
     public virtual void OnStartMoving(bool walking)
@@ -104,10 +104,9 @@ public abstract class Entity : MonoBehaviour
         _stats.RunSpeed = speed;
         _stats.ScaledRunSpeed = scaled;
 
-        float stat = StatsConverter.Instance.ConvertStat(Stat.SPEED, speed);
-        AnimationController.SetRunSpeed(stat);
+        AnimationController.SetRunSpeed(scaled);
 
-        return stat;
+        return scaled;
     }
 
     public virtual float UpdateWalkSpeed(int speed)
@@ -116,11 +115,9 @@ public abstract class Entity : MonoBehaviour
         _stats.WalkSpeed = speed;
         _stats.ScaledWalkSpeed = scaled;
 
-        float stat = StatsConverter.Instance.ConvertStat(Stat.SPEED, speed);
+        AnimationController.SetWalkSpeed(scaled);
 
-        AnimationController.SetWalkSpeed(stat);
-
-        return stat;
+        return scaled;
     }
 
     public virtual void UpdateWaitType(ChangeWaitTypePacket.WaitType moveType)
@@ -138,5 +135,10 @@ public abstract class Entity : MonoBehaviour
     public virtual void UpdateMoveType(bool running)
     {
         Running = running;
+    }
+
+    public virtual void AttackTargetOnce()
+    {
+        Combat.AttackOnce();
     }
 }

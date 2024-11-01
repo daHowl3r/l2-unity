@@ -6,11 +6,14 @@ public class SitWaitState : StateBase
     {
         switch (evt)
         {
-            case Event.ACTION_ALLOWED:
-                if (_stateMachine.Intention == Intention.INTENTION_STAND)
-                {
-                    _stateMachine.ChangeState(PlayerState.STANDING);
-                }
+            // case Event.ACTION_ALLOWED:
+            //     if (_stateMachine.Intention == Intention.INTENTION_STAND)
+            //     {
+            //         _stateMachine.ChangeState(PlayerState.STANDING);
+            //     }
+            //     break;
+            case Event.DEAD:
+                _stateMachine.ChangeState(PlayerState.DEAD);
                 break;
         }
     }

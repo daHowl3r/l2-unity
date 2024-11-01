@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ClickManager : MonoBehaviour
 {
@@ -51,7 +53,7 @@ public class ClickManager : MonoBehaviour
 
     void Update()
     {
-        if (L2GameUI.Instance.MouseOverUI)
+        if (L2GameUI.Instance.MouseOverUI || PlayerStateMachine.Instance.State == PlayerState.DEAD)
         {
             return;
         }
@@ -86,6 +88,11 @@ public class ClickManager : MonoBehaviour
                 }
             }
         }
+
+        if (InputManager.Instance.Move || InputManager.Instance.MoveForward)
+        {
+            HideLocator(false);
+        }
     }
 
     public void OnClickToMove(RaycastHit hit)
@@ -107,7 +114,7 @@ public class ClickManager : MonoBehaviour
         float angle = Vector3.Angle(hit.normal, Vector3.up);
         if (angle < 85f)
         {
-            PlaceLocator(_lastClickPosition, hit.normal);
+            StartCoroutine(PlaceLocator(_lastClickPosition, hit.normal));
         }
         else
         {
@@ -121,17 +128,23 @@ public class ClickManager : MonoBehaviour
         TargetManager.Instance.SetTarget(_targetObjectData);
     }
 
-    public void PlaceLocator(Vector3 position, Vector3 normal)
+    private IEnumerator PlaceLocator(Vector3 position, Vector3 normal)
     {
+        Debug.LogWarning("PlaceLocator");
+        _locator.SetActive(true);
+
         _locator.gameObject.transform.position = position;
         _locatorBaseEffect.GetComponent<ParticleTimerResetGroup>().SurfaceNormal = normal;
         _locatorReachedEffect.SetActive(false);
         _locatorBaseEffect.SetActive(false);
+
+        yield return new WaitForFixedUpdate();
         _locatorBaseEffect.SetActive(true);
     }
 
     public void HideLocator(bool targetReached)
     {
+        Debug.LogWarning("HideLocator");
         if (targetReached)
         {
             Vector3 normal = _locatorBaseEffect.GetComponent<ParticleTimerResetGroup>().SurfaceNormal;
@@ -140,6 +153,7 @@ public class ClickManager : MonoBehaviour
         }
         else
         {
+            _locator.SetActive(false);
             _locatorReachedEffect.SetActive(false);
         }
 

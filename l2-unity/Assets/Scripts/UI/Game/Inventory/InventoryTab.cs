@@ -10,7 +10,7 @@ public class InventoryTab : L2Tab
     private int _itemCount = 0;
 
     private VisualElement _contentContainer;
-    public List<ItemCategory> _filteredCategories;
+    public List<ItemType1> _filteredCategories;
     public bool MainTab { get; internal set; }
 
     public override void Initialize(VisualElement chatWindowEle, VisualElement tabContainer, VisualElement tabHeader)
@@ -90,7 +90,7 @@ public class InventoryTab : L2Tab
                     _inventorySlots[item.Slot].AssignItem(item);
                     _itemCount++;
                 }
-                else if (_filteredCategories.Contains(item.Category))
+                else if (_filteredCategories.Contains(item.Type1))
                 {
                     _inventorySlots[_itemCount++].AssignItem(item);
                 }

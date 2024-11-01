@@ -1,7 +1,8 @@
 using UnityEngine;
 
 [System.Serializable]
-public class PlayerStats : Stats {
+public class PlayerStats : Stats
+{
     [SerializeField] private int _pAtk;
     [SerializeField] private int _mAtk;
     [SerializeField] private int _pEvasion;
@@ -21,7 +22,6 @@ public class PlayerStats : Stats {
     [SerializeField] private int _currWeight;
     [SerializeField] private int _maxWeight;
 
-    [SerializeField] private float _attackRange;
     [SerializeField] private byte _con;
     [SerializeField] private byte _dex;
     [SerializeField] private byte _str;
@@ -50,7 +50,6 @@ public class PlayerStats : Stats {
     public int CurrWeight { get { return _currWeight; } set { _currWeight = value; } }
     public int MaxWeight { get { return _maxWeight; } set { _maxWeight = value; } }
 
-    public float AttackRange { get => _attackRange; set => _attackRange = value; }
     public byte Con { get { return _con; } set { _con = value; } }
     public byte Dex { get { return _dex; } set { _dex = value; } }
     public byte Str { get { return _str; } set { _str = value; } }
@@ -62,8 +61,16 @@ public class PlayerStats : Stats {
     public int PvpKills { get { return _pvpKills; } set { _pvpKills = value; } }
     public int PkKills { get { return _pkKills; } set { _pkKills = value; } }
 
-    public void UpdateStats(PlayerStats stats) {
+    public void UpdateStats(PlayerStats stats)
+    {
         base.UpdateStats(stats);
+
+        _level = stats.Level;
+        _pAtkSpd = stats.PAtkSpd;
+        _mAtkSpd = stats.MAtkSpd;
+        _maxHp = stats.MaxHp;
+        _maxMp = stats.MaxMp;
+        _maxCp = stats.MaxCp;
 
         _pAtk = stats.PAtk;
         _mAtk = stats.MAtk;
@@ -84,7 +91,6 @@ public class PlayerStats : Stats {
         _currWeight = stats.CurrWeight;
         _maxWeight = stats.MaxWeight;
 
-        _attackRange = stats.AttackRange;
         _con = stats.Con;
         _dex = stats.Dex;
         _str = stats.Str;

@@ -7,14 +7,9 @@ public class GameClientPacketHandler : ClientPacketHandler
 {
     protected override void EncryptPacket(ClientPacket packet)
     {
-        base.EncryptPacket(packet);
+        //base.EncryptPacket(packet);
 
         byte[] data = packet.GetData();
-
-        if (GameClient.Instance.LogCryptography)
-        {
-            Debug.Log("----> [GAME] CLEAR: " + StringUtils.ByteArrayToString(data));
-        }
 
         GameClient.Instance.GameCrypt.Encrypt(data);
 
@@ -50,19 +45,19 @@ public class GameClientPacketHandler : ClientPacketHandler
 
     public void SendMessage(string message)
     {
-        SendMessagePacket packet = new SendMessagePacket(message);
+        SendMessagePacket packet = new SendMessagePacket(message, MessageType.ALL, 0);
         SendPacket(packet);
     }
 
-    public void UpdatePosition(Vector3 position)
+    public void ValidatePosition(Vector3 position, int heading)
     {
-        RequestMovePacket packet = new RequestMovePacket(position);
+        ValidatePositionPacket packet = new ValidatePositionPacket(position, heading);
         SendPacket(packet);
     }
 
     public void SendLoadWorld()
     {
-        LoadWorldPacket packet = new LoadWorldPacket();
+        EnterWorldPacket packet = new EnterWorldPacket();
         SendPacket(packet);
     }
 
@@ -78,27 +73,33 @@ public class GameClientPacketHandler : ClientPacketHandler
         SendPacket(packet);
     }
 
-    public void InflictAttack(int targetId, AttackType type)
+    public void RequestAttackForce(int targetId)
     {
-        RequestAttackPacket packet = new RequestAttackPacket(targetId, type);
+        RequestAttackPacket packet = new RequestAttackPacket(targetId);
         SendPacket(packet);
     }
 
-    public void UpdateMoveDirection(Vector3 direction)
+    public void UpdateMoveDirection(Vector3 direction, int heading)
     {
-        RequestMoveDirectionPacket packet = new RequestMoveDirectionPacket(direction);
+        RequestMoveDirectionPacket packet = new RequestMoveDirectionPacket(direction, heading);
         SendPacket(packet);
     }
 
     public void SendRequestSetTarget(int targetId)
     {
-        RequestSetTargetPacket packet = new RequestSetTargetPacket(targetId);
+        RequestSetTargetPacket packet = new RequestSetTargetPacket(targetId, false);
         SendPacket(packet);
     }
 
-    public void SendRequestAutoAttack(int objectId)
+    public void SendRequestUnsetTarget(bool cancelCast)
     {
-        RequestAutoAttackPacket packet = new RequestAutoAttackPacket(objectId);
+        RequestUnsetTargetPacket packet = new RequestUnsetTargetPacket(cancelCast);
+        SendPacket(packet);
+    }
+
+    public void SendRequestAction(int objectId)
+    {
+        RequestActionPacket packet = new RequestActionPacket(objectId);
         SendPacket(packet);
     }
 
@@ -119,10 +120,12 @@ public class GameClientPacketHandler : ClientPacketHandler
         if (GameClient.Instance.LogSentPackets)
         {
             GameClientPacketType packetType = (GameClientPacketType)packet.GetPacketType();
-            if (packetType != GameClientPacketType.Ping && packetType != GameClientPacketType.RequestRotate)
-            {
-                Debug.Log("[" + Thread.CurrentThread.ManagedThreadId + "] [GameServer] Sending packet:" + packetType);
-            }
+            Debug.Log("[" + Thread.CurrentThread.ManagedThreadId + "] [GameServer] Sending packet:" + packetType);
+        }
+
+        if (GameClient.Instance.LogCryptography)
+        {
+            Debug.Log("----> [GAME] CLEAR: " + StringUtils.ByteArrayToString(packet.GetData()));
         }
 
         if (_client.CryptEnabled)
@@ -162,6 +165,7 @@ public class GameClientPacketHandler : ClientPacketHandler
         RequestDropItemPacket packet = new RequestDropItemPacket(objectId, quantity);
         SendPacket(packet);
     }
+
     public void RequestDisconnect()
     {
         DisconnectPacket packet = new DisconnectPacket();
@@ -188,7 +192,27 @@ public class GameClientPacketHandler : ClientPacketHandler
 
     public void RequestActionUse(int actionId)
     {
-        RequestActionUsePacket packet = new RequestActionUsePacket(actionId);
+        bool isControlPressed = false;
+        bool isShiftPressed = false;
+        RequestActionUsePacket packet = new RequestActionUsePacket(actionId, isControlPressed, isShiftPressed);
+        SendPacket(packet);
+    }
+
+    public void SendRequestCreateCharacter(string name, CharacterRace race, CharacterSex sex, CharacterClass clazz, int hairstyle, int haircolor, int face)
+    {
+        RequestCharCreatePacket packet = new RequestCharCreatePacket(name, race, sex, clazz, hairstyle, haircolor, face);
+        SendPacket(packet);
+    }
+
+    public void SendRequestRestartPoint(int restartPoint)
+    {
+        RequestRestartPointPacket packet = new RequestRestartPointPacket(restartPoint);
+        SendPacket(packet);
+    }
+
+    public void NotifyAppearing()
+    {
+        AppearingPacket packet = new AppearingPacket();
         SendPacket(packet);
     }
 }

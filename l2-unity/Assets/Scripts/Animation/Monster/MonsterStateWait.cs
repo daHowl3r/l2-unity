@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class MonsterStateSpWait : MonsterStateAction
 {
-    public int playSpWaitChancePercent = 10;
+    public int playSpWaitChancePercent = 7;
     private bool hasStarted = false;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -16,8 +16,9 @@ public class MonsterStateSpWait : MonsterStateAction
     {
         SetBool(MonsterAnimationEvent.wait, false);
 
-        if (Entity.IsDead)
+        if (IsDead())
         {
+            SetBool(MonsterAnimationEvent.death, true);
             return;
         }
 

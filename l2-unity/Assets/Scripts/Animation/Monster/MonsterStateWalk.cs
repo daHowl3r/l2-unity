@@ -20,8 +20,9 @@ public class MonsterStateWalk : MonsterStateAction
     {
         SetBool(MonsterAnimationEvent.walk, false);
 
-        if (Entity.IsDead)
+        if (IsDead())
         {
+            SetBool(MonsterAnimationEvent.death, true);
             return;
         }
 

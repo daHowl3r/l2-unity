@@ -1,6 +1,7 @@
 using UnityEngine;
 using L2_login;
-using static PlayerInfoPacket;
+using static CharSelectedPacket;
+using System;
 
 public class GameClient : DefaultClient
 {
@@ -8,13 +9,17 @@ public class GameClient : DefaultClient
     [SerializeField] protected int _serverId;
     [SerializeField] private int _playKey1;
     [SerializeField] private int _playKey2;
+    [SerializeField] private float _positionSyncThreshold;
+
     private GameCrypt _gameCrypt;
 
     public PlayerInfo PlayerInfo { get { return _playerInfo; } set { _playerInfo = value; } }
-    public string CurrentPlayer { get { return _playerInfo.Identity.Name; } }
+    public int CurrentPlayerId { get { return _playerInfo.Identity.Id; } }
     public int ServerId { get { return _serverId; } set { _serverId = value; } }
     public int PlayKey1 { get { return _playKey1; } set { _playKey1 = value; } }
     public int PlayKey2 { get { return _playKey2; } set { _playKey2 = value; } }
+    public float PositionSyncThreshold { get { return _positionSyncThreshold; } set { _positionSyncThreshold = value; } }
+
     public GameCrypt GameCrypt { get { return _gameCrypt; } }
 
     private GameClientPacketHandler clientPacketHandler;
@@ -43,7 +48,7 @@ public class GameClient : DefaultClient
         clientPacketHandler = new GameClientPacketHandler();
         serverPacketHandler = new GameServerPacketHandler();
 
-        _client = new AsynchronousClient(_serverIp, _serverPort, this, clientPacketHandler, serverPacketHandler, false);
+        _client = new AsynchronousClient(_serverIp, _serverPort, this, clientPacketHandler, serverPacketHandler, false, false);
     }
 
     public void EnableCrypt(byte[] key)
@@ -91,5 +96,10 @@ public class GameClient : DefaultClient
     {
         base.OnDisconnect();
         Debug.Log("Disconnected from GameServer.");
+    }
+
+    public void OnCharCreateOk()
+    {
+        GameManager.Instance.OnCharCreateOk();
     }
 }

@@ -8,7 +8,7 @@ public class GameServerPacketHandler : ServerPacketHandler
     public override void HandlePacket(byte[] data)
     {
         GameServerPacketType packetType = (GameServerPacketType)data[0];
-        if (GameClient.Instance.LogReceivedPackets && packetType != GameServerPacketType.Ping)
+        if (GameClient.Instance.LogReceivedPackets)
         {
             Debug.Log("[" + Thread.CurrentThread.ManagedThreadId + "] [GameServer] Received packet:" + packetType);
         }
@@ -18,7 +18,7 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.Ping:
                 OnPingReceive();
                 break;
-            case GameServerPacketType.Key:
+            case GameServerPacketType.VersionCheck:
                 OnKeyReceive(data);
                 break;
             case GameServerPacketType.LoginFail:
@@ -27,13 +27,13 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.CharSelectionInfo:
                 OnCharSelectionInfoReceive(data);
                 break;
-            case GameServerPacketType.MessagePacket:
+            case GameServerPacketType.CreatureSay:
                 OnMessageReceive(data);
                 break;
             case GameServerPacketType.SystemMessage:
                 OnSystemMessageReceive(data);
                 break;
-            case GameServerPacketType.PlayerInfo:
+            case GameServerPacketType.CharSelected:
                 OnPlayerInfoReceive(data);
                 break;
             case GameServerPacketType.ObjectPosition:
@@ -45,11 +45,11 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.ObjectRotation:
                 OnUpdateRotation(data);
                 break;
-            case GameServerPacketType.ObjectAnimation:
-                OnUpdateAnimation(data);
-                break;
-            case GameServerPacketType.ApplyDamage:
-                OnInflictDamage(data);
+            // case GameServerPacketType.ObjectAnimation:
+            //     OnUpdateAnimation(data);
+            //     break;
+            case GameServerPacketType.Attack:
+                OnEntityAttack(data);
                 break;
             case GameServerPacketType.NpcInfo:
                 OnNpcInfoReceive(data);
@@ -63,17 +63,20 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.ObjectMoveDirection:
                 OnUpdateMoveDirection(data);
                 break;
-            case GameServerPacketType.GameTime:
-                OnUpdateGameTime(data);
+            case GameServerPacketType.EntityTargetSet:
+                OnEntityTargetSet(data);
                 break;
-            case GameServerPacketType.EntitySetTarget:
-                OnEntitySetTarget(data);
+            case GameServerPacketType.EntityTargetUnset:
+                OnEntityTargetUnset(data);
+                break;
+            case GameServerPacketType.MyTargetSet:
+                OnMyTargetSet(data);
                 break;
             case GameServerPacketType.AutoAttackStart:
-                OnEntityAutoAttackStart(data);
+                OnEntityAttackStanceStart(data);
                 break;
             case GameServerPacketType.AutoAttackStop:
-                OnEntityAutoAttackStop(data);
+                OnEntityAttackStanceEnd(data);
                 break;
             case GameServerPacketType.ActionFailed:
                 OnActionFailed(data);
@@ -111,6 +114,30 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.ChangeMoveType:
                 OnChangeMoveType(data);
                 break;
+            case GameServerPacketType.CharCreateOk:
+                OnCharCreateOk(data);
+                break;
+            case GameServerPacketType.CharCreateFail:
+                OnCharCreateFail(data);
+                break;
+            case GameServerPacketType.ValidateLocation:
+                OnValidateLocation(data);
+                break;
+            case GameServerPacketType.DoDie:
+                OnEntityDie(data);
+                break;
+            case GameServerPacketType.Revive:
+                OnEntityRevive(data);
+                break;
+            case GameServerPacketType.TeleportToLocation:
+                OnTeleportToLocation(data);
+                break;
+            case GameServerPacketType.StopMove:
+                OnEntityStopMove(data);
+                break;
+            default:
+                Debug.LogWarning($"Received unhandled packet with OPCode [{packetType}].");
+                break;
         }
     }
 
@@ -125,7 +152,7 @@ public class GameServerPacketHandler : ServerPacketHandler
 
         if (GameClient.Instance.LogCryptography)
         {
-            Debug.Log("<---- [GAME] DECRYPTED: " + StringUtils.ByteArrayToString(data));
+            Debug.Log("<---- [GAME] CLEAR: " + StringUtils.ByteArrayToString(data));
         }
 
         return data;
@@ -162,7 +189,7 @@ public class GameServerPacketHandler : ServerPacketHandler
 
     private void OnKeyReceive(byte[] data)
     {
-        KeyPacket packet = new KeyPacket(data);
+        VersionCheckPacket packet = new VersionCheckPacket(data);
 
         if (!packet.AuthAllowed)
         {
@@ -176,7 +203,7 @@ public class GameServerPacketHandler : ServerPacketHandler
 
         _eventProcessor.QueueEvent(() => ((GameClientPacketHandler)_clientPacketHandler).SendAuth());
 
-        _eventProcessor.QueueEvent(() => ((GameClientPacketHandler)_clientPacketHandler).SendPing());
+        //_eventProcessor.QueueEvent(() => ((GameClientPacketHandler)_clientPacketHandler).SendPing());
     }
 
     private void OnLoginFail(byte[] data)
@@ -212,11 +239,38 @@ public class GameServerPacketHandler : ServerPacketHandler
         }
     }
 
+    private void OnCharCreateFail(byte[] data)
+    {
+        CharCreateFailPacket packet = new CharCreateFailPacket(data);
+        CharCreateFailPacket.CreateFailReason reason = (CharCreateFailPacket.CreateFailReason)packet.Reason;
+        Debug.LogWarning($"Character creation failed: {reason}.");
+    }
+
+    private void OnCharCreateOk(byte[] data)
+    {
+        CharCreateOkPacket packet = new CharCreateOkPacket(data);
+        Debug.Log($"Character creation succeeded.");
+
+        EventProcessor.Instance.QueueEvent(() => GameClient.Instance.OnCharCreateOk());
+
+    }
+
     private void OnMessageReceive(byte[] data)
     {
-        ReceiveMessagePacket packet = new ReceiveMessagePacket(data);
+        CreatureSayPacket packet = new CreatureSayPacket(data);
+        if (packet.MessageType == MessageType.BOAT)
+        {
+            SystemMessageDat messageData = SystemMessageTable.Instance.GetSystemMessage(packet.SystemMessageId);
+            SystemMessage systemMessage = new SystemMessage(null, messageData);
+            _eventProcessor.QueueEvent(() => ChatWindow.Instance.ReceiveSystemMessage(systemMessage));
+            //TODO: Handle packet SysStringId
+            return;
+        }
+
         String sender = packet.Sender;
         String text = packet.Text;
+
+        //TODO: Handle message channel colors
         ChatMessage message = new ChatMessage(sender, text);
         _eventProcessor.QueueEvent(() => ChatWindow.Instance.ReceiveChatMessage(message));
     }
@@ -242,7 +296,7 @@ public class GameServerPacketHandler : ServerPacketHandler
 
     private void OnPlayerInfoReceive(byte[] data)
     {
-        PlayerInfoPacket packet = new PlayerInfoPacket(data);
+        CharSelectedPacket packet = new CharSelectedPacket(data);
         if (GameManager.Instance.GameState != GameState.IN_GAME)
         {
             _eventProcessor.QueueEvent(() =>
@@ -251,25 +305,35 @@ public class GameServerPacketHandler : ServerPacketHandler
                 GameManager.Instance.OnCharacterSelect();
             });
         }
-        else
-        {
-            _eventProcessor.QueueEvent(() =>
-            {
-                GameClient.Instance.PlayerInfo = packet.PacketPlayerInfo;
-            });
-            World.Instance.OnReceivePlayerInfo(
-                packet.PacketPlayerInfo.Identity,
-                packet.PacketPlayerInfo.Status,
-                packet.PacketPlayerInfo.Stats,
-                packet.PacketPlayerInfo.Appearance,
-                packet.PacketPlayerInfo.Running);
-        }
+        // else
+        // {
+        //     _eventProcessor.QueueEvent(() =>
+        //     {
+        //         GameClient.Instance.PlayerInfo = packet.PacketPlayerInfo;
+        //     });
+        //     World.Instance.OnReceivePlayerInfo(
+        //         packet.PacketPlayerInfo.Identity,
+        //         packet.PacketPlayerInfo.Status,
+        //         packet.PacketPlayerInfo.Stats,
+        //         packet.PacketPlayerInfo.Appearance,
+        //         packet.PacketPlayerInfo.Running);
+        // }
     }
 
     private void OnUserInfoReceive(byte[] data)
     {
         UserInfoPacket packet = new UserInfoPacket(data);
-        World.Instance.OnReceiveUserInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running);
+        if (packet.Identity.Owned)
+        {
+            World.Instance.OnReceivePlayerInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running);
+
+            // Additional player information received, only now is the right time to show the UI/World to avoid visual bugs
+            GameManager.Instance.OnPlayerInfoReceive();
+        }
+        else
+        {
+            World.Instance.OnReceiveUserInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running);
+        }
     }
 
     private void OnUpdatePosition(byte[] data)
@@ -280,10 +344,19 @@ public class GameServerPacketHandler : ServerPacketHandler
         World.Instance.UpdateObjectPosition(id, position);
     }
 
+    private void OnValidateLocation(byte[] data)
+    {
+        ValidateLocationPacket packet = new ValidateLocationPacket(data);
+        int id = packet.Id;
+        Vector3 position = packet.Location;
+        int heading = packet.Heading;
+        World.Instance.AdjustObjectPositionAndRotation(id, position, heading);
+    }
+
     private void OnRemoveObject(byte[] data)
     {
         RemoveObjectPacket packet = new RemoveObjectPacket(data);
-        _eventProcessor.QueueEvent(() => World.Instance.RemoveObject(packet.Id));
+        World.Instance.RemoveObject(packet.Id);
     }
 
     private void OnUpdateRotation(byte[] data)
@@ -294,19 +367,19 @@ public class GameServerPacketHandler : ServerPacketHandler
         World.Instance.UpdateObjectRotation(id, angle);
     }
 
-    private void OnUpdateAnimation(byte[] data)
-    {
-        UpdateAnimationPacket packet = new UpdateAnimationPacket(data);
-        int id = packet.Id;
-        int animId = packet.AnimId;
-        float value = packet.Value;
+    // private void OnUpdateAnimation(byte[] data)
+    // {
+    //     UpdateAnimationPacket packet = new UpdateAnimationPacket(data);
+    //     int id = packet.Id;
+    //     int animId = packet.AnimId;
+    //     float value = packet.Value;
 
-        Debug.Log($"ID: {id} AnimId: {(HumanoidAnimationEvent)animId} Value: {value}");
+    //     Debug.Log($"ID: {id} AnimId: {(HumanoidAnimationEvent)animId} Value: {value}");
 
-        World.Instance.UpdateObjectAnimation(id, animId, value);
-    }
+    //     World.Instance.UpdateObjectAnimation(id, animId, value);
+    // }
 
-    private void OnInflictDamage(byte[] data)
+    private void OnEntityAttack(byte[] data)
     {
         InflictDamagePacket packet = new InflictDamagePacket(data);
         Hit[] hits = packet.Hits;
@@ -315,7 +388,7 @@ public class GameServerPacketHandler : ServerPacketHandler
         {
             if (hits[i] != null)
             {
-                World.Instance.InflictDamageTo(packet.SenderId, hits[i]);
+                WorldCombat.Instance.EntityAttacks(packet.AttackerPosition, packet.SenderId, hits[i]);
             }
         }
     }
@@ -323,14 +396,13 @@ public class GameServerPacketHandler : ServerPacketHandler
     private void OnNpcInfoReceive(byte[] data)
     {
         NpcInfoPacket packet = new NpcInfoPacket(data);
-        _eventProcessor.QueueEvent(() => World.Instance.SpawnNpc(packet.Identity, packet.Status, packet.Stats));
+        _eventProcessor.QueueEvent(() => World.Instance.OnReceiveNpcInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running));
     }
 
     private void OnObjectMoveTo(byte[] data)
     {
         ObjectMoveToPacket packet = new ObjectMoveToPacket(data);
-        World.Instance.UpdateObjectDestination(packet.Id, packet.Pos, packet.Speed, packet.Walking);
-
+        World.Instance.UpdateObjectDestination(packet.Id, packet.CurrentPosition, packet.Destination);
     }
 
     private void OnUpdateMoveDirection(byte[] data)
@@ -339,42 +411,48 @@ public class GameServerPacketHandler : ServerPacketHandler
         World.Instance.UpdateObjectMoveDirection(packet.Id, packet.Speed, packet.Direction);
     }
 
-    private void OnUpdateGameTime(byte[] data)
+    private void OnEntityTargetSet(byte[] data)
     {
-        GameTimePacket packet = new GameTimePacket(data);
-        WorldClock.Instance.SynchronizeClock(packet.GameTicks, packet.TickDurationMs, packet.DayDurationMins);
+        EntityTargetSetPacket packet = new EntityTargetSetPacket(data);
+        WorldCombat.Instance.UpdateEntityTarget(packet.EntityId, packet.TargetId, packet.EntityPosition);
     }
 
-    private void OnEntitySetTarget(byte[] data)
+    private void OnEntityTargetUnset(byte[] data)
     {
-        EntitySetTargetPacket packet = new EntitySetTargetPacket(data);
-        World.Instance.UpdateEntityTarget(packet.EntityId, packet.TargetId);
+        EntityTargetUnsetPacket packet = new EntityTargetUnsetPacket(data);
+        WorldCombat.Instance.UnsetEntityTarget(packet.EntityId);
     }
 
-    private void OnEntityAutoAttackStart(byte[] data)
+    private void OnMyTargetSet(byte[] data)
     {
-        Debug.Log("OnEntityAutoAttackStart");
-        AutoAttackStartPacket packet = new AutoAttackStartPacket(data);
-        World.Instance.EntityStartAutoAttacking(packet.EntityId);
+        MyTargetSetPacket packet = new MyTargetSetPacket(data);
+        WorldCombat.Instance.UpdateMyTarget(GameClient.Instance.CurrentPlayerId, packet.TargetId);
     }
 
-    private void OnEntityAutoAttackStop(byte[] data)
+    private void OnEntityAttackStanceStart(byte[] data)
     {
-        AutoAttackStopPacket packet = new AutoAttackStopPacket(data);
-        World.Instance.EntityStopAutoAttacking(packet.EntityId);
+        Debug.Log("OnEntityAttackStanceStart");
+        AttackStanceStartPacket packet = new AttackStanceStartPacket(data);
+        WorldCombat.Instance.EntityAttackStanceStart(packet.EntityId);
+    }
+
+    private void OnEntityAttackStanceEnd(byte[] data)
+    {
+        AttackStanceEndPacket packet = new AttackStanceEndPacket(data);
+        WorldCombat.Instance.EntityAttackStanceEnd(packet.EntityId);
     }
 
     private void OnActionFailed(byte[] data)
     {
         ActionFailedPacket packet = new ActionFailedPacket(data);
-        Debug.Log($"Action failed: " + packet.PlayerAction);
-        _eventProcessor.QueueEvent(() => PlayerEntity.Instance.OnActionFailed(packet.PlayerAction));
+        Debug.Log($"Action failed");
+        _eventProcessor.QueueEvent(() => PlayerEntity.Instance.OnActionFailed());
     }
 
     private void OnActionAllowed(byte[] data)
     {
         ActionAllowedPacket packet = new ActionAllowedPacket(data);
-        _eventProcessor.QueueEvent(() => PlayerEntity.Instance.OnActionAllowed(packet.PlayerAction));
+        _eventProcessor.QueueEvent(() => PlayerEntity.Instance.OnActionAllowed());
     }
 
     private void OnServerClose()
@@ -386,7 +464,7 @@ public class GameServerPacketHandler : ServerPacketHandler
     private void OnStatusUpdate(byte[] data)
     {
         StatusUpdatePacket packet = new StatusUpdatePacket(data);
-        World.Instance.StatusUpdate(packet.ObjectId, packet.Attributes);
+        WorldCombat.Instance.StatusUpdate(packet.ObjectId, packet.Attributes);
     }
 
     private void OnInventoryItemList(byte[] data)
@@ -415,10 +493,13 @@ public class GameServerPacketHandler : ServerPacketHandler
 
     private void OnRestartResponse(byte[] data)
     {
-        // Do nothing, handle upcoming charselect packet instead
-        GameManager.Instance.GameState = GameState.RESTARTING;
+        RestartResponsePacket packet = new RestartResponsePacket(data);
+        if (packet.Allowed)
+        {
+            // Do nothing, handle upcoming charselect packet instead
+            GameManager.Instance.GameState = GameState.RESTARTING;
+        }
     }
-
 
     private void OnShortcutInit(byte[] data)
     {
@@ -436,7 +517,7 @@ public class GameServerPacketHandler : ServerPacketHandler
     {
         ChangeWaitTypePacket packet = new ChangeWaitTypePacket(data);
         Debug.Log("ChangeWaitType: " + packet.Owner + " " + packet.MoveType);
-        World.Instance.ChangeWaitType(packet.Owner, packet.MoveType, packet.PosX, packet.PosY, packet.PosZ);
+        World.Instance.ChangeWaitType(packet.Owner, packet.MoveType, packet.EntityPosition);
     }
 
     private void OnChangeMoveType(byte[] data)
@@ -444,5 +525,29 @@ public class GameServerPacketHandler : ServerPacketHandler
         ChangeMoveTypePacket packet = new ChangeMoveTypePacket(data);
         Debug.Log("ChangeMoveType: " + packet.Owner + " running? " + packet.Running);
         World.Instance.ChangeMoveType(packet.Owner, packet.Running);
+    }
+
+    private void OnEntityDie(byte[] data)
+    {
+        DoDiePacket packet = new DoDiePacket(data);
+        WorldCombat.Instance.EntityDied(packet.EntityId, packet.ToVillageAllowed, packet.ToClanHallAllowed, packet.ToCastleAllowed, packet.ToSiegeHQAllowed, packet.Sweepable, packet.FixedResAllowed);
+    }
+
+    private void OnEntityRevive(byte[] data)
+    {
+        RevivePacket packet = new RevivePacket(data);
+        WorldCombat.Instance.EntityRevived(packet.EntityId);
+    }
+
+    private void OnTeleportToLocation(byte[] data)
+    {
+        TeleportToLocationPacket packet = new TeleportToLocationPacket(data);
+        World.Instance.EntityTeleported(packet.EntityId, packet.TeleportTo, packet.LoadingScreen);
+    }
+
+    private void OnEntityStopMove(byte[] data)
+    {
+        ObjectStopMovePacket packet = new ObjectStopMovePacket(data);
+        World.Instance.ObjectStoppedMove(packet.Id, packet.CurrentPosition, packet.Heading);
     }
 }

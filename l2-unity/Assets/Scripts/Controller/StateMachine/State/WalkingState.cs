@@ -11,7 +11,8 @@ public class WalkingState : StateBase
             case Event.ARRIVED:
                 if (TargetManager.Instance.HasAttackTarget())
                 {
-                    _stateMachine.ChangeIntention(Intention.INTENTION_ATTACK, AttackIntentionType.TargetReached);
+                    // _stateMachine.ChangeIntention(Intention.INTENTION_ATTACK, AttackIntentionType.TargetReached);
+                    _stateMachine.ChangeIntention(Intention.INTENTION_ATTACK);
                 }
                 else
                 {
@@ -29,6 +30,9 @@ public class WalkingState : StateBase
                 {
                     _stateMachine.ChangeState(PlayerState.RUNNING);
                 }
+                break;
+            case Event.DEAD:
+                _stateMachine.ChangeState(PlayerState.DEAD);
                 break;
         }
     }

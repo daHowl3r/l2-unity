@@ -8,6 +8,9 @@ public class NetworkCharacterControllerShare : MonoBehaviour
     [SerializeField] private int _sharingLoopDelayMs = 100;
     [SerializeField] private Vector3 _lastDirection;
     [SerializeField] private long _lastSharingTimestamp = 0;
+    [SerializeField] private int _heading;
+
+    public int Heading { get { return _heading; } set { _heading = value; } }
 
     private static NetworkCharacterControllerShare _instance;
     public static NetworkCharacterControllerShare Instance { get { return _instance; } }
@@ -46,7 +49,6 @@ public class NetworkCharacterControllerShare : MonoBehaviour
         if (ShouldShareMoveDirection(newDirection, now))
         {
             _lastSharingTimestamp = now;
-            _lastDirection = newDirection;
 
             if (VectorUtils.IsVectorZero2D(newDirection))
             {
@@ -59,11 +61,17 @@ public class NetworkCharacterControllerShare : MonoBehaviour
             }
 
             ShareMoveDirection(newDirection);
+            _lastDirection = newDirection;
         }
     }
 
     private bool ShouldShareMoveDirection(Vector3 newDirection, long timestamp)
     {
+        if (_lastDirection == newDirection)
+        {
+            return false;
+        }
+
         if (VectorUtils.IsVectorZero2D(_lastDirection) && !VectorUtils.IsVectorZero2D(newDirection))
         {
             // player just moved
@@ -87,8 +95,25 @@ public class NetworkCharacterControllerShare : MonoBehaviour
 
     public void ShareMoveDirection(Vector3 moveDirection)
     {
+        if (_lastDirection.x == moveDirection.x && _lastDirection.z == moveDirection.z)
+        {
+            return;
+        }
+
+        if (!VectorUtils.IsVectorZero2D(moveDirection))
+        {
+            Heading = CalculateHeading(moveDirection);
+        }
+
         _lastDirection = moveDirection;
-        GameClient.Instance.ClientPacketHandler.UpdateMoveDirection(moveDirection);
+
+        GameClient.Instance.ClientPacketHandler.UpdateMoveDirection(moveDirection, Heading);
+    }
+
+    private int CalculateHeading(Vector3 moveDirection)
+    {
+        float directionAngle = VectorUtils.CalculateMoveDirectionAngle(moveDirection.x, moveDirection.z);
+        return (int)VectorUtils.ConvertRotToUnreal(directionAngle);
     }
 
     public void ForceShareMoveDirection()

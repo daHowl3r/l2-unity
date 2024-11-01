@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 7937294998922791359}
   - component: {fileID: 4997734960397706092}
   - component: {fileID: 5356274184999564455}
+  - component: {fileID: 4401504940725960882}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -62,6 +63,9 @@ MonoBehaviour:
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 3c501b5938465814c90bcbbb17860421, type: 3}
   m_SortingOrder: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
 --- !u!114 &9166659596877626494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,8 +208,6 @@ MonoBehaviour:
     _filteredCategories: 03
   _usedSlots: 0
   _slotCount: 0
-  _currentWeight: 0
-  _maximumWeight: 0
   _adenaCount: 0
 --- !u!114 &2541905227659803299
 MonoBehaviour:
@@ -287,5 +289,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2b9275d71bba04749bfde79eeea369f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4401504940725960882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8310766140472177322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 906ff614239007847852a4e8ae4b334d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

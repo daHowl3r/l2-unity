@@ -36,9 +36,10 @@ public class NetworkIdentity
     public byte PlayerClass { get => _playerClass; set => _playerClass = value; }
     public bool IsMage { get => _isMage; set => _isMage = value; }
 
-    public NetworkIdentity() {}
+    public NetworkIdentity() { }
 
-    public void UpdateEntity(NetworkIdentity identity) {
+    public void UpdateEntity(NetworkIdentity identity)
+    {
         _entityType = identity.EntityType;
         _id = identity.Id;
         _npcId = identity.NpcId;
@@ -52,16 +53,26 @@ public class NetworkIdentity
         _playerClass = identity.PlayerClass;
         _isMage = identity.IsMage;
     }
-    
-    public void SetPosX(float x) {
+
+    public void UpdateEntityPartial(NetworkIdentity identity)
+    {
+        _position = identity.Position;
+        _heading = identity.Heading;
+        _isMage = identity.IsMage;
+    }
+
+    public void SetPosX(float x)
+    {
         _position.x = x;
     }
 
-    public void SetPosY(float y) {
+    public void SetPosY(float y)
+    {
         _position.y = y;
     }
 
-    public void SetPosZ(float z) {
+    public void SetPosZ(float z)
+    {
         _position.z = z;
     }
 }

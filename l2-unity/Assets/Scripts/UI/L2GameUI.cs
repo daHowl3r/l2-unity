@@ -27,6 +27,11 @@ public class L2GameUI : L2UI
         _openedWindows = new List<L2PopupWindow>();
     }
 
+    private void Start()
+    {
+        MouseOverUI = false;
+    }
+
     private void OnDestroy()
     {
         _instance = null;
@@ -91,6 +96,10 @@ public class L2GameUI : L2UI
         {
             ActionWindow.Instance.AddWindow(_rootVisualContainer);
             ActionWindow.Instance.HideWindow();
+        }
+        if (RestartLocationWindow.Instance != null)
+        {
+            RestartLocationWindow.Instance.AddWindow(_rootVisualContainer);
         }
         if (TargetWindow.Instance != null)
         {

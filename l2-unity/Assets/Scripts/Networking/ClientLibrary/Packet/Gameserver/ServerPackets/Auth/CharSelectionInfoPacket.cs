@@ -7,11 +7,13 @@ public class CharSelectionInfoPacket : ServerPacket
     private int _maximumSlots;
     private List<CharSelectionInfoPackage> _characters;
     private int _selectedSlotId;
+    private int _sessionId;
 
     public int CharCount { get { return _charCount; } }
     public int MaximumSlots { get { return _maximumSlots; } }
     public List<CharSelectionInfoPackage> Characters { get { return _characters; } }
     public int SelectedSlotId { get { return _selectedSlotId; } }
+    public int SessionId { get { return _sessionId; } }
 
     public CharSelectionInfoPacket(byte[] d) : base(d)
     {
@@ -22,9 +24,8 @@ public class CharSelectionInfoPacket : ServerPacket
 
     public override void Parse()
     {
-
-        _charCount = ReadB();
-        _maximumSlots = ReadB();
+        _charCount = ReadI();
+        _maximumSlots = 9;
 
         for (int i = 0; i < _charCount; i++)
         {
@@ -36,55 +37,102 @@ public class CharSelectionInfoPacket : ServerPacket
             character.Slot = i;
             character.Name = ReadS();
             character.Id = ReadI();
+            character.Id = i; // CharId shared by the server is always the same
             character.Account = ReadS();
+            _sessionId = ReadI();
             character.ClanId = ReadI();
 
-            appearance.Sex = ReadB();
-            appearance.Race = ReadB();
-            character.IsMage = ReadB() == 1;
-            character.ClassId = ReadB();
+            ReadI();
 
-            float x = ReadF();
-            float y = ReadF();
-            float z = ReadF();
+            appearance.Sex = (byte)ReadI();
+            appearance.Race = (byte)ReadI();
+            character.BaseClassId = (byte)ReadI();
+            //character.IsMage = ReadB() == 1;
+
+            ReadI();
+
+            float z = ReadI() / 52.5f;
+            float x = ReadI() / 52.5f;
+            float y = ReadI() / 52.5f;
 
             character.Position = new Vector3(x, y, z);
 
-            status.Hp = ReadI();
-            status.Mp = ReadI();
+            status.Hp = (int)ReadD();
+            status.Mp = (int)ReadD();
 
             character.Sp = ReadI();
-            character.Exp = ReadI();
-            character.ExpPercent = ReadF();
-
+            character.Exp = (int)ReadL();
             stats.Level = ReadI();
+            // character.ExpPercent = ReadF();
 
             character.Karma = ReadI();
             character.PkKills = ReadI();
             character.PvpKills = ReadI();
 
-            appearance.LHand = ReadI();
+            ReadI();
+            ReadI();
+            ReadI();
+            ReadI();
+            ReadI();
+            ReadI();
+            ReadI();
+
+            ReadI(); //HairAll?
+            ReadI(); //Rear
+            ReadI(); //Lear
+            ReadI(); //Neck
+            ReadI(); //Rfinger
+            ReadI(); //Lfinger
+            ReadI(); //Head
             appearance.RHand = ReadI();
+            appearance.LHand = ReadI();
+            appearance.Gloves = ReadI();
             appearance.Chest = ReadI();
             appearance.Legs = ReadI();
-            appearance.Gloves = ReadI();
             appearance.Feet = ReadI();
+            ReadI(); //Cloak
+            appearance.RHand = ReadI();
+            ReadI(); //Hair
+            ReadI(); //Face
 
-            appearance.HairStyle = ReadB();
-            appearance.HairColor = ReadB();
-            appearance.Face = ReadB();
+            ReadI(); //HairAll?
+            ReadI(); //Rear
+            ReadI(); //Lear
+            ReadI(); //Neck
+            ReadI(); //Rfinger
+            ReadI(); //Lfinger
+            ReadI(); //Head
+            appearance.RHand = ReadI();
+            appearance.LHand = ReadI();
+            appearance.Gloves = ReadI();
+            appearance.Chest = ReadI();
+            appearance.Legs = ReadI();
+            appearance.Feet = ReadI();
+            ReadI(); //Cloak
+            appearance.RHand = ReadI();
+            ReadI(); //Hair
+            ReadI(); //Face
 
-            stats.MaxHp = ReadI();
-            stats.MaxMp = ReadI();
+            appearance.HairStyle = (byte)ReadI();
+            appearance.HairColor = (byte)ReadI();
+            appearance.Face = (byte)ReadI();
+
+            stats.MaxHp = (int)ReadD();
+            stats.MaxMp = (int)ReadD();
 
             character.DeleteTimer = ReadI();
+            character.ClassId = (byte)ReadI();
+            character.Selected = ReadI() == 1;
 
-            character.Selected = ReadB() == 1;
+            ReadB(); // enchant effect
+            ReadI(); // augmentation id
 
             if (character.Selected)
             {
                 _selectedSlotId = i;
             }
+
+            character.IsMage = CharacterClassParser.IsMage((CharacterClass)character.ClassId);
 
             character.CharacterRaceAnimation = CharacterModelTypeParser.ParseRace((CharacterRace)appearance.Race, appearance.Sex, character.IsMage);
 

@@ -1,7 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static PlayerInfoPacket;
+using static CharSelectedPacket;
 using static ServerListPacket;
 
 public class GameManager : MonoBehaviour
@@ -13,7 +14,7 @@ public class GameManager : MonoBehaviour
     // TODO: SWITCH TO EVENT HANDLER AND STATE MACHINE
     // TODO: SWITCH TO EVENT HANDLER AND STATE MACHINE
     // TODO: SWITCH TO EVENT HANDLER AND STATE MACHINE
-    [SerializeField] private int _protocolVersion = 1;
+    [SerializeField] private int _protocolVersion = 740;
     [SerializeField] private GameState _gameState = GameState.LOGIN_SCREEN;
     private bool _gameReady = false;
     [SerializeField] private bool _autoLogin = false;
@@ -105,17 +106,24 @@ public class GameManager : MonoBehaviour
 
     public void OnWorldSceneLoaded()
     {
+        Debug.LogWarning("OnWorldSceneLoaded");
         GameObject.Destroy(L2LoginUI.Instance.gameObject);
 
         PlayerInfo playerInfo = GameClient.Instance.PlayerInfo;
 
-        World.Instance.SpawnPlayer(playerInfo.Identity, playerInfo.Status, playerInfo.Stats, playerInfo.Appearance, playerInfo.Running);
+        WorldClock.Instance.SynchronizeClock(playerInfo.CurrentGameTime);
+
+        World.Instance.OnReceivePlayerInfo(playerInfo.Identity, playerInfo.Status, playerInfo.Stats, playerInfo.Appearance, playerInfo.Running);
 
         PlayerStateMachine.Instance.enabled = true;
 
-        StopLoading();
-
         GameClient.Instance.ClientPacketHandler.SendLoadWorld();
+    }
+
+    public void OnPlayerInfoReceive()
+    {
+        // Add a small delay to avoid visual bugs
+        StartCoroutine(StopLoading());
     }
 
     public void OnLoginServerConnected()
@@ -263,6 +271,11 @@ public class GameManager : MonoBehaviour
         LoginCameraManager.Instance.SwitchCamera("CharSelect");
     }
 
+    public void OnCharCreateOk()
+    {
+        SwitchToCharSelect();
+    }
+
     public void OnLoginUILoaded()
     {
         if (GameState == GameState.RESTARTING)
@@ -288,8 +301,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void StopLoading()
+    public IEnumerator StopLoading()
     {
+        yield return new WaitForSeconds(0.15f);
+
         _loadingCamera.enabled = false;
         if (L2GameUI.Instance != null)
         {

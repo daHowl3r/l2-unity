@@ -22,6 +22,9 @@ public class MonsterAnimationController : BaseAnimationController
 
         _lastValue = value;
         _lastAnim = animationEvent;
+
+        // Debug.LogWarning($"SetBool: {animationEvent}={value}");
+
         base.SetBool(GetParameterId(animationEvent), value);
     }
 

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using static ServerListPacket;
 using L2_login;
 
-public class LoginClient : DefaultClient {
+public class LoginClient : DefaultClient
+{
     // Crypt
     public static byte[] STATIC_BLOWFISH_KEY = {
         (byte) 0x6b,
@@ -51,15 +52,20 @@ public class LoginClient : DefaultClient {
     private static LoginClient _instance;
     public static LoginClient Instance { get { return _instance; } }
 
-    private void Awake() {
-        if (_instance == null) {
+    private void Awake()
+    {
+        if (_instance == null)
+        {
             _instance = this;
-        } else if (_instance != this) {
+        }
+        else if (_instance != this)
+        {
             Destroy(this);
         }
     }
 
-    public void SetBlowFishKey(byte[] blowfishKey) {
+    public void SetBlowFishKey(byte[] blowfishKey)
+    {
         _client.CryptEnabled = true;
 
         _blowfishKey = blowfishKey;
@@ -73,24 +79,28 @@ public class LoginClient : DefaultClient {
         Debug.Log("Blowfish key set.");
     }
 
-    public void SetRSAKey(byte[] rsaKey) {
+    public void SetRSAKey(byte[] rsaKey)
+    {
         _rsa = new RSACrypt(rsaKey, true);
         Debug.Log("RSA Key set.");
     }
 
-    protected override void CreateAsyncClient() {
+    protected override void CreateAsyncClient()
+    {
         clientPacketHandler = new LoginClientPacketHandler();
         serverPacketHandler = new LoginServerPacketHandler();
 
-        _client = new AsynchronousClient(_serverIp, _serverPort, this, clientPacketHandler, serverPacketHandler, true);
+        _client = new AsynchronousClient(_serverIp, _serverPort, this, clientPacketHandler, serverPacketHandler, true, true);
     }
 
-    protected override void WhileConnecting() {
+    protected override void WhileConnecting()
+    {
         base.WhileConnecting();
         SetBlowFishKey(STATIC_BLOWFISH_KEY);
     }
 
-    protected override void OnConnectionSuccess() {
+    protected override void OnConnectionSuccess()
+    {
         base.OnConnectionSuccess();
 
         Debug.Log("Connected to LoginServer");
@@ -98,32 +108,39 @@ public class LoginClient : DefaultClient {
         GameManager.Instance.OnLoginServerConnected();
     }
 
-    public override void OnConnectionFailed() {
+    public override void OnConnectionFailed()
+    {
         base.OnConnectionFailed();
     }
 
-    public override void OnAuthAllowed() {
+    public override void OnAuthAllowed()
+    {
         Debug.Log("Authed to LoginServer");
         GameManager.Instance.OnLoginServerAuthAllowed();
     }
 
-    public void OnPlayOk() {
+    public void OnPlayOk()
+    {
         GameManager.Instance.OnLoginServerPlayOk();
 
-        if (GameManager.Instance.GameState == GameState.READY_TO_CONNECT) {
+        if (GameManager.Instance.GameState == GameState.READY_TO_CONNECT)
+        {
             GameClient.Instance.Connect();
         }
     }
 
-    public void OnServerListReceived(byte lastServer, List<ServerData> serverData, Dictionary<int, int> charsOnServers) {
+    public void OnServerListReceived(byte lastServer, List<ServerData> serverData, Dictionary<int, int> charsOnServers)
+    {
         GameManager.Instance.OnReceivedServerList(lastServer, serverData, charsOnServers);
     }
 
-    public void OnServerSelected(int serverId) {
+    public void OnServerSelected(int serverId)
+    {
         clientPacketHandler.SendRequestServerLogin(serverId);
     }
 
-    public override void OnDisconnect() {
+    public override void OnDisconnect()
+    {
         base.OnDisconnect();
 
         Debug.Log("Disconnected from LoginServer.");

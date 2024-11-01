@@ -4,10 +4,8 @@ public class AttackingState : StateBase
 
     public override void Enter()
     {
-        if (PlayerCombat.Instance.StartAutoAttacking())
-        {
-            PlayerController.Instance.StartLookAt(TargetManager.Instance.AttackTarget.Data.ObjectTransform);
-        }
+        // PlayerCombat.Instance.StartAttackStance();
+        PlayerController.Instance.StartLookAt(TargetManager.Instance.AttackTarget.Data.ObjectTransform);
     }
 
     public override void Update()
@@ -15,6 +13,10 @@ public class AttackingState : StateBase
         if (InputManager.Instance.Move || PlayerController.Instance.RunningToDestination && !TargetManager.Instance.HasAttackTarget())
         {
             _stateMachine.ChangeIntention(Intention.INTENTION_MOVE_TO);
+        }
+        else if (!TargetManager.Instance.HasAttackTarget() || TargetManager.Instance.HasAttackTarget() && TargetManager.Instance.AttackTarget.Status.IsDead)
+        {
+            _stateMachine.ChangeIntention(Intention.INTENTION_IDLE);
         }
     }
 
@@ -49,23 +51,19 @@ public class AttackingState : StateBase
 
                 if (_stateMachine.Intention == Intention.INTENTION_FOLLOW)
                 {
-                    _stateMachine.ChangeIntention(Intention.INTENTION_ATTACK, AttackIntentionType.ChangeTarget);
+                    // _stateMachine.ChangeIntention(Intention.INTENTION_ATTACK, AttackIntentionType.ChangeTarget);
+                    _stateMachine.ChangeIntention(Intention.INTENTION_ATTACK);
                 }
+                break;
+            case Event.DEAD:
+                _stateMachine.ChangeState(PlayerState.DEAD);
                 break;
         }
     }
 
-    public enum AttackIntentionType
-    {
-        ChangeTarget,
-        AttackInput,
-        TargetReached
-    }
-
-
     public override void Exit()
     {
-        PlayerCombat.Instance.StopAutoAttacking();
+        // PlayerCombat.Instance.StopAttackStance();
         PlayerController.Instance.StopLookAt();
     }
 }

@@ -56,6 +56,7 @@ GameObject:
   - component: {fileID: 2332054955548525016}
   - component: {fileID: 8404103320413714602}
   - component: {fileID: 7310616880131423470}
+  - component: {fileID: -14512947334514877}
   m_Layer: 11
   m_Name: Player_FDarkElf
   m_TagString: Player
@@ -173,9 +174,11 @@ MonoBehaviour:
   _stats:
     _level: 0
     _runSpeed: 0
+    _moveSpeedMultiplier: 0
     _walkSpeed: 0
     _scaledRunSpeed: 0
     _scaledWalkSpeed: 0
+    _attackSpeedMultiplier: 0
     _pAtkSpd: 0
     _mAtkSpd: 0
     _maxHp: 0
@@ -590,6 +593,7 @@ MonoBehaviour:
   _sharingLoopDelayMs: 100
   _lastDirection: {x: 0, y: 0, z: 0}
   _lastSharingTimestamp: 0
+  _heading: 0
 --- !u!114 &223533845830030767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -777,6 +781,25 @@ MonoBehaviour:
   _rootSkinnedRenderer: {fileID: 5828016634818891321}
   _destSkinnedRenderer: []
   _bones: []
+--- !u!114 &-14512947334514877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6373500069190494077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfdf544f2fcffbe4d8b40c4b0951b225, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _serverPosition: {x: 0, y: 0, z: 0}
+  _positionSyncProtection: 1
+  _positionSynced: 0
+  _positionSyncPaused: 0
+  _positionDelta: 0
+  _lastDesyncTime: 0
+  _lastDesyncDuration: 0
 --- !u!1 &9076616163763288160
 GameObject:
   m_ObjectHideFlags: 0

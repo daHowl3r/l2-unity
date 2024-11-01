@@ -15,12 +15,12 @@ public class NetworkMonsterEntity : NetworkEntity
 
     public override void OnStopMoving()
     {
+        base.OnStopMoving();
         // if (MonsterAnimationController.GetBool(MonsterAnimationEvent.atk01) == false)
         // {
         //     Debug.LogWarning("On stop moving valid monster");
         //     MonsterAnimationController.SetBool(MonsterAnimationEvent.wait, true);
         // }
-        Debug.LogWarning("On stop moving monster");
     }
 
     public override void OnStartMoving(bool walking)

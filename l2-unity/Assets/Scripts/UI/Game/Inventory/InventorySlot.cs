@@ -8,11 +8,13 @@ public class InventorySlot : L2DraggableSlot
     private long _remainingTime;
     private SlotClickSoundManipulator _slotClickSoundManipulator;
     private int _objectId;
-    private ItemCategory _itemCategory;
+    private ItemType1 _type1;
+    private ItemType2 _type2;
     protected bool _empty = true;
     public int Count { get { return _count; } }
     public long RemainingTime { get { return _remainingTime; } }
-    public ItemCategory ItemCategory { get { return _itemCategory; } }
+    public ItemType1 Type1 { get { return _type1; } }
+    public ItemType2 Type2 { get { return _type2; } }
     public int ObjectId { get { return _objectId; } }
 
     public InventorySlot(int position, VisualElement slotElement, L2Tab tab, SlotType slotType)
@@ -46,7 +48,7 @@ public class InventorySlot : L2DraggableSlot
             _icon = item.ItemData.Icon;
             _objectId = item.ObjectId;
             _empty = false;
-            _itemCategory = item.Category;
+            _type1 = item.Type1;
         }
         else
         {
@@ -56,7 +58,7 @@ public class InventorySlot : L2DraggableSlot
             _description = "Unkown item.";
             _icon = "";
             _objectId = -1;
-            _itemCategory = ItemCategory.Item;
+            _type1 = Type1;
         }
 
         _count = item.Count;
@@ -76,9 +78,9 @@ public class InventorySlot : L2DraggableSlot
     private void AddTooltip(ItemInstance item)
     {
         string tooltipText = $"{_name} ({_count})";
-        if (item.Category == ItemCategory.Weapon ||
-            item.Category == ItemCategory.Jewel ||
-            item.Category == ItemCategory.ShieldArmor)
+        if (item.Type2 == ItemType2.TYPE2_WEAPON ||
+            item.Type2 == ItemType2.TYPE2_ACCESSORY ||
+            item.Type2 == ItemType2.TYPE2_SHIELD_ARMOR)
         {
             tooltipText = _name;
         }

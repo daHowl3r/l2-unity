@@ -43,7 +43,7 @@ public class PlayerStateMachine : MonoBehaviour
 
     public void SetWaitingForServerReply(bool value)
     {
-        Debug.LogWarning($"[StateMachine] Waiting for server reply: {value}");
+        // Debug.LogWarning($"[StateMachine] Waiting for server reply: {value}");
         _waitingForServerReply = value;
     }
 
@@ -133,6 +133,13 @@ public class PlayerStateMachine : MonoBehaviour
         if (_enableLogs) Debug.Log("[StateMachine] Action allowed");
         SetWaitingForServerReply(false);
         NotifyEvent(Event.ACTION_ALLOWED);
+    }
+
+    public void OnAttackAllowed()
+    {
+        if (_enableLogs) Debug.Log("[StateMachine] Attack allowed");
+        SetWaitingForServerReply(false);
+        NotifyEvent(Event.ATTACK_ALLOWED);
     }
 
     public void OnActionDenied()

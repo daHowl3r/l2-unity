@@ -11,6 +11,7 @@ public class SittingState : StateBase
         switch (evt)
         {
             case Event.DEAD:
+                _stateMachine.ChangeState(PlayerState.DEAD);
                 break;
         }
     }

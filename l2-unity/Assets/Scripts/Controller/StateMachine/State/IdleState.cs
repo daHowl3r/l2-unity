@@ -23,6 +23,7 @@ public class IdleState : StateBase
     {
         switch (evt)
         {
+            case Event.READY_TO_ATTACK:
             case Event.READY_TO_ACT:
                 if (TargetManager.Instance.HasAttackTarget() && !_stateMachine.WaitingForServerReply)
                 {
@@ -32,16 +33,18 @@ public class IdleState : StateBase
 
                     NetworkTransformShare.Instance.SharePosition();
 
-                    NetworkCharacterControllerShare.Instance.ForceShareMoveDirection();
+                    NetworkCharacterControllerShare.Instance.ShareMoveDirection(Vector3.zero);
 
                     if (TargetManager.Instance.IsAttackTargetSet())
                     {
-                        GameClient.Instance.ClientPacketHandler.SendRequestAutoAttack(-1);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("[StateMachine] Attacking a target which is not current target.");
-                        GameClient.Instance.ClientPacketHandler.SendRequestAutoAttack(TargetManager.Instance.AttackTarget.Identity.Id);
+                        if (PlayerCombat.Instance.IsForcedAction)
+                        {
+                            GameClient.Instance.ClientPacketHandler.RequestAttackForce(TargetManager.Instance.AttackTarget.Identity.Id);
+                        }
+                        else
+                        {
+                            GameClient.Instance.ClientPacketHandler.SendRequestAction(TargetManager.Instance.AttackTarget.Identity.Id);
+                        }
                     }
 
                     _stateMachine.SetWaitingForServerReply(true);
@@ -51,17 +54,26 @@ public class IdleState : StateBase
                     _stateMachine.ChangeIntention(Intention.INTENTION_IDLE);
                 }
                 break;
-            case Event.ACTION_ALLOWED:
+            case Event.ATTACK_ALLOWED:
                 if (_stateMachine.Intention == Intention.INTENTION_ATTACK)
                 {
                     _stateMachine.ChangeState(PlayerState.ATTACKING);
                 }
+                break;
+            case Event.ACTION_ALLOWED:
+                // if (_stateMachine.Intention == Intention.INTENTION_ATTACK) //TODO maybe delete
+                // {
+                //     _stateMachine.ChangeState(PlayerState.ATTACKING);
+                // }
                 if (_stateMachine.Intention == Intention.INTENTION_SIT)
                 {
                     _stateMachine.ChangeState(PlayerState.SITTING);
                 }
                 break;
             case Event.ACTION_DENIED:
+                break;
+            case Event.DEAD:
+                _stateMachine.ChangeState(PlayerState.DEAD);
                 break;
 
         }

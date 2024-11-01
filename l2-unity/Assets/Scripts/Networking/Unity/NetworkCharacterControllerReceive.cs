@@ -7,10 +7,12 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
     private NetworkTransformReceive _networkTransformReceive;
     private Entity _entity;
     [SerializeField] private Vector3 _direction;
+    [SerializeField] private float _distanceToDestination;
     [SerializeField] private float _speed;
     [SerializeField] private Vector3 _destination;
     [SerializeField] private float _gravity = 28f;
-    private float _moveSpeedMultiplier = 1f;
+    [SerializeField] private float _moveSpeedMultiplier = 1f;
+    [SerializeField] private float _stopAtRange = 0;
 
     public Vector3 MoveDirection { get { return _direction; } set { _direction = value; } }
 
@@ -24,35 +26,28 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
         _networkTransformReceive = GetComponent<NetworkTransformReceive>();
         _characterController = GetComponent<CharacterController>();
 
-        //adjust movespeed for player entities
-        //TODO: Should not need this for players to be synced...
-        if (_entity.Identity.EntityType == EntityType.User)
-        {
-            _moveSpeedMultiplier = 1.1f;
-        }
-
         _direction = Vector3.zero;
         _destination = Vector3.zero;
     }
 
     private void FixedUpdate()
     {
-
-        if (!_networkTransformReceive.IsPositionSynced())
-        {
-            /* pause script during position sync */
-            return;
-        }
+        // if (!_networkTransformReceive.IsPositionSynced())
+        // {
+        //     /* pause script during position sync */
+        //     return;
+        // }
 
         if (_destination != null && _destination != Vector3.zero)
         {
-            SetMoveDirectionToDestination();
+            CheckIfDestinationReached();
         }
 
         Vector3 ajustedDirection = _direction * _speed * _moveSpeedMultiplier + Vector3.down * _gravity;
         _characterController.Move(ajustedDirection * Time.deltaTime);
     }
 
+    // Player move direction packets
     public void UpdateMoveDirection(Vector3 direction)
     {
         _speed = _entity.Running ? _entity.Stats.ScaledRunSpeed : _entity.Stats.ScaledWalkSpeed;
@@ -64,34 +59,50 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
         }
     }
 
-    public void SetDestination(Vector3 destination)
+    // Move to destination packets
+    public void SetDestination(Vector3 destination, float stopAtRange)
     {
-        _speed = _entity.Running ? _entity.Stats.ScaledRunSpeed : _entity.Stats.ScaledWalkSpeed;
+        _stopAtRange = stopAtRange > 0 ? stopAtRange + 0.28f : 0; //TODO: Change 0.28f based on entities collision width
         _destination = destination;
-    }
+        _speed = _entity.Running ? _entity.Stats.ScaledRunSpeed : _entity.Stats.ScaledWalkSpeed;
 
-    public void SetMoveDirectionToDestination()
-    {
         Vector3 transformFlat = VectorUtils.To2D(transform.position);
         Vector3 destinationFlat = VectorUtils.To2D(_destination);
+        _distanceToDestination = Vector3.Distance(transformFlat, destinationFlat);
+        _direction = (destinationFlat - transformFlat).normalized;
 
-        if (Vector3.Distance(transformFlat, destinationFlat) > Geodata.Instance.NodeSize / 20f)
+        if (_distanceToDestination > 0.05f + stopAtRange)
         {
             _networkTransformReceive.PausePositionSync();
-            _direction = (destinationFlat - transformFlat).normalized;
         }
-        else
+    }
+
+    private void CheckIfDestinationReached()
+    {
+        _distanceToDestination = Vector3.Distance(VectorUtils.To2D(transform.position), VectorUtils.To2D(_destination));
+
+        if (_distanceToDestination < 0.05f + _stopAtRange)
         {
             if (_direction != Vector3.zero)
             {
-                Debug.LogWarning("Stopped");
                 _entity.OnStopMoving();
                 //TODO check if has target and is attacking
             }
 
             _direction = Vector3.zero;
             _networkTransformReceive.ResumePositionSync();
+
+            // adjust the network position with the attack range
+            if (_stopAtRange > 0)
+            {
+                _networkTransformReceive.SetNewPosition(transform.position);
+            }
         }
+    }
+
+    public void ResetDestination()
+    {
+        _destination = transform.position;
     }
 
     public bool IsMoving()

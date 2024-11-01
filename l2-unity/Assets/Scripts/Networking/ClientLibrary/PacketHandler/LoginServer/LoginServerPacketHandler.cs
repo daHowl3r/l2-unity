@@ -8,7 +8,7 @@ public class LoginServerPacketHandler : ServerPacketHandler
     public override void HandlePacket(byte[] data)
     {
         LoginServerPacketType packetType = (LoginServerPacketType)data[0];
-        if (LoginClient.Instance.LogReceivedPackets && packetType != LoginServerPacketType.Ping)
+        if (LoginClient.Instance.LogReceivedPackets)
         {
             Debug.Log("[" + Thread.CurrentThread.ManagedThreadId + "] [LoginServer] Received packet:" + packetType);
         }
@@ -103,7 +103,7 @@ public class LoginServerPacketHandler : ServerPacketHandler
 
         _client.InitPacket = false;
 
-        EventProcessor.Instance.QueueEvent(() => ((LoginClientPacketHandler)_clientPacketHandler).SendPing());
+        // EventProcessor.Instance.QueueEvent(() => ((LoginClientPacketHandler)_clientPacketHandler).SendPing());
 
         EventProcessor.Instance.QueueEvent(() => ((LoginClientPacketHandler)_clientPacketHandler).SendAuth());
     }

@@ -9,7 +9,7 @@
                     "name": "Jump",
                     "type": "Button",
                     "id": "f65657d4-2c09-41a6-bfca-91592835bd51",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -27,7 +27,16 @@
                     "name": "NextTarget",
                     "type": "Button",
                     "id": "7c19cec7-b38f-4eb3-a71d-7ce054203404",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Ctrl",
+                    "type": "Button",
+                    "id": "197ab9ec-bfa0-4743-a9f9-2c6d49c03253",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -36,7 +45,7 @@
                     "name": "LeftClick",
                     "type": "Button",
                     "id": "913db1cb-b846-409d-9a5e-43bfaaedc059",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -45,7 +54,7 @@
                     "name": "RightClick",
                     "type": "Button",
                     "id": "3a54e819-8021-4ed9-bdde-b374ab78d54d",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -811,6 +820,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "NextTarget",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c3cc3c75-1b59-4177-898f-90badc7e4024",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Ctrl",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

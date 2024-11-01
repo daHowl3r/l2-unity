@@ -154,38 +154,38 @@ public class CharacterCreator : MonoBehaviour
     {
         if (appearance.Chest != 0)
         {
-            gear.EquipArmor(appearance.Chest, ItemSlot.chest);
+            gear.EquipArmor(appearance.Chest, ItemSlot.SLOT_CHEST);
         }
         else
         {
-            gear.EquipArmor(ItemTable.NAKED_CHEST, ItemSlot.chest);
+            gear.EquipArmor(ItemTable.NAKED_CHEST, ItemSlot.SLOT_CHEST);
         }
 
         if (appearance.Legs != 0)
         {
-            gear.EquipArmor(appearance.Legs, ItemSlot.legs);
+            gear.EquipArmor(appearance.Legs, ItemSlot.SLOT_LEGS);
         }
         else
         {
-            gear.EquipArmor(ItemTable.NAKED_LEGS, ItemSlot.legs);
+            gear.EquipArmor(ItemTable.NAKED_LEGS, ItemSlot.SLOT_LEGS);
         }
 
         if (appearance.Gloves != 0)
         {
-            gear.EquipArmor(appearance.Gloves, ItemSlot.gloves);
+            gear.EquipArmor(appearance.Gloves, ItemSlot.SLOT_GLOVES);
         }
         else
         {
-            gear.EquipArmor(ItemTable.NAKED_GLOVES, ItemSlot.gloves);
+            gear.EquipArmor(ItemTable.NAKED_GLOVES, ItemSlot.SLOT_GLOVES);
         }
 
         if (appearance.Feet != 0)
         {
-            gear.EquipArmor(appearance.Feet, ItemSlot.feet);
+            gear.EquipArmor(appearance.Feet, ItemSlot.SLOT_FEET);
         }
         else
         {
-            gear.EquipArmor(ItemTable.NAKED_BOOTS, ItemSlot.feet);
+            gear.EquipArmor(ItemTable.NAKED_BOOTS, ItemSlot.SLOT_FEET);
         }
 
         if (appearance.LHand != 0)

@@ -5,6 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerCombat : Combat
 {
+    public bool IsForcedAction { get; set; }
+
     private static PlayerCombat _instance;
     public static PlayerCombat Instance { get => _instance; }
 
@@ -20,15 +22,27 @@ public class PlayerCombat : Combat
         }
     }
 
-    protected override void OnDeath()
+    public override void OnDeath()
     {
         base.OnDeath();
         PlayerStateMachine.Instance.NotifyEvent(Event.DEAD);
     }
 
+    public override void OnRevive()
+    {
+        base.OnDeath();
+        PlayerStateMachine.Instance.NotifyEvent(Event.REVIVED);
+    }
+
     protected override void OnHit(Hit hit)
     {
         base.OnHit(hit);
-        //AudioHandler.PlaySound(EntitySoundEvent.Dmg);
+    }
+
+    public override void AttackOnce()
+    {
+        base.AttackOnce();
+
+        PlayerStateMachine.Instance.OnAttackAllowed();
     }
 }

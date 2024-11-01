@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerStateAtkWait : PlayerStateAction
@@ -15,9 +16,8 @@ public class PlayerStateAtkWait : PlayerStateAction
             return;
         }
 
-        if (ShouldAttack())
+        if (!DidAttackTimeout() && ShouldAttack())
         {
-            SetBool(HumanoidAnimType.atk01, true, false);
             return;
         }
 

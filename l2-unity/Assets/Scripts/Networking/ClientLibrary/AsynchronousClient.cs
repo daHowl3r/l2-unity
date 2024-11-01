@@ -30,14 +30,14 @@ public class AsynchronousClient
     }
 
     public AsynchronousClient(string ip, int port, DefaultClient client, ClientPacketHandler clientPacketHandler,
-        ServerPacketHandler serverPacketHandler, bool enableInitPacket)
+        ServerPacketHandler serverPacketHandler, bool enableInitPacket, bool enableChecksum)
     {
         _ipAddress = ip;
         _port = port;
         _clientPacketHandler = clientPacketHandler;
         _serverPacketHandler = serverPacketHandler;
         _clientPacketHandler.SetClient(this);
-        _serverPacketHandler.SetClient(this, _clientPacketHandler);
+        _serverPacketHandler.SetClient(this, _clientPacketHandler, enableChecksum);
         _client = client;
         _initPacketEnabled = enableInitPacket;
         _initPacket = enableInitPacket;
@@ -118,10 +118,11 @@ public class AsynchronousClient
         {
             using (NetworkStream stream = new NetworkStream(_socket))
             {
-                stream.WriteByte((byte)(packet.GetData().Length & 0xff));
+                int len = packet.GetData().Length + 2;
+                stream.WriteByte((byte)(len & 0xff));
 
                 // Write the higher 8 bits
-                stream.WriteByte((byte)((packet.GetData().Length >> 8) & 0xff));
+                stream.WriteByte((byte)((len >> 8) & 0xff));
 
 
                 stream.Write(packet.GetData(), 0, (int)packet.GetData().Length);
@@ -165,6 +166,7 @@ public class AsynchronousClient
 
                 //Debug.Log("Packet length: " + length);
 
+                length = length - 2;
                 byte[] data = new byte[length];
 
                 int receivedBytes = 0;

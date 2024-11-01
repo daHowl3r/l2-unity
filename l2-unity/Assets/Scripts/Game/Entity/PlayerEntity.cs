@@ -48,36 +48,17 @@ public class PlayerEntity : Entity
         return converted;
     }
 
-    public void OnActionFailed(PlayerAction action)
+    public void OnActionFailed()
     {
-        switch (action)
-        {
-            case PlayerAction.SetTarget:
-                TargetManager.Instance.ClearTarget();
-                break;
-            case PlayerAction.AutoAttack:
-                PlayerStateMachine.Instance.OnActionDenied();
-                break;
-            case PlayerAction.Move:
-                PlayerStateMachine.Instance.OnActionDenied();
-                break;
-        }
+        PlayerStateMachine.Instance.OnActionDenied();
     }
 
-    public void OnActionAllowed(PlayerAction action)
+    public void OnActionAllowed()
     {
-        Debug.LogWarning("Action allowed: " + action);
-        switch (action)
-        {
-            case PlayerAction.SetTarget:
-                break;
-            case PlayerAction.AutoAttack:
-                break;
-            case PlayerAction.Move:
-                PlayerStateMachine.Instance.OnActionAllowed();
-                break;
-        }
+        PlayerStateMachine.Instance.OnActionAllowed();
     }
+
+    // public  
 
     public override void UpdateWaitType(ChangeWaitTypePacket.WaitType moveType)
     {

@@ -49,11 +49,6 @@ public class NetworkTransformShare : MonoBehaviour
         {
             SharePosition();
         }
-
-        if (ShouldShareRotation && _rotationShareEnabled)
-        {
-            ShareRotation();
-        }
     }
 
     // Share position every 0.25f and based on delay
@@ -69,24 +64,9 @@ public class NetworkTransformShare : MonoBehaviour
 
     public void SharePosition()
     {
-        GameClient.Instance.ClientPacketHandler.UpdatePosition(transform.position);
+        GameClient.Instance.ClientPacketHandler.ValidatePosition(transform.position, NetworkCharacterControllerShare.Instance.Heading);
+
         _lastSharedPosTime = Time.time;
         _lastPos = transform.position;
-
-        //ClientPacketHandler.Instance.UpdateRotation(transform.eulerAngles.y);
-    }
-
-    public void ShareRotation()
-    {
-        if (Vector3.Angle(_lastRot, transform.forward) >= 10.0f)
-        {
-            _lastRot = transform.forward;
-            GameClient.Instance.ClientPacketHandler.UpdateRotation(transform.eulerAngles.y);
-        }
-    }
-
-    public void ShareAnimation(byte id, float value)
-    {
-        GameClient.Instance.ClientPacketHandler.UpdateAnimation(id, value);
     }
 }

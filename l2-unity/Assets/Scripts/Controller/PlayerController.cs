@@ -90,8 +90,16 @@ public class PlayerController : MonoBehaviour
 
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(Vector3.up * _finalAngle), Time.deltaTime * 7.5f);
 
-        _moveDirection = ApplyGravity(_moveDirection);
-        _controller.Move(_moveDirection * Time.deltaTime);
+
+        if (PlayerStateMachine.Instance.CanMove())
+        {
+            _moveDirection = ApplyGravity(_moveDirection);
+            _controller.Move(_moveDirection * Time.deltaTime);
+        }
+        else
+        {
+            _controller.Move(ApplyGravity(Vector3.zero) * Time.deltaTime);
+        }
 
         MeasureSpeed();
     }
@@ -142,34 +150,28 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 relativeDirection = _targetPosition - _flatTransformPos;
 
-        if (PlayerStateMachine.Instance.CanMove())
+
+        Vector3 relativeAxis = new Vector2(relativeDirection.x, relativeDirection.z);
+
+        // Use Atan2 to calculate the angle in radians
+        float angleInRadians = Mathf.Atan2(relativeDirection.x, relativeDirection.z);
+
+        // Convert radians to degrees and adjust for Unity's coordinate system
+        float angleInDegrees = Mathf.Rad2Deg * angleInRadians;
+
+        // Ensure the angle is between 0 and 360 degrees
+        angleInDegrees = (angleInDegrees + 360) % 360;
+
+        _axis = relativeAxis;
+        _finalAngle = angleInDegrees;
+
+        if (_running)
         {
-            Vector3 relativeAxis = new Vector2(relativeDirection.x, relativeDirection.z);
-
-            // Use Atan2 to calculate the angle in radians
-            float angleInRadians = Mathf.Atan2(relativeDirection.x, relativeDirection.z);
-
-            // Convert radians to degrees and adjust for Unity's coordinate system
-            float angleInDegrees = Mathf.Rad2Deg * angleInRadians;
-
-            // Ensure the angle is between 0 and 360 degrees
-            angleInDegrees = (angleInDegrees + 360) % 360;
-
-            _axis = relativeAxis;
-            _finalAngle = angleInDegrees;
-
-            if (_running)
-            {
-                _currentSpeed = _defaultRunSpeed;
-            }
-            else
-            {
-                _currentSpeed = _defaultWalkSpeed;
-            }
+            _currentSpeed = _defaultRunSpeed;
         }
         else
         {
-            relativeDirection = Vector3.zero;
+            _currentSpeed = _defaultWalkSpeed;
         }
 
         _moveDirection = relativeDirection.normalized * _currentSpeed;
@@ -178,7 +180,7 @@ public class PlayerController : MonoBehaviour
     public Vector2 GetAxis()
     {
         Vector2 localAxis;
-        if (InputManager.Instance.MoveForward && PlayerStateMachine.Instance.CanMove())
+        if (InputManager.Instance.MoveForward)
         {
             LookForward(true);
             localAxis = Vector2.up;
@@ -195,7 +197,7 @@ public class PlayerController : MonoBehaviour
 
     private float GetInputRotationValue(float angle)
     {
-        if (InputManager.Instance.Move && PlayerStateMachine.Instance.CanMove())
+        if (InputManager.Instance.Move)
         {
             angle = Mathf.Atan2(_axis.x, _axis.y) * Mathf.Rad2Deg;
             angle = Mathf.Round(angle / 45f);
@@ -210,7 +212,7 @@ public class PlayerController : MonoBehaviour
     {
         /* Handle input direction */
         Vector3 direction;
-        if (_controller.isGrounded && PlayerStateMachine.Instance.CanMove())
+        if (_controller.isGrounded)
         {
             //Vector3 forward = Camera.main.transform.TransformDirection(Vector3.forward);
             Vector3 rotationAxis = Vector3.up; // Axis of rotation (e.g., upwards)
@@ -231,6 +233,7 @@ public class PlayerController : MonoBehaviour
         {
             direction = Vector3.zero;
         }
+
         direction = direction.normalized * speed;
 
         return direction;
@@ -276,7 +279,7 @@ public class PlayerController : MonoBehaviour
 
     public void Jump()
     {
-        if (_controller.isGrounded && PlayerStateMachine.Instance.CanMove())
+        if (_controller.isGrounded)
         {
             _verticalVelocity = _jumpForce;
         }
@@ -326,7 +329,7 @@ public class PlayerController : MonoBehaviour
 
     public void StopMoving()
     {
-        ResetDestination(false);
+        // ResetDestination(false);
         _moveDirection = new Vector3(0, _moveDirection.y, 0);
     }
 }

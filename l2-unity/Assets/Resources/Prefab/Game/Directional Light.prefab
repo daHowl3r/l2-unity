@@ -43,11 +43,10 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7616108795757726014}
   m_Enabled: 1
-  serializedVersion: 10
+  serializedVersion: 11
   m_Type: 1
-  m_Shape: 0
-  m_Color: {r: 0.50368524, g: 0.49845213, b: 0.6002709, a: 1}
-  m_Intensity: 0.50690806
+  m_Color: {r: 0.39607844, g: 0.43137255, b: 0.59607846, a: 1}
+  m_Intensity: 0.4
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -95,8 +94,12 @@ Light:
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!114 &5761803617169700733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,7 +156,7 @@ MonoBehaviour:
   _mainLightNightColor: {r: 0.39607844, g: 0.43137255, b: 0.59607846, a: 1}
   _mainLightduskColor: {r: 1, g: 0.80784315, b: 0.61960787, a: 1}
   _mainLightDawnColor: {r: 1, g: 0.80784315, b: 0.61960787, a: 1}
-  _ambientLightDayColor: {r: 0.3764706, g: 0.3764706, b: 0.30980393, a: 1}
+  _ambientLightDayColor: {r: 0.6509804, g: 0.6117647, b: 0.5294118, a: 1}
   _ambientLightNightColor: {r: 0.16470589, g: 0.16470589, b: 0.15686275, a: 1}
   _ambientLightduskColor: {r: 0.32156864, g: 0.25490198, b: 0.16078432, a: 1}
   _ambientLightDawnColor: {r: 0.3764706, g: 0.3764706, b: 0.30980393, a: 1}
@@ -162,7 +165,7 @@ MonoBehaviour:
   _dayHorizonCloudsOpcacity: 1
   _nightHorizonCloudsOpacity: 0.05
   _ambientMinIntensity: 0.2
-  _ambientMaxIntensity: 0.6
+  _ambientMaxIntensity: 0.5
   _mainLightMinIntensity: 0.4
   _mainLightMaxIntensity: 1
 --- !u!114 &6026827821703622600
@@ -177,9 +180,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474109ebd6107a34da7c11918a8b42a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dayDurationMinutes: 2
-  _timeHour: 06:19:50
-  _timeElapsed: 31.653542
+  _dayDurationMinutes: 240
+  _timeHour: 00:09:50
+  _timeElapsed: 98.38383
   _startClock: 1
   _worldTimer:
     dayStartTime: 0.25
@@ -189,10 +192,10 @@ MonoBehaviour:
     sunsetStartTime: 0.85
     sunsetEndTime: 0.99
   _clock:
-    totalRatio: 0.26377952
-    dayRatio: 0.027559042
-    nightRatio: 0
-    dawnRatio: 0.18372694
+    totalRatio: 0.0068322103
+    dayRatio: 0
+    nightRatio: 0.5136644
+    dawnRatio: 0
     brightRatio: 0
     duskRatio: 0
-    darkRatio: 1
+    darkRatio: 0.5087519

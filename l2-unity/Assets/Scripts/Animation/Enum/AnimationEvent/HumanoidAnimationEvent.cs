@@ -41,7 +41,7 @@ public enum HumanoidAnimationEvent : int
     wait_hit,
     pickup,
     jump,
-    runjump,
+    run_jump,
     social01,
     social02,
     death,

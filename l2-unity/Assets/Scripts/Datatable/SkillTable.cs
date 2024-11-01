@@ -142,7 +142,7 @@ public class SkillTable
             Skill skill = new Skill(kvp.Key, skillNameArray, skillgrpArray, skillSoundgrp);
             Skills.Add(kvp.Key, skill);
 
-            Debug.LogWarning($"ID:{skill.SkillNameDatas[0].Id} Name:{skill.SkillNameDatas[0].Name} Effect:{skill.EffectId}");
+            // Debug.LogWarning($"ID:{skill.SkillNameDatas[0].Id} Name:{skill.SkillNameDatas[0].Name} Effect:{skill.EffectId}");
         }
     }
 

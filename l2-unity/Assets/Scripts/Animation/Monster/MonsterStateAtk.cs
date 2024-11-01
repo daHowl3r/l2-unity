@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 
-public class MonsterStateAtk : MonsterStateBase
+public class MonsterStateAtk : MonsterStateAction
 {
     private float _lastNormalizedTime;
+    private float clipLength;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -14,7 +16,9 @@ public class MonsterStateAtk : MonsterStateBase
             clipInfos = animator.GetCurrentAnimatorClipInfo(0);
         }
 
-        AnimController.UpdateAnimatorAtkSpdMultiplier(clipInfos[0].clip.length);
+        clipLength = clipInfos[0].clip.length;
+
+        AnimController.UpdateAnimatorAtkSpdMultiplier(clipLength);
 
         SetBool(MonsterAnimationEvent.wait, false);
         SetBool(MonsterAnimationEvent.atkwait, false);
@@ -29,17 +33,34 @@ public class MonsterStateAtk : MonsterStateBase
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        SetBool(MonsterAnimationEvent.atk01, false);
-        if ((stateInfo.normalizedTime - _lastNormalizedTime) >= 1f)
+        if (IsDead())
         {
-            _lastNormalizedTime = stateInfo.normalizedTime;
-            PlaySoundAtRatio(EntitySoundEvent.Atk, AudioHandler.AtkRatio);
-            PlaySoundAtRatio(EntitySoundEvent.Swish, AudioHandler.SwishRatio);
+            SetBool(MonsterAnimationEvent.death, true);
+            return;
+        }
+
+        if (IsMoving())
+        {
+            if (Entity.Running)
+            {
+                SetBool(MonsterAnimationEvent.run, true);
+            }
+            else
+            {
+                SetBool(MonsterAnimationEvent.walk, true);
+            }
+
+            return;
+        }
+
+        if (DidAttackTimeout())
+        {
+            SetBool(MonsterAnimationEvent.atkwait, true);
+            SetBool(MonsterAnimationEvent.atk01, false);
         }
     }
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-
     }
 }

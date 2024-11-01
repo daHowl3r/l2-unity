@@ -12,7 +12,9 @@ public class AttackAction : L2Action
         if (TargetManager.Instance.HasTarget())
         {
             Debug.LogWarning("Use attack action.");
-            PlayerStateMachine.Instance.ChangeIntention(Intention.INTENTION_ATTACK, AttackIntentionType.AttackInput);
+
+            PlayerCombat.Instance.IsForcedAction = InputManager.Instance.Ctrl;
+            PlayerStateMachine.Instance.ChangeIntention(Intention.INTENTION_ATTACK);
         }
     }
 }

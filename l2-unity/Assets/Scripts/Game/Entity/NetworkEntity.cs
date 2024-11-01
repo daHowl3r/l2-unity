@@ -30,10 +30,17 @@ public abstract class NetworkEntity : Entity
         AnimationController.SetRunSpeed(converted);
         return converted;
     }
+
     public override float UpdateWalkSpeed(int speed)
     {
         float converted = base.UpdateWalkSpeed(speed);
         AnimationController.SetWalkSpeed(converted);
         return converted;
+    }
+
+    public override void OnStopMoving()
+    {
+        base.OnStopMoving();
+        Combat.OnStopMoving();
     }
 }

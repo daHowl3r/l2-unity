@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7172769319045323011}
   m_Layer: 13
   m_Name: click_area
-  m_TagString: Npc
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -299,7 +299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2e1ec27bc22348c4a81453d8344aa75e, type: 3}
       propertyPath: m_TagString
-      value: Npc
+      value: Monster
       objectReference: {fileID: 0}
     - target: {fileID: 1045596810828122607, guid: 2e1ec27bc22348c4a81453d8344aa75e, type: 3}
       propertyPath: m_Layer
@@ -571,9 +571,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _direction: {x: 0, y: 0, z: 0}
+  _distanceToDestination: 0
   _speed: 0
   _destination: {x: 0, y: 0, z: 0}
   _gravity: 28
+  _moveSpeedMultiplier: 1
+  _stopAtRange: 0
 --- !u!114 &4919131280612184501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -600,7 +603,29 @@ MonoBehaviour:
   _fallRatio: 0.5
   _waitSoundChance: 5
   _runBreathChance: 5
-  _monsterName: 
+  _npcgrp:
+    _npcId: 0
+    _className: 
+    _type: 0
+    _mesh: 
+    _materials: []
+    _speed: 0
+    _attackSounds: []
+    _attackSoundsEvents: []
+    _defenseSounds: []
+    _defenseSoundsEvents: []
+    _damageSounds: []
+    _damageSoundsEvents: []
+    _attackEffect: 
+    _friendly: 0
+    _hpVisible: 0
+    _dialogSounds: []
+    _collisionRadius: 0
+    _collisionHeight: 0
+    _rhand: 0
+    _lhand: 0
+    _maxHp: 0
+    _maxMp: 0
 --- !u!114 &2500487419638788696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -631,12 +656,16 @@ MonoBehaviour:
   _status:
     _hp: 0
     _mp: 0
+    _dead: 0
   _stats:
     _level: 0
     _runSpeed: 0
+    _moveSpeedMultiplier: 0
     _walkSpeed: 0
     _scaledRunSpeed: 0
     _scaledWalkSpeed: 0
+    _attackSpeedMultiplier: 0
+    _attackRange: 0
     _pAtkSpd: 0
     _mAtkSpd: 0
     _maxHp: 0
@@ -787,8 +816,8 @@ MonoBehaviour:
   _targetId: 0
   _target: {fileID: 3508834215747877558}
   _attackTarget: {fileID: 3508834215747877558}
-  _stopAutoAttackTime: 0
-  _startAutoAttackTime: 0
+  _combatTimestamp: 0
+  _attackStance: 0
 --- !u!114 &6024304970629912783
 MonoBehaviour:
   m_ObjectHideFlags: 0

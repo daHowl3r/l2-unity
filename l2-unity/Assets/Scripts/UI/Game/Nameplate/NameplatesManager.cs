@@ -108,6 +108,11 @@ public class NameplatesManager : MonoBehaviour
         {
             if (_entityMask == (_entityMask | (1 << hoverObjectData.ObjectLayer)))
             {
+                if (hoverObjectData.ObjectTransform == null)
+                {
+                    return;
+                }
+
                 Entity e = hoverObjectData.ObjectTransform.GetComponent<Entity>();
                 if (e != null)
                 {
@@ -235,7 +240,9 @@ public class NameplatesManager : MonoBehaviour
     {
         if (TargetManager.Instance.HasTarget() && TargetManager.Instance.Target.Data.ObjectTransform == nameplate.Target)
         {
-            if (TargetManager.Instance.AttackTarget == TargetManager.Instance.Target)
+            if (TargetManager.Instance.AttackTarget == TargetManager.Instance.Target
+            && TargetManager.Instance.AttackTarget.Identity.EntityType != EntityType.NPC
+            && !TargetManager.Instance.AttackTarget.Status.IsDead)
             {
                 nameplate.SetStyle("target-bubble-attack");
             }

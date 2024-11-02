@@ -287,7 +287,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 30b842d5630516b419b0c1c3be32bb9d, type: 3}
       propertyPath: m_TagString
-      value: Npc
+      value: Monster
       objectReference: {fileID: 0}
     - target: {fileID: 1206487875153193228, guid: 30b842d5630516b419b0c1c3be32bb9d, type: 3}
       propertyPath: m_Layer
@@ -505,9 +505,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _direction: {x: 0, y: 0, z: 0}
+  _distanceToDestination: 0
   _speed: 0
   _destination: {x: 0, y: 0, z: 0}
   _gravity: 28
+  _moveSpeedMultiplier: 1
+  _stopAtRange: 0
 --- !u!114 &8889694809834475436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -538,7 +541,29 @@ MonoBehaviour:
   _fallRatio: 0.5
   _waitSoundChance: 5
   _runBreathChance: 5
-  _monsterName: 
+  _npcgrp:
+    _npcId: 0
+    _className: 
+    _type: 0
+    _mesh: 
+    _materials: []
+    _speed: 0
+    _attackSounds: []
+    _attackSoundsEvents: []
+    _defenseSounds: []
+    _defenseSoundsEvents: []
+    _damageSounds: []
+    _damageSoundsEvents: []
+    _attackEffect: 
+    _friendly: 0
+    _hpVisible: 0
+    _dialogSounds: []
+    _collisionRadius: 0
+    _collisionHeight: 0
+    _rhand: 0
+    _lhand: 0
+    _maxHp: 0
+    _maxMp: 0
 --- !u!114 &7097427613620351574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -569,12 +594,16 @@ MonoBehaviour:
   _status:
     _hp: 0
     _mp: 0
+    _dead: 0
   _stats:
     _level: 0
     _runSpeed: 0
+    _moveSpeedMultiplier: 0
     _walkSpeed: 0
     _scaledRunSpeed: 0
     _scaledWalkSpeed: 0
+    _attackSpeedMultiplier: 0
+    _attackRange: 0
     _pAtkSpd: 0
     _mAtkSpd: 0
     _maxHp: 0
@@ -720,8 +749,8 @@ MonoBehaviour:
   _targetId: 0
   _target: {fileID: 0}
   _attackTarget: {fileID: 0}
-  _stopAutoAttackTime: 0
-  _startAutoAttackTime: 0
+  _combatTimestamp: 0
+  _attackStance: 0
 --- !u!114 &2451740287539560352
 MonoBehaviour:
   m_ObjectHideFlags: 0

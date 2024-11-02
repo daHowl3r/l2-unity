@@ -15,6 +15,7 @@ TagManager:
   - Wood
   - Sand
   - Music
+  - Monster
   layers:
   - Default
   - TransparentFX

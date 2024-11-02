@@ -87,6 +87,34 @@ public class ClickManager : MonoBehaviour
                     OnClickToMove(hit);
                 }
             }
+
+            if (_hoverObjectData.ObjectTransform != null && _hoverObjectData.ObjectTag == "Pickup")
+            {
+                CursorManager.Instance.ChangeCursor(CursorManager.CursorType.Pickup);
+            }
+            else if (_hoverObjectData.ObjectTransform != null && _targetObjectData.ObjectTransform != null && _targetObjectData.ObjectTransform == _hoverObjectData.ObjectTransform)
+            {
+                if (_hoverObjectData.ObjectTag == "Monster" && !_hoverObjectData.Entity.Status.IsDead)
+                {
+                    CursorManager.Instance.ChangeCursor(CursorManager.CursorType.Attack);
+                }
+                else if (_hoverObjectData.ObjectTag == "Npc")
+                {
+                    CursorManager.Instance.ChangeCursor(CursorManager.CursorType.Talk);
+                }
+                else
+                {
+                    CursorManager.Instance.ChangeCursor(CursorManager.CursorType.Default);
+                }
+            }
+            else
+            {
+                CursorManager.Instance.ChangeCursor(CursorManager.CursorType.Default);
+            }
+        }
+        else
+        {
+            CursorManager.Instance.ChangeCursor(CursorManager.CursorType.Default);
         }
 
         if (InputManager.Instance.Move || InputManager.Instance.MoveForward)
@@ -125,12 +153,18 @@ public class ClickManager : MonoBehaviour
     public void OnClickOnEntity()
     {
         Debug.Log("Click on entity");
-        TargetManager.Instance.SetTarget(_targetObjectData);
+        if (TargetManager.Instance.HasTarget() && TargetManager.Instance.Target.Data.ObjectTransform == _targetObjectData.ObjectTransform)
+        {
+            PlayerActions.Instance.UseAction(ActionType.Attack);
+        }
+        else
+        {
+            TargetManager.Instance.SetTarget(_targetObjectData);
+        }
     }
 
     private IEnumerator PlaceLocator(Vector3 position, Vector3 normal)
     {
-        Debug.LogWarning("PlaceLocator");
         _locator.SetActive(true);
 
         _locator.gameObject.transform.position = position;
@@ -144,7 +178,6 @@ public class ClickManager : MonoBehaviour
 
     public void HideLocator(bool targetReached)
     {
-        Debug.LogWarning("HideLocator");
         if (targetReached)
         {
             Vector3 normal = _locatorBaseEffect.GetComponent<ParticleTimerResetGroup>().SurfaceNormal;

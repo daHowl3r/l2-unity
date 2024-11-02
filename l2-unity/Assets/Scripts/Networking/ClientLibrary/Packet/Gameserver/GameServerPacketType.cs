@@ -8,6 +8,7 @@ public enum GameServerPacketType : int
     Revive = 0x07,
     ActionAllowed = 0x08,
     StatusUpdate = 0x0e,
+    NpcHtml = 0x0f,
     RemoveObject = 0x12,
     CharSelectionInfo = 0x13,
     LoginFail = 0x14,

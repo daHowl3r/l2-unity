@@ -135,6 +135,9 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.StopMove:
                 OnEntityStopMove(data);
                 break;
+            case GameServerPacketType.NpcHtml:
+                OnNpcHtmlReceive(data);
+                break;
             default:
                 Debug.LogWarning($"Received unhandled packet with OPCode [{packetType}].");
                 break;
@@ -549,5 +552,11 @@ public class GameServerPacketHandler : ServerPacketHandler
     {
         ObjectStopMovePacket packet = new ObjectStopMovePacket(data);
         World.Instance.ObjectStoppedMove(packet.Id, packet.CurrentPosition, packet.Heading);
+    }
+
+    private void OnNpcHtmlReceive(byte[] data)
+    {
+        NpcHtmlPacket packet = new NpcHtmlPacket(data);
+        _eventProcessor.QueueEvent(() => NpcHtmlWindow.Instance.RefreshContent(packet.ItemId, packet.Html, packet.ItemId));
     }
 }

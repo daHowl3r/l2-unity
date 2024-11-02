@@ -25,6 +25,8 @@ GameObject:
   - component: {fileID: 4997734960397706092}
   - component: {fileID: 5356274184999564455}
   - component: {fileID: 4401504940725960882}
+  - component: {fileID: 2474239185684289479}
+  - component: {fileID: 2105183322732982611}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -301,5 +303,34 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 906ff614239007847852a4e8ae4b334d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2474239185684289479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8310766140472177322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 023749991fbeee64a92355e95a385afb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _lastCursorType: 0
+  _defaultCursorTexture: {fileID: 0}
+  _attackCursorTexture: {fileID: 0}
+  _talkCursorTexture: {fileID: 0}
+  _pickupCursorTexture: {fileID: 0}
+--- !u!114 &2105183322732982611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8310766140472177322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 471c2b26de5d5484f88ff103c093f17a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

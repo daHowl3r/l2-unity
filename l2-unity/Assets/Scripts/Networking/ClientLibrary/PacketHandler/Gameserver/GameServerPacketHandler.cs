@@ -557,6 +557,6 @@ public class GameServerPacketHandler : ServerPacketHandler
     private void OnNpcHtmlReceive(byte[] data)
     {
         NpcHtmlPacket packet = new NpcHtmlPacket(data);
-        _eventProcessor.QueueEvent(() => NpcHtmlWindow.Instance.RefreshContent(packet.ItemId, packet.Html, packet.ItemId));
+        World.Instance.NpcHtmlReceived(packet.ObjectId, packet.Html, packet.ItemId);
     }
 }

@@ -39,6 +39,7 @@ public class AttackIntention : IntentionBase
         // Is close enough? Is player already waiting for server reply?
         if (distance <= attackRange * 0.95f && !_stateMachine.WaitingForServerReply)
         {
+            PlayerController.Instance.UpdateFinalAngleToLookAt(TargetManager.Instance.AttackTarget.Data.ObjectTransform);
             _stateMachine.ChangeState(PlayerState.IDLE);
             _stateMachine.NotifyEvent(Event.READY_TO_ATTACK);
         }

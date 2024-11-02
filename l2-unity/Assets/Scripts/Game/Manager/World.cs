@@ -531,6 +531,16 @@ public class World : MonoBehaviour
         });
     }
 
+
+    public Task NpcHtmlReceived(int objectId, string html, int itemId)
+    {
+        _eventProcessor.QueueEvent(() => NpcHtmlWindow.Instance.RefreshContent(objectId, html, itemId));
+        return ExecuteWithEntityAsync(objectId, e =>
+        {
+            ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.LookAt(PlayerEntity.Instance.transform);
+        });
+    }
+
     public Task UpdateObjectRotation(int id, float angle)
     {
         return ExecuteWithEntityAsync(id, e =>

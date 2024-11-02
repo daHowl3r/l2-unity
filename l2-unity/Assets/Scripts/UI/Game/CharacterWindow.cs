@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -119,13 +120,13 @@ public class CharacterInfoWindow : L2PopupWindow
         _spLabel = GetLabelById("SpLabel");
         _expLabel = GetLabelById("ExpLabel");
         _weightLabel = GetLabelById("WeightLabel");
-        _cpLabel = GetLabelById("CpLabelB");
+        _cpLabel = GetLabelById("CpLabel");
         _hpBar = GetElementById("HpGauge");
         _hpBarBg = GetElementById("HpBg");
         _mpBar = GetElementById("MpGauge");
         _mpBarBg = GetElementById("MpBg");
-        _cpBar = GetElementById("CpGaugeB");
-        _cpBarBg = GetElementById("CpBgB");
+        _cpBar = GetElementById("CpGauge");
+        _cpBarBg = GetElementById("CpBg");
         _weightBar = GetElementById("WeightGauge");
         _weightBarBg = GetElementById("WeightBg");
         _expBar = GetElementById("ExpGauge");
@@ -239,18 +240,18 @@ public class CharacterInfoWindow : L2PopupWindow
         _cpLabel.text = $"{status.Cp}/{stats.MaxCp}";
         _spLabel.text = stats.Sp.ToString();
 
-        if (stats.MaxExp > 0)
+        if (stats.ExpPercent > 0)
         {
-            _expLabel.text = $"{((float)stats.Exp / stats.MaxExp).ToString("00.00")}%";
+            _expLabel.text = $"{(stats.ExpPercent * 100f).ToString("0.00")}%";
         }
         else
         {
             _expLabel.text = $"00.00%";
         }
 
-        if (stats.MaxWeight > 0)
+        if (stats.CurrWeight > 0)
         {
-            _weightLabel.text = $"{((float)stats.CurrWeight / stats.MaxWeight).ToString("00.00")}%";
+            _weightLabel.text = $"{((float)stats.CurrWeight / stats.MaxWeight * 100f).ToString("0.00")}%";
         }
         else
         {
@@ -259,7 +260,7 @@ public class CharacterInfoWindow : L2PopupWindow
 
         if (_hpBarBg != null && _hpBar != null)
         {
-            float hpRatio = (float)status.Hp / stats.MaxHp;
+            float hpRatio = Math.Min(1, (float)status.Hp / stats.MaxHp);
             float bgWidth = _hpBarBg.resolvedStyle.width;
             float barWidth = bgWidth * hpRatio;
             if (stats.MaxHp == 0)
@@ -271,7 +272,7 @@ public class CharacterInfoWindow : L2PopupWindow
 
         if (_mpBarBg != null && _mpBar != null)
         {
-            float mpRatio = (float)status.Mp / stats.MaxMp;
+            float mpRatio = Math.Min(1, (float)status.Mp / stats.MaxMp);
             float bgWidth = _mpBarBg.resolvedStyle.width;
             float barWidth = bgWidth * mpRatio;
             if (stats.MaxMp == 0)
@@ -284,7 +285,7 @@ public class CharacterInfoWindow : L2PopupWindow
         if (_cpBarBg != null && _cpBar != null)
         {
             float bgWidth = _cpBarBg.resolvedStyle.width;
-            float cpRatio = (float)status.Cp / stats.MaxCp;
+            float cpRatio = Math.Min(1, (float)status.Cp / stats.MaxCp);
             float barWidth = bgWidth * cpRatio;
             if (stats.MaxCp == 0)
             {
@@ -296,9 +297,9 @@ public class CharacterInfoWindow : L2PopupWindow
         if (_expBarBg != null && _expBar != null)
         {
             float bgWidth = _expBarBg.resolvedStyle.width;
-            float expRatio = (float)stats.Exp / stats.MaxExp;
+            float expRatio = stats.ExpPercent;
             float barWidth = bgWidth * expRatio;
-            if (stats.MaxExp == 0)
+            if (expRatio == 0)
             {
                 barWidth = 0;
             }
@@ -307,15 +308,24 @@ public class CharacterInfoWindow : L2PopupWindow
 
         if (_weightBarBg != null && _weightBar != null)
         {
-            float bgWidth = _expBarBg.resolvedStyle.width;
-            float expRatio = (float)stats.CurrWeight / stats.MaxWeight;
-            float barWidth = bgWidth * expRatio;
+            float bgWidth = _weightBarBg.resolvedStyle.width;
+            float weightRatio = Math.Min(1, (float)stats.CurrWeight / stats.MaxWeight);
+
+            for (int i = 1; i <= 5; i++)
+            {
+                _weightBar.RemoveFromClassList("weight-" + i);
+            }
+
+            _weightBar.parent.AddToClassList("weight-" + ((int)Mathf.Floor(weightRatio / 0.25f) + 1));
+
+            float barWidth = bgWidth * weightRatio;
             if (stats.MaxWeight == 0)
             {
                 barWidth = 0;
             }
             _weightBar.style.width = barWidth;
         }
+
     }
 
     public override void ShowWindow()

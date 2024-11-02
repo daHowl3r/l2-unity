@@ -228,7 +228,7 @@ public class World : MonoBehaviour
         entity.EquipAllArmors();
 
         CharacterInfoWindow.Instance.UpdateValues();
-
+        InventoryWindow.Instance.RefreshWeight();
         GameManager.Instance.OnPlayerInfoReceive();
     }
 

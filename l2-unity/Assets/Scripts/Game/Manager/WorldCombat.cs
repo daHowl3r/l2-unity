@@ -181,6 +181,7 @@ public class WorldCombat : MonoBehaviour
             StatusUpdate(e, attributes);
             if (e == PlayerEntity.Instance)
             {
+                // InventoryWindow.Instance.RefreshWeight(((PlayerStats)e.Stats).CurrWeight, ((PlayerStats)e.Stats).MaxWeight);
                 CharacterInfoWindow.Instance.UpdateValues();
             }
         });

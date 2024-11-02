@@ -110,6 +110,130 @@
     -unity-text-outline-width: 0.1px;
 }
 
+.weight-1 #WeightBg #Left {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Left1');
+}
+
+.weight-1 #WeightBg #Center {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Center1');
+}
+
+.weight-1 #WeightBg #Right {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Right1');
+}
+
+.weight-1 #WeightGauge #Left {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Left1');
+}
+
+.weight-1 #WeightGauge #Center {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Center1');
+}
+
+.weight-1 #WeightGauge #Right {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Right1');
+}
+
+
+.weight-2 #WeightBg #Left {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Left2');
+}
+
+.weight-2 #WeightBg #Center {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Center2');
+}
+
+.weight-2 #WeightBg #Right {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Right2');
+}
+
+.weight-2 #WeightGauge #Left {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Left2');
+}
+
+.weight-2 #WeightGauge #Center {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Center2');
+}
+
+.weight-2 #WeightGauge #Right {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Right2');
+}
+
+
+.weight-3 #WeightBg #Left {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Left3');
+}
+
+.weight-3 #WeightBg #Center {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Center3');
+}
+
+.weight-3 #WeightBg #Right {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Right3');
+}
+
+.weight-3 #WeightGauge #Left {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Left3');
+}
+
+.weight-3 #WeightGauge #Center {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Center3');
+}
+
+.weight-3 #WeightGauge #Right {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Right3');
+}
+
+
+.weight-4 #WeightBg #Left {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Left4');
+}
+
+.weight-4 #WeightBg #Center {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Center4');
+}
+
+.weight-4 #WeightBg #Right {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Right4');
+}
+
+.weight-4 #WeightGauge #Left {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Left4');
+}
+
+.weight-4 #WeightGauge #Center {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Center4');
+}
+
+.weight-4 #WeightGauge #Right {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Right4');
+}
+
+
+.weight-5 #WeightBg #Left {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Left5');
+}
+
+.weight-5 #WeightBg #Center {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Center5');
+}
+
+.weight-5 #WeightBg #Right {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_bg_Right5');
+}
+
+.weight-5 #WeightGauge #Left {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Left5');
+}
+
+.weight-5 #WeightGauge #Center {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Center5');
+}
+
+.weight-5 #WeightGauge #Right {
+    background-image: resource('Data/UI/Assets/Status/Gauge/Gauge_DF_Large_Weight/Gauge_DF_Large_Weight_Right5');
+}
+
 .status-window .level-container .unity-label {
     margin: 0;
     padding: 0;

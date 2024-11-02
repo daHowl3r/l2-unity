@@ -9,12 +9,16 @@ public class StatusWindow : L2Window
     private Label _HPTextLabel;
     private Label _MPTextLabel;
     private Label _CPTextLabel;
+    private Label _expTextLabel;
     private VisualElement _CPBar;
     private VisualElement _CPBarBG;
     private VisualElement _HPBar;
     private VisualElement _HPBarBG;
     private VisualElement _MPBar;
     private VisualElement _MPBarBG;
+    private VisualElement _expBar;
+    private VisualElement _expBarBG;
+    private float _lastUpdateTime;
 
     [SerializeField] private float _statusWindowMinWidth = 175.0f;
     [SerializeField] private float _statusWindowMaxWidth = 400.0f;
@@ -89,6 +93,12 @@ public class StatusWindow : L2Window
             Debug.LogError("Status window MPText is null.");
         }
 
+        _expTextLabel = (Label)GetElementById("XPText");
+        if (_expTextLabel == null)
+        {
+            Debug.LogError("Status window XPText is null.");
+        }
+
         _CPBarBG = GetElementById("CPBarBG");
         if (_CPBarBG == null)
         {
@@ -124,10 +134,31 @@ public class StatusWindow : L2Window
         {
             Debug.LogError("Status windowar MPBar is null");
         }
+
+        _expBarBG = GetElementById("XPBarBG");
+        if (_expBarBG == null)
+        {
+            Debug.LogError("Status window XPBarBG is null");
+        }
+
+        _expBar = GetElementById("XPBar");
+        if (_expBarBG == null)
+        {
+            Debug.LogError("Status windowar XPBar is null");
+        }
     }
 
     void FixedUpdate()
     {
+        if (Time.time - _lastUpdateTime < 0.5f)
+        {
+            return;
+        }
+        else
+        {
+            _lastUpdateTime = Time.time;
+        }
+
         if (PlayerEntity.Instance == null)
         {
             return;
@@ -167,6 +198,15 @@ public class StatusWindow : L2Window
             _MPTextLabel.text = status.Mp + "/" + stats.MaxMp;
         }
 
+        if (_expTextLabel != null && stats.ExpPercent > 0)
+        {
+            _expTextLabel.text = $"{(stats.ExpPercent * 100f).ToString("0.00")}%";
+        }
+        else
+        {
+            _expTextLabel.text = $"00.00%";
+        }
+
         if (_CPBarBG != null && _CPBar != null)
         {
             float cpRatio = (float)status.Cp / stats.MaxCp;
@@ -189,6 +229,14 @@ public class StatusWindow : L2Window
             float bgWidth = _MPBarBG.resolvedStyle.width;
             float barWidth = bgWidth * mpRatio;
             _MPBar.style.width = barWidth;
+        }
+
+        if (_expBarBG != null && _expBar != null)
+        {
+            float bgWidth = _expBarBG.resolvedStyle.width;
+            float expRatio = stats.ExpPercent;
+            float barWidth = bgWidth * expRatio;
+            _expBar.style.width = barWidth;
         }
     }
 

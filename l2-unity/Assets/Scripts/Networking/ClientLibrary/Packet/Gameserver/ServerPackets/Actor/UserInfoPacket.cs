@@ -33,6 +33,7 @@ public class UserInfoPacket : ServerPacket
             Identity.PlayerClass = (byte)ReadI();
             Stats.Level = ReadI();
             Stats.Exp = (int)ReadL();
+            Stats.ExpPercent = (float)ReadD();
             Stats.Str = (byte)ReadI();
             Stats.Dex = (byte)ReadI();
             Stats.Con = (byte)ReadI();

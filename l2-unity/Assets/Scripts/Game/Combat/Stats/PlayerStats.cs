@@ -16,7 +16,7 @@ public class PlayerStats : Stats
     [SerializeField] private int _shieldDef;
 
     [SerializeField] private int _exp;
-    [SerializeField] private int _maxExp;
+    [SerializeField] private float _expPercent;
     [SerializeField] private int _sp;
 
     [SerializeField] private int _currWeight;
@@ -44,7 +44,7 @@ public class PlayerStats : Stats
     public int MDef { get { return _mDef; } set { _mDef = value; } }
     public int PDef { get { return _pDef; } set { _pDef = value; } }
     public int Exp { get { return _exp; } set { _exp = value; } }
-    public int MaxExp { get { return _maxExp; } set { _maxExp = value; } }
+    public float ExpPercent { get { return _expPercent; } set { _expPercent = value; } }
     public int Sp { get { return _sp; } set { _sp = value; } }
     public int ShieldDef { get { return _shieldDef; } set { _shieldDef = value; } }
     public int CurrWeight { get { return _currWeight; } set { _currWeight = value; } }
@@ -85,7 +85,7 @@ public class PlayerStats : Stats
         _shieldDef = stats.ShieldDef;
 
         _exp = stats.Exp;
-        _maxExp = stats.MaxExp;
+        _expPercent = stats.ExpPercent;
         _sp = stats.Sp;
 
         _currWeight = stats.CurrWeight;

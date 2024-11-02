@@ -36,6 +36,8 @@ public class InventoryWindow : L2PopupWindow
     private Label _inventoryCountLabel;
     private Label _weightLabel;
     private Label _adenaCountLabel;
+    private VisualElement _weightBar;
+    private VisualElement _weightBarBg;
 
     public VisualTreeAsset InventorySlotTemplate { get { return _inventorySlotTemplate; } }
     public bool Expanded { get { return _expanded; } }
@@ -127,6 +129,9 @@ public class InventoryWindow : L2PopupWindow
         _inventoryCountLabel = GetLabelById("InventoryCount");
         _adenaCountLabel = GetLabelById("AdenaCount");
         _weightLabel = GetLabelById("CurrentWeight");
+
+        _weightBar = GetElementById("WeightGauge");
+        _weightBarBg = GetElementById("WeightBg");
     }
 
     protected override IEnumerator BuildWindow(VisualElement root)
@@ -294,44 +299,83 @@ public class InventoryWindow : L2PopupWindow
 
     public void UpdateItemList(List<ItemInstance> items)
     {
-        _adenaCount = 0;
-        _usedSlots = 0;
-
         if (items == null)
         {
             items = new List<ItemInstance>();
         }
-        else if (items.Count > 0)
-        {
-            _usedSlots = items.Where(o => o.Location == ItemLocation.Inventory).Count();
 
-            ItemInstance adenaItem = items.FirstOrDefault(o => o.Type2 == ItemType2.TYPE2_MONEY);
+        _playerItems = items;
+
+        RefreshSlotsAndAdenas();
+        RefreshWeight();
+
+        // Tabs
+        _gearTab.UpdateItemList(items);
+        _tabs.ForEach((tab) =>
+        {
+            tab.UpdateItemList(items);
+        });
+    }
+
+    private void RefreshSlotsAndAdenas()
+    {
+        _adenaCount = 0;
+        _usedSlots = 0;
+
+        if (_playerItems.Count > 0)
+        {
+            _usedSlots = _playerItems.Where(o => o.Location == ItemLocation.Inventory).Count();
+
+            ItemInstance adenaItem = _playerItems.FirstOrDefault(o => o.Type2 == ItemType2.TYPE2_MONEY);
+
             if (adenaItem != null)
             {
                 _adenaCount = adenaItem.Count;
             }
         }
 
-        _playerItems = items;
-
         // Slot count
         _slotCount = PLAYER_INVENTORY_SIZE;
         _inventoryCountLabel.text = $"({_usedSlots}/{_slotCount})";
-
         //Adena
         _adenaCountLabel.text = _adenaCount.ToString();
+    }
 
-        // _currentWeight = 0;
-        // _maximumWeight = 10000;
-        _weightLabel.text = "00.00%";
-
-        // Tabs
-        _gearTab.UpdateItemList(items);
-
-        _tabs.ForEach((tab) =>
+    public void RefreshWeight()
+    {
+        if (PlayerEntity.Instance == null)
         {
-            tab.UpdateItemList(items);
-        });
+            return;
+        }
+
+        int weight = ((PlayerStats)PlayerEntity.Instance.Stats).CurrWeight;
+        int maxWeight = ((PlayerStats)PlayerEntity.Instance.Stats).MaxWeight;
+
+        if (_weightBarBg != null && _weightBar != null)
+        {
+            float bgWidth = 132; //TODO fix resolvedStyle width = 0
+            float weightRatio = Math.Min(1, (float)weight / maxWeight);
+
+            for (int i = 1; i <= 5; i++)
+            {
+                _weightBar.parent.RemoveFromClassList("weight-" + i);
+            }
+
+            int weightLevel = (int)Mathf.Floor(weightRatio / 0.25f) + 1;
+            _weightBar.parent.AddToClassList("weight-" + weightLevel);
+
+            float barWidth = bgWidth * weightRatio;
+            _weightBar.style.width = barWidth;
+        }
+
+        if (weight > 0)
+        {
+            _weightLabel.text = $"{((float)weight / maxWeight * 100f).ToString("0.00")}%";
+        }
+        else
+        {
+            _weightLabel.text = $"00.00%";
+        }
     }
 
     public override void ToggleHideWindow()

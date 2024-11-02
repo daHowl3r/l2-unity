@@ -126,12 +126,11 @@ public class LobbyNameplatesManager : MonoBehaviour
             visualElement.Q<Label>("EntityName"),
             visualElement.Q<Label>("EntityTitle"),
             entity.transform,
+            entity,
             "",
             "9CE8A9FF",
             0.92f, //height
-            entity.CharacterInfo.Name,
-            entity.CharacterInfo.Id,
-            true
+            entity.CharacterInfo.Name
             );
 
         _nameplates.Add(entity.CharacterInfo.Id, nameplate);

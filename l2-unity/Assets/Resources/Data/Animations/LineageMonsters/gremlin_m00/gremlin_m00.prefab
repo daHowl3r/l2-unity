@@ -798,6 +798,7 @@ MonoBehaviour:
   _animationController: {fileID: 6024304970629912783}
   _audioHandler: {fileID: 4919131280612184501}
   _animator: {fileID: 4275881732397562374}
+  _clickArea: {fileID: 5791320104794170284}
   _networkTransformReceive: {fileID: 6717147490432428262}
   _networkCharacterControllerReceive: {fileID: 6333226426953791240}
 --- !u!114 &2667028440048836836

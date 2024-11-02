@@ -172,13 +172,7 @@ public class NameplatesManager : MonoBehaviour
             visualElement,
             visualElement.Q<Label>("EntityName"),
             visualElement.Q<Label>("EntityTitle"),
-            entity.transform,
-            entity.Identity.Title,
-            entity.Identity.TitleColor,
-            entity.Appearance.CollisionHeight * 2.1f,
-            entity.Identity.Name,
-            entity.Identity.Id,
-            true
+            entity
             );
 
         _nameplates.TryAdd(entity.Identity.Id, nameplate);
@@ -238,6 +232,11 @@ public class NameplatesManager : MonoBehaviour
 
     private void UpdateNameplateStyle(Nameplate nameplate)
     {
+        if (nameplate.Entity.IsDead)
+        {
+            nameplate.NameplateOffsetHeight = nameplate.Entity.Appearance.CollisionHeight;
+        }
+
         if (TargetManager.Instance.HasTarget() && TargetManager.Instance.Target.Data.ObjectTransform == nameplate.Target)
         {
             if (TargetManager.Instance.AttackTarget == TargetManager.Instance.Target

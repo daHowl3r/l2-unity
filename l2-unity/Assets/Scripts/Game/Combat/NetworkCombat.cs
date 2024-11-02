@@ -26,6 +26,10 @@ public abstract class NetworkCombat : Combat
         {
             NetworkCharacterControllerReceive.enabled = false;
         }
+
+        ReferenceHolder.ClickArea.transform.localPosition = Vector3.zero;
+        Vector3 scale = ReferenceHolder.ClickArea.transform.localScale;
+        ReferenceHolder.ClickArea.transform.localScale = new Vector3(scale.x, ReferenceHolder.Entity.Appearance.CollisionHeight, scale.z);
     }
 
     public override void OnRevive()

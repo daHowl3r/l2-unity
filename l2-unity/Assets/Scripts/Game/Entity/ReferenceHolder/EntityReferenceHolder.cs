@@ -8,6 +8,7 @@ public class EntityReferenceHolder : MonoBehaviour
     [SerializeField] protected BaseAnimationController _animationController;
     [SerializeField] protected BaseAnimationAudioHandler _audioHandler;
     [SerializeField] protected Animator _animator;
+    [SerializeField] protected Transform _clickArea;
 
     public BaseAnimationController AnimationController { get { return _animationController; } }
     public Gear Gear { get { return _gear; } }
@@ -15,4 +16,5 @@ public class EntityReferenceHolder : MonoBehaviour
     public BaseAnimationAudioHandler AudioHandler { get { return _audioHandler; } }
     public Entity Entity { get { return _entity; } }
     public Animator Animator { get { return _animator; } }
+    public Transform ClickArea { get { return _clickArea; } }
 }

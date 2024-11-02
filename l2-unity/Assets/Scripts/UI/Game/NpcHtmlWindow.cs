@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 public class NpcHtmlWindow : L2PopupWindow
 {
     private VisualTreeAsset _l2Button;
-    private VisualElement _content;
+    private ScrollView _content;
     private static NpcHtmlWindow _instance;
     public static NpcHtmlWindow Instance
     {
@@ -59,25 +59,31 @@ public class NpcHtmlWindow : L2PopupWindow
         Label _windowName = (Label)GetElementById("windows-name-label");
         _windowName.text = "Chat";
 
-        _content = _windowEle.Q<VisualElement>("HtmlContent");
+        _content = _windowEle.Q<ScrollView>("HtmlContent");
+        var _scroller = _content.verticalScroller;
+        var highBtn = _scroller.Q<RepeatButton>("unity-high-button");
+        var lowBtn = _scroller.Q<RepeatButton>("unity-low-button");
+
+        highBtn.AddManipulator(new ButtonClickSoundManipulator(highBtn));
+        lowBtn.AddManipulator(new ButtonClickSoundManipulator(lowBtn));
 
         HideWindow();
 
 
-        RefreshContent(0, @"<html><body>Newbie Helper:<br>
-Welcome to Einhovant's School of Wizardry. I will be teaching you the basics of combat.<br>
-Please click on <font color=""LEVEL"">Quest</font>, in your Chat window.<br>
-<a action=""bypass -h npc_%objectId%_Quest"">Quest</a><br>
-</body></html>
-", 0);
-        RefreshContent(0, @"<html><body>Newbie Helper:<br>
-Welcome! Are you ready for a mission?<br>
-Have you seen the gremlins around here? They've stolen the precious blue gemstone!<br>
-<font color=""LEVEL"">You must recover it from them! </font><br>
-I'll tell you again how to kill the gremlins. Place your cursor over a gremlin and click the <font color=""FF0000"">left button</font>. The cursor will change to a sword. Click the <font color=""FF0000"">F2 key</font> to attack with <font color=""LEVEL"">Wind Strike</font> magic.<br>
-<img src=""L2UI_CH3.tutorial_img12"" width=64 height=64><table border=0><tr><td><img src=""L2UI_CH3.tutorial_img133"" width=64 height=64></td><td><img src=""L2UI_CH3.tutorial_img16"" width=64 height=64></td></tr></table><br>
-Complete this mission and I'll reward you with useful items. Good luck!
-</body></html>", 0);
+        //         RefreshContent(0, @"<html><body>Newbie Helper:<br>
+        // Welcome to Einhovant's School of Wizardry. I will be teaching you the basics of combat.<br>
+        // Please click on <font color=""LEVEL"">Quest</font>, in your Chat window.<br>
+        // <a action=""bypass -h npc_%objectId%_Quest"">Quest</a><br>
+        // </body></html>
+        // ", 0);
+        //         RefreshContent(0, @"<html><body>Newbie Helper:<br>
+        // Welcome! Are you ready for a mission?<br>
+        // Have you seen the gremlins around here? They've stolen the precious blue gemstone!<br>
+        // <font color=""LEVEL"">You must recover it from them! </font><br>
+        // I'll tell you again how to kill the gremlins. Place your cursor over a gremlin and click the <font color=""FF0000"">left button</font>. The cursor will change to a sword. Click the <font color=""FF0000"">F2 key</font> to attack with <font color=""LEVEL"">Wind Strike</font> magic.<br>
+        // <img src=""L2UI_CH3.tutorial_img12"" width=64 height=64><table border=0><tr><td><img src=""L2UI_CH3.tutorial_img133"" width=64 height=64></td><td><img src=""L2UI_CH3.tutorial_img16"" width=64 height=64></td></tr></table><br>
+        // Complete this mission and I'll reward you with useful items. Good luck!
+        // </body></html>", 0);
     }
 
     public override void ShowWindow()
@@ -191,10 +197,13 @@ Complete this mission and I'll reward you with useful items. Good luck!
     {
         Button button = (Button)_l2Button.Instantiate()[0];
         button.AddToClassList("npc-html-window-button");
-        button.Q<Label>("ButtonLabel").text = text;
-        button.AddManipulator(new ButtonClickSoundManipulator(button));
+        VisualElement buttonLabel = button.Q<Label>("ButtonLabel");
+        VisualElement buttonBg = button.Q<VisualElement>("ButtonBg");
+        Label label = button.Q<Label>("ButtonLabel");
+        label.text = text;
 
-        // Extract npcId from bypass action if present
+        button.style.marginTop = 15;
+
         button.clicked += () => ButtonClicked(action);
 
         _content.Add(button);

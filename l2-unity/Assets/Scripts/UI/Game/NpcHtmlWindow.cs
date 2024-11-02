@@ -152,6 +152,8 @@ Complete this mission and I'll reward you with useful items. Good luck!
                     if (actionMatch.Success)
                     {
                         string action = actionMatch.Groups[1].Value;
+                        action = action.Replace("bypass", "").Replace("-h", "").Trim();
+
                         string linkText = actionMatch.Groups[2].Value;
                         AddHyperlinkElement(action, linkText);
                     }
@@ -201,5 +203,6 @@ Complete this mission and I'll reward you with useful items. Good luck!
     private void ButtonClicked(string action)
     {
         Debug.Log(action);
+        GameClient.Instance.ClientPacketHandler.RequestBypassToServer(action);
     }
 }

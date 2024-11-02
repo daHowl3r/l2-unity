@@ -215,4 +215,10 @@ public class GameClientPacketHandler : ClientPacketHandler
         AppearingPacket packet = new AppearingPacket();
         SendPacket(packet);
     }
+
+    public void RequestBypassToServer(string htmlCommand)
+    {
+        RequestBypassToServerPacket packet = new RequestBypassToServerPacket(htmlCommand);
+        SendPacket(packet);
+    }
 }

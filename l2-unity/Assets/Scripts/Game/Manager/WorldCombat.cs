@@ -246,7 +246,7 @@ public class WorldCombat : MonoBehaviour
             hit.HitTime = Time.time + senderEntity.AnimationController.PAtkSpd / 2f / 1000f;
             _hits.Add(hit);
 
-            Debug.Log($"Hit scheduled in {senderEntity.AnimationController.PAtkSpd / 2f} ms - Now: {Time.time} - HitTime: {hit.HitTime}");
+            // Debug.Log($"Hit scheduled in {senderEntity.AnimationController.PAtkSpd / 2f} ms - Now: {Time.time} - HitTime: {hit.HitTime}");
 
             if (sender != GameClient.Instance.CurrentPlayerId)
             {

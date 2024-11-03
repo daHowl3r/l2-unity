@@ -18,6 +18,7 @@ public class PlayerStateAtkWait : PlayerStateAction
 
         if (!DidAttackTimeout() && ShouldAttack())
         {
+            SetBool(HumanoidAnimType.atk01, true, false);
             return;
         }
 

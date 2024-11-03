@@ -23,7 +23,7 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.3326858, g: 0.3326858, b: 0.27818158, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 0.5172954
+  m_AmbientIntensity: 0.43797153
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 74e09fc0417b6f94c95b3a55ae362ec9, type: 2}
@@ -1741,6 +1741,7 @@ MonoBehaviour:
   <Attack>k__BackingField: 0
   <NextTarget>k__BackingField: 0
   <Sit>k__BackingField: 0
+  <Ctrl>k__BackingField: 0
   <OpenInventory>k__BackingField: 0
   <OpenCharacerStatus>k__BackingField: 0
   <OpenSystemMenu>k__BackingField: 0
@@ -2315,6 +2316,7 @@ GameObject:
   - component: {fileID: 149149314}
   - component: {fileID: 149149313}
   - component: {fileID: 149149315}
+  - component: {fileID: 149149316}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -2371,6 +2373,23 @@ MonoBehaviour:
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
   m_WorldSpaceHeight: 1080
+--- !u!114 &149149316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 149149311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 023749991fbeee64a92355e95a385afb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _lastCursorType: 0
+  _defaultCursorTexture: {fileID: 0}
+  _attackCursorTexture: {fileID: 0}
+  _talkCursorTexture: {fileID: 0}
+  _pickupCursorTexture: {fileID: 0}
 --- !u!1001 &152807191
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8919,35 +8938,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6289952722580539430, guid: 50559bb8d22c3c04a8a788ca6ec38fec, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4626.73
+      value: 4625.207
       objectReference: {fileID: 0}
     - target: {fileID: 6289952722580539430, guid: 50559bb8d22c3c04a8a788ca6ec38fec, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -68.34
+      value: -70.5
       objectReference: {fileID: 0}
     - target: {fileID: 6289952722580539430, guid: 50559bb8d22c3c04a8a788ca6ec38fec, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1644.77
+      value: -1647.627
       objectReference: {fileID: 0}
     - target: {fileID: 6289952722580539430, guid: 50559bb8d22c3c04a8a788ca6ec38fec, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.8170295
+      value: 0.90151006
       objectReference: {fileID: 0}
     - target: {fileID: 6289952722580539430, guid: 50559bb8d22c3c04a8a788ca6ec38fec, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.4046887
+      value: 0.13634364
       objectReference: {fileID: 0}
     - target: {fileID: 6289952722580539430, guid: 50559bb8d22c3c04a8a788ca6ec38fec, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.3680449
+      value: 0.40610063
       objectReference: {fileID: 0}
     - target: {fileID: 6289952722580539430, guid: 50559bb8d22c3c04a8a788ca6ec38fec, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.18229894
+      value: -0.06141831
       objectReference: {fileID: 0}
     - target: {fileID: 6289952722580539430, guid: 50559bb8d22c3c04a8a788ca6ec38fec, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 52.7
+      value: 17.2
       objectReference: {fileID: 0}
     - target: {fileID: 6289952722580539430, guid: 50559bb8d22c3c04a8a788ca6ec38fec, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -18010,7 +18029,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b6f7ad8c01f514418965dbeaa9df6e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _globalEffectScaling: 0.01
+  _globalEffectScaling: 1
 --- !u!114 &742913644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25481,6 +25500,37 @@ Material:
     - _VelocityLossRangeZ: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+--- !u!1 &1026554837
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1026554838}
+  m_Layer: 0
+  m_Name: Effects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1026554838
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026554837}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4629.285, y: -72.813614, z: -1645.0408}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &1029731854 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8544826222852563884, guid: 1c6476505bfcbad4f83698104d37e189, type: 3}
@@ -31579,6 +31629,14 @@ PrefabInstance:
       propertyPath: '_particles.Array.data[57]'
       value: 
       objectReference: {fileID: 1014671423}
+    - target: {fileID: 4733386104900544933, guid: b5ddd005664ae1d428e2a006952f4d9c, type: 3}
+      propertyPath: _pooledEffect._effectDurationSec
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4733386104900544933, guid: b5ddd005664ae1d428e2a006952f4d9c, type: 3}
+      propertyPath: _pooledEffect._maximumInactiveTimeSec
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 4825861776298861444, guid: b5ddd005664ae1d428e2a006952f4d9c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -32268,8 +32326,8 @@ MonoBehaviour:
   _targetId: 0
   _target: {fileID: 0}
   _attackTarget: {fileID: 0}
-  _stopAutoAttackTime: 0
-  _startAutoAttackTime: 0
+  _combatTimestamp: 0
+  _attackStance: 0
 --- !u!23 &1333020651 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6875961722789377791, guid: 1f03ba6a3ff7e7f4ab21cf2ffb68c39c, type: 3}
@@ -44596,8 +44654,8 @@ MonoBehaviour:
   _targetId: 0
   _target: {fileID: 0}
   _attackTarget: {fileID: 0}
-  _stopAutoAttackTime: 0
-  _startAutoAttackTime: 0
+  _combatTimestamp: 0
+  _attackStance: 0
 --- !u!23 &1804808566 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2709830446591825067, guid: 0fd3f774c3e04134caffcedf21c654f8, type: 3}
@@ -52804,3 +52862,4 @@ SceneRoots:
   - {fileID: 1975765330}
   - {fileID: 645556364}
   - {fileID: 2566546368481687519}
+  - {fileID: 1026554838}

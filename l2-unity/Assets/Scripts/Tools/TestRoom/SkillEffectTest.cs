@@ -76,10 +76,11 @@ public class SkillEffectTest : MonoBehaviour
             // ParticleManager.Instance.SpawnHitParticle(caster, target, false, true, (int)EtcEffectInfo.EEP_GRADENONE);
 
             Hit hit = new Hit(target.Identity.Id, 10, flags);
-            Debug.Log($"Inflicting attack with flags: {flags} ss:{hit.hasSoulshot()} miss:{hit.isMiss()} crit:{hit.isCrit()}");
-            WorldCombat.Instance.InflictAttack(caster, target, new Hit(target.Identity.Id, 10, flags));
+            // Debug.Log($"Inflicting attack with flags: {flags} ss:{hit.hasSoulshot()} miss:{hit.isMiss()} crit:{hit.isCrit()}");
+            // WorldCombat.Instance.InflictAttack(caster, target, new Hit(target.Identity.Id, 10, flags));
 
-            WorldCombat.Instance.EntityCastSkill(caster, spiritshot ? 2047 : 2039);
+            // WorldCombat.Instance.EntityCastSkill(caster, spiritshot ? 2047 : 2039);
+            WorldCombat.Instance.EntityCastSkill(caster, 2122);
             yield return new WaitForSeconds(spawnDelay);
         }
     }

@@ -33,6 +33,7 @@ public class Stats
 
     public virtual void UpdateStats(Stats stats)
     {
+        _level = stats.Level;
         _attackRange = stats.AttackRange;
         _runSpeed = stats.RunSpeed;
         _walkSpeed = stats.WalkSpeed;

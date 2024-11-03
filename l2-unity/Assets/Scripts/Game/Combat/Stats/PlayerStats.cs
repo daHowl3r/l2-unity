@@ -65,7 +65,6 @@ public class PlayerStats : Stats
     {
         base.UpdateStats(stats);
 
-        _level = stats.Level;
         _pAtkSpd = stats.PAtkSpd;
         _mAtkSpd = stats.MAtkSpd;
         _maxHp = stats.MaxHp;

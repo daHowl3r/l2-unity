@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Pool;
 
 public class ParticleManager : MonoBehaviour
 {
@@ -18,7 +16,7 @@ public class ParticleManager : MonoBehaviour
     private GameObject _effectContainer;
     private GameObject _effectPoolContainer;
 
-    [SerializeField] private float _globalEffectScaling = 0.01f;
+    [SerializeField] private float _globalEffectScaling = 1f;
 
     public Dictionary<string, Queue<PooledEffect>> EffectPool
     {
@@ -234,6 +232,13 @@ public class ParticleManager : MonoBehaviour
 
         castingActions.ForEach((action) =>
         {
+            PooledEffect effect = SpawnEffect(action.EffectClass);
+            if (effect == null || effect.GameObject == null)
+            {
+                Debug.LogError($"Can't spawn skill effect {skill.EffectId} for skill {skill.SkillId}.");
+                return;
+            }
+
             AttachMethod attachOn = action.AttachOn;
             Transform attachTo;
             switch (attachOn)
@@ -253,24 +258,18 @@ public class ParticleManager : MonoBehaviour
                     break;
             }
 
-            PooledEffect effect = SpawnEffect(action.EffectClass);
-            if (effect == null || effect.GameObject == null)
-            {
-                Debug.LogError($"Can't spawn skill effect {skill.EffectId} for skill {skill.SkillId}.");
-                return;
-            }
-
             effect.GameObject.transform.parent = attachTo;
 
-            UpdateSkillEffectTransform(action, effect.GameObject.transform, effect);
+            UpdateSkillEffectTransform(action, effect.GameObject.transform, effect, attachOn);
             ActiveEffects.Enqueue(effect);
         });
     }
 
-    private void UpdateSkillEffectTransform(EffectEmitter emitter, Transform effectTransform, PooledEffect effect)
+    private void UpdateSkillEffectTransform(EffectEmitter emitter, Transform effectTransform, PooledEffect effect, AttachMethod attachMethod)
     {
         effectTransform.localPosition = emitter.Offset;
         effectTransform.localScale = emitter.ScaleSize > 0 ? Vector3.one * emitter.ScaleSize : Vector3.one;
+        effectTransform.localScale *= (attachMethod == AttachMethod.AM_RH || attachMethod == AttachMethod.AM_LH) ? 0.01f : 1f;
         effectTransform.localScale *= _globalEffectScaling;
         effectTransform.localRotation = Quaternion.Euler(Vector3.zero);
 
@@ -326,7 +325,6 @@ public class ParticleManager : MonoBehaviour
                     Debug.LogError($"Effect {effectClass} doesn't exist!");
                 }
             }
-
         }
         else
         {

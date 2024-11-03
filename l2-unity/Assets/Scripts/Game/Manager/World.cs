@@ -127,12 +127,10 @@ public class World : MonoBehaviour
     {
         if (!IsEntityPresent(identity.Id))
         {
-            Debug.LogWarning("PLAYER NOT PRESENT");
             _eventProcessor.QueueEvent(() => SpawnPlayer(identity, status, stats, appearance, running));
         }
         else
         {
-            Debug.LogWarning("ENTITY PRESENT");
             // Dont need to block thread
             Task task = new Task(async () =>
             {
@@ -145,22 +143,6 @@ public class World : MonoBehaviour
             });
             task.Start();
         }
-
-        //         // Dont need to block thread
-        // Task task = new Task(async () =>
-        // {
-        //     var entity = await GetEntityAsync(identity.Id);
-
-        //     if (entity == null)
-        //     {
-        //         _eventProcessor.QueueEvent(() => SpawnPlayer(identity, status, stats, appearance, running));
-        //     }
-        //     else
-        //     {
-        //         _eventProcessor.QueueEvent(() => UpdatePlayer(entity, identity, status, stats, appearance, running));
-        //     }
-        // });
-        // task.Start();
     }
 
     public void SpawnPlayer(NetworkIdentity identity, PlayerStatus status, PlayerStats stats, PlayerAppearance appearance, bool running)
@@ -216,6 +198,13 @@ public class World : MonoBehaviour
 
         ((PlayerEntity)entity).Identity.UpdateEntity(identity);
         ((PlayerStatus)entity.Status).UpdateStatus(status);
+
+        if (entity.Stats.Level != 0 && stats.Level > entity.Stats.Level)
+        {
+            Debug.LogWarning("Entity level up!");
+            WorldCombat.Instance.EntityCastSkill(entity, 2122);
+        }
+
         ((PlayerStats)entity.Stats).UpdateStats(stats);
         ((PlayerAppearance)entity.Appearance).UpdateAppearance(appearance);
         entity.UpdateMoveType(running);
@@ -234,23 +223,6 @@ public class World : MonoBehaviour
 
     public void OnReceiveUserInfo(NetworkIdentity identity, PlayerStatus status, Stats stats, PlayerAppearance appearance, bool running)
     {
-        // // Dont need to block thread
-        // Debug.LogWarning("OnReceiveUserInfo");
-        // Task task = new Task(async () =>
-        // {
-        //     var entity = await GetEntityAsync(identity.Id);
-
-        //     if (entity == null)
-        //     {
-        //         _eventProcessor.QueueEvent(() => SpawnUser(identity, status, stats, appearance, running));
-        //     }
-        //     else
-        //     {
-        //         Debug.LogWarning("UpdatePlayer");
-        //         _eventProcessor.QueueEvent(() => UpdateUser(entity, identity, status, stats, appearance, running));
-        //     }
-        // });
-        // task.Start();
         if (!IsEntityPresent(identity.Id))
         {
             Debug.LogWarning("USER NOT PRESENT");
@@ -318,6 +290,13 @@ public class World : MonoBehaviour
         ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(identity.Position);
 
         ((PlayerStatus)entity.Status).UpdateStatus(status);
+
+        if (entity.Stats.Level != 0 && stats.Level > entity.Stats.Level)
+        {
+            Debug.LogWarning("Entity level up!");
+            WorldCombat.Instance.EntityCastSkill(entity, 2122);
+        }
+
         entity.Stats.UpdateStats(stats);
         entity.Running = running;
         ((PlayerAppearance)entity.Appearance).UpdateAppearance(appearance);

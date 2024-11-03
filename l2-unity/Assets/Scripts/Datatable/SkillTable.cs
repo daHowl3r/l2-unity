@@ -37,7 +37,9 @@ public class SkillTable
             1147, 1164, 91, 77, 70, 29, 1090, 1100, 1097, 1010, 1095,
             2039, 2150, 2151, 2152, 2153, 2154, // Soulshots
             2061, 2160, 2161, 2162, 2163, 2164, // Blessed Spiritshots
-            2047, 2155, 2156, 2157, 2158, 2159}; // Spiritshots
+            2047, 2155, 2156, 2157, 2158, 2159, // Spiritshots
+            2122}; // levelup
+
     }
 
     /*
@@ -142,7 +144,7 @@ public class SkillTable
             Skill skill = new Skill(kvp.Key, skillNameArray, skillgrpArray, skillSoundgrp);
             Skills.Add(kvp.Key, skill);
 
-            // Debug.LogWarning($"ID:{skill.SkillNameDatas[0].Id} Name:{skill.SkillNameDatas[0].Name} Effect:{skill.EffectId}");
+            Debug.LogWarning($"ID:{skill.SkillNameDatas[0].Id} Name:{skill.SkillNameDatas[0].Name} Effect:{skill.EffectId}");
         }
     }
 

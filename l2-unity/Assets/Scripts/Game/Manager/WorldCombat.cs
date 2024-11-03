@@ -118,7 +118,7 @@ public class WorldCombat : MonoBehaviour
         // Cast skill sound
         if (skill.SkillSoundgrp == null || skill.SkillSoundgrp.SpellEffectSounds == null || skill.SkillSoundgrp.SpellEffectSounds.Length == 0)
         {
-            Debug.LogWarning("Skill {} doesnt have any SoundGrp or can't find sound EventReference.");
+            Debug.LogWarning($"Skill {skill.SkillId} doesnt have any SoundGrp or can't find sound EventReference.");
             return;
         }
 

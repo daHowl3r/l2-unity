@@ -50,6 +50,7 @@ public abstract class NetworkCombat : Combat
 
     public void LookAtTarget()
     {
+        Debug.LogWarning(AttackTarget);
         if (AttackTarget != null && Status.Hp > 0)
         {
             NetworkTransformReceive.LookAt(_attackTarget.transform);
@@ -102,10 +103,17 @@ public abstract class NetworkCombat : Combat
     //     // _attackStance = false;
     // }
 
-    public override void AttackOnce()
+    public override bool AttackOnce()
     {
-        base.AttackOnce();
-
-        LookAtTarget();
+        if (base.AttackOnce())
+        {
+            Debug.Log("Look At Target");
+            LookAtTarget();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

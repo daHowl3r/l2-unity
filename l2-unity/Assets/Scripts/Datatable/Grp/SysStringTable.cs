@@ -23,10 +23,10 @@ public class SysStringTable
 
     public void Initialize()
     {
-        ReadActions();
+        ReadFile();
     }
 
-    private void ReadActions()
+    private void ReadFile()
     {
         _strings = new Dictionary<int, SysStringData>();
         string dataPath = Path.Combine(Application.streamingAssetsPath, "Data/Meta/SysString_Classic-eu.txt");
@@ -75,6 +75,18 @@ public class SysStringTable
 
             Debug.Log($"Successfully imported {_strings.Count} SysString_Classic(s)");
         }
+    }
 
+    public SysStringData GetSysString(int id)
+    {
+        if (_strings.TryGetValue(id, out SysStringData data))
+        {
+            return data;
+        }
+        else
+        {
+            Debug.LogWarning($"SysString not found for id [{id}]");
+            return null;
+        }
     }
 }

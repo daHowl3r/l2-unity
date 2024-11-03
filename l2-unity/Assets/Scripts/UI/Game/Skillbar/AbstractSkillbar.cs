@@ -91,7 +91,7 @@ public abstract class AbstractSkillbar
 
         VisualElement anchor = _slotAnchors[position];
 
-        Debug.Log($"Create slot at {position} with anchor {anchor.name}.");
+        // Debug.Log($"Create slot at {position} with anchor {anchor.name}.");
 
         // Clear childs
         anchor.Clear();
@@ -110,7 +110,7 @@ public abstract class AbstractSkillbar
         {
             if (_barSlots[i].Position == _page * PlayerShortcuts.MAXIMUM_SHORTCUTS_PER_BAR + slot)
             {
-                Debug.Log($"Found slot at index {i} with slot {slot}.");
+                // Debug.Log($"Found slot at index {i} with slot {slot}.");
                 _barSlots[i].AssignShortcut(shortcut);
                 break;
             }

@@ -8,7 +8,6 @@ public class NetworkMonsterCombat : NetworkCombat
     public override void OnDeath()
     {
         base.OnDeath();
-        Debug.LogWarning("DEAD");
         MonsterAnimationController.SetBool(MonsterAnimationEvent.death, true);
     }
 
@@ -39,10 +38,16 @@ public class NetworkMonsterCombat : NetworkCombat
     //     // }
     // }
 
-    public override void AttackOnce()
+    public override bool AttackOnce()
     {
-        base.AttackOnce();
-
-        MonsterAnimationController.SetBool(MonsterAnimationEvent.atk01, true);
+        if (base.AttackOnce())
+        {
+            MonsterAnimationController.SetBool(MonsterAnimationEvent.atk01, true);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

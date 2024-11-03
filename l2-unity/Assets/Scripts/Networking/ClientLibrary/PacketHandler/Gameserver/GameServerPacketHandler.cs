@@ -144,10 +144,19 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.ExAutoSoulshot:
                 OnExAutoSoulshot(data);
                 break;
+            case GameServerPacketType.MagicSkillUse:
+                OnMagicSkillUse(data);
+                break;
             default:
                 Debug.LogWarning($"Received unhandled packet with OPCode [{packetType}].");
                 break;
         }
+    }
+
+    private void OnMagicSkillUse(byte[] data)
+    {
+        MagicSkillUsePacket packet = new MagicSkillUsePacket(data);
+        WorldCombat.Instance.OnMagicSkillUse(packet);
     }
 
     protected override byte[] DecryptPacket(byte[] data)

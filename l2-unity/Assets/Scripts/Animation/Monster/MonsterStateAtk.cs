@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class MonsterStateAtk : MonsterStateAction
 {
-    private float _lastNormalizedTime;
     private float clipLength;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -26,8 +25,6 @@ public class MonsterStateAtk : MonsterStateAction
 
         PlaySoundAtRatio(EntitySoundEvent.Atk, AudioHandler.AtkRatio);
         PlaySoundAtRatio(EntitySoundEvent.Swish, AudioHandler.SwishRatio);
-
-        _lastNormalizedTime = 0;
 
     }
 

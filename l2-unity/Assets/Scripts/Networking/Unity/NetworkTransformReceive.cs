@@ -16,6 +16,7 @@ public class NetworkTransformReceive : MonoBehaviour
     [SerializeField] private long _lastDesyncTime = 0;
     [SerializeField] private long _lastDesyncDuration = 0;
     private long _maximumAllowedDesyncTimeMs = 0;
+    private float _lastRotationUpdateTime = 0;
 
     protected virtual void Start()
     {
@@ -113,6 +114,11 @@ public class NetworkTransformReceive : MonoBehaviour
     /* Ajust rotation */
     protected virtual void UpdateRotation()
     {
+        if (Time.time - _lastRotationUpdateTime > 2f)
+        {
+            return;
+        }
+
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(Vector3.up * _newRotation), Time.deltaTime * 7.5f);
     }
 
@@ -120,6 +126,7 @@ public class NetworkTransformReceive : MonoBehaviour
     {
         Debug.Log($"[{transform.name}]Setting new final rotation: {finalRotation}");
         _newRotation = finalRotation;
+        _lastRotationUpdateTime = Time.time;
     }
 
     public virtual void LookAt(Transform target)
@@ -127,13 +134,13 @@ public class NetworkTransformReceive : MonoBehaviour
         Debug.Log($"[{transform.name}] LookAt {target}");
         if (target != null)
         {
-            _newRotation = VectorUtils.CalculateMoveDirectionAngle(transform.position, target.position);
+            SetFinalRotation(VectorUtils.CalculateMoveDirectionAngle(transform.position, target.position));
         }
     }
 
     public virtual void LookAt(Vector3 position)
     {
-        _newRotation = VectorUtils.CalculateMoveDirectionAngle(transform.position, position);
+        SetFinalRotation(VectorUtils.CalculateMoveDirectionAngle(transform.position, position));
     }
 
     public bool IsPositionSynced()

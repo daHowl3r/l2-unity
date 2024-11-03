@@ -99,6 +99,16 @@ public class WorldCombat : MonoBehaviour
         // }
     }
 
+
+    public Task OnMagicSkillUse(MagicSkillUsePacket packet)
+    {
+        return World.Instance.ExecuteWithEntitiesAsync(packet.ObjectId, packet.TargetId, (targeter, targeted) =>
+        {
+            EntityCastSkill(targeter, packet.SkillId);
+        });
+    }
+
+
     public void EntityCastSkill(Entity entity, int skillId)
     {
         Skill skill = SkillTable.Instance.GetSkill(skillId);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -11,6 +12,7 @@ public class NpcHtmlWindow : L2PopupWindow
     private VisualTreeAsset _htmlTable;
     private VisualTreeAsset _htmlRow;
     private VisualTreeAsset _htmlCell;
+    private VisualTreeAsset _hyperlink;
     private VisualTreeAsset _htmlWrapper;
     private VisualElement _content;
     private ScrollView _scrollView;
@@ -44,6 +46,7 @@ public class NpcHtmlWindow : L2PopupWindow
         _htmlRow = LoadAsset("Data/UI/_Elements/Template/HtmlRow");
         _htmlCell = LoadAsset("Data/UI/_Elements/Template/HtmlCell");
         _htmlWrapper = LoadAsset("Data/UI/_Elements/Template/HtmlWrapper");
+        _hyperlink = LoadAsset("Data/UI/_Elements/Template/HtmlHyperlink");
     }
 
     protected override void InitWindow(VisualElement root)
@@ -127,8 +130,6 @@ public class NpcHtmlWindow : L2PopupWindow
     private string PreProcessHtml(string html, int npcId, int itemId)
     {
         // Remove newlines and normalize spaces
-        // string processed = html.Replace("\n", "").Replace("\t", "");
-        // processed = Regex.Replace(processed, @"/\s\s+/g", "");
         string processed = Regex.Replace(html, @"\s{2,}", "");
 
         processed = processed
@@ -139,6 +140,58 @@ public class NpcHtmlWindow : L2PopupWindow
             .Replace("%objectId%", npcId.ToString())
             .Replace("%item%", itemId.ToString());
 
+        processed = ReplaceItemNames(processed);
+        processed = ReplaceSysStrings(processed);
+        processed = ReplaceFontColors(processed);
+
+        return processed;
+    }
+
+    private string ReplaceItemNames(string processed)
+    {
+        processed = Regex.Replace(processed, @"\&\#(\d+);", match =>
+                {
+                    // Extract the captured number
+                    string number = match.Groups[1].Value;
+
+                    AbstractItem item = ItemTable.Instance.GetItem(int.Parse(number));
+                    if (item != null)
+                    {
+                        return item.ItemName.Name;
+                    }
+                    else
+                    {
+                        return "<Unknown item>";
+                    }
+                });
+
+        return processed;
+    }
+
+    private string ReplaceSysStrings(string processed)
+    {
+        processed = Regex.Replace(processed, @"\&\$(\d+);", match =>
+                {
+                    // Extract the captured number
+                    string number = match.Groups[1].Value;
+
+                    SysStringData sysString = SysStringTable.Instance.GetSysString(int.Parse(number));
+                    if (sysString != null)
+                    {
+                        return sysString.Name;
+                    }
+                    else
+                    {
+                        return "<Unknown SysString>";
+                    }
+                });
+
+        return processed;
+    }
+
+
+    private string ReplaceFontColors(string processed)
+    {
         // Process font color tags while preserving Unity rich text format
         processed = Regex.Replace(
             processed,
@@ -205,7 +258,20 @@ public class NpcHtmlWindow : L2PopupWindow
 
                 string tag = html.Substring(currentPos, tagEnd - currentPos + 1);
 
-                if (tag.StartsWith("<br"))
+
+                if (tag.StartsWith("<br1"))
+                {
+                    // If we have accumulated text, add it as a node
+                    if (textBuilder.Length > 0)
+                    {
+                        nodes.Add(new HtmlNode { Type = NodeType.Text, Content = textBuilder.ToString() });
+                        textBuilder.Clear();
+                    }
+
+                    nodes.Add(new HtmlNode { Type = NodeType.LineBreakSmall });
+                    currentPos = tagEnd + 1;
+                }
+                else if (tag.StartsWith("<br"))
                 {
                     // If we have accumulated text, add it as a node
                     if (textBuilder.Length > 0)
@@ -333,7 +399,10 @@ public class NpcHtmlWindow : L2PopupWindow
                 );
                 break;
             case NodeType.LineBreak:
-                AddLineBreak(container);
+                AddLineBreak(container, false);
+                break;
+            case NodeType.LineBreakSmall:
+                AddLineBreak(container, true);
                 break;
             case NodeType.Table:
                 ProcessTable(container, node.Content);
@@ -345,10 +414,17 @@ public class NpcHtmlWindow : L2PopupWindow
         }
     }
 
-    private void AddLineBreak(VisualElement container)
+    private void AddLineBreak(VisualElement container, bool small)
     {
         var spacer = _htmlWrapper.Instantiate()[0];
-        spacer.style.height = 12;
+        if (small)
+        {
+            spacer.style.height = 0;
+        }
+        else
+        {
+            spacer.style.height = 12;
+        }
         container.Add(spacer);
     }
 
@@ -365,14 +441,14 @@ public class NpcHtmlWindow : L2PopupWindow
 
     private void AddHyperlinkElement(VisualElement container, string action, string text)
     {
-        Button button = (Button)_l2Button.Instantiate()[0];
-        button.AddToClassList("npc-html-window-button");
+        Button button = (Button)_hyperlink.Instantiate()[0];
+        // button.AddToClassList("npc-html-window-button");
         VisualElement buttonLabel = button.Q<Label>("ButtonLabel");
         VisualElement buttonBg = button.Q<VisualElement>("ButtonBg");
         Label label = button.Q<Label>("ButtonLabel");
-        label.text = text;
+        label.text = "<u>" + text + "</u>";
 
-        button.style.marginTop = 15;
+        // button.style.marginTop = 15;
 
         button.clicked += () => ButtonClicked(action);
 
@@ -455,6 +531,7 @@ public class NpcHtmlWindow : L2PopupWindow
     {
         Text,
         LineBreak,
+        LineBreakSmall,
         Image,
         Table,
         Link

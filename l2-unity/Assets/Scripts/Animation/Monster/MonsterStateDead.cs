@@ -7,7 +7,8 @@ public class MonsterStateDead : MonsterStateAction
         LoadComponents(animator);
         PlaySoundAtRatio(EntitySoundEvent.Death, AudioHandler.DeathRatio);
         PlaySoundAtRatio(EntitySoundEvent.Fall, AudioHandler.FallRatio);
-        SetBool(MonsterAnimationEvent.death, false);
+
+        AnimController.ClearAnimParams();
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

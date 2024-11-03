@@ -375,22 +375,17 @@ public class World : MonoBehaviour
 
         identity.SetPosY(GetGroundHeight(identity.Position));
         GameObject npcGo = Instantiate(go, identity.Position, Quaternion.identity);
-        //NpcData npcData = new NpcData(npcName, npcgrp);
-
-
         Entity npc;
 
         if (identity.EntityType == EntityType.NPC)
         {
             npcGo.transform.SetParent(_npcsContainer.transform);
             npc = npcGo.GetComponent<NetworkHumanoidEntity>();
-            // ((NetworkEntity)npc).NpcData = npcData;
         }
         else
         {
             npcGo.transform.SetParent(_monstersContainer.transform);
             npc = npcGo.GetComponent<NetworkMonsterEntity>();
-            //((MonsterEntity)npc).NpcData = npcData;
         }
 
         if (appearance.RHand == 0)
@@ -437,7 +432,7 @@ public class World : MonoBehaviour
         npc.Identity.TitleColor = npcName.TitleColor;
         npc.Appearance = appearance;
 
-        npcGo.transform.eulerAngles = new Vector3(npcGo.transform.eulerAngles.x, identity.Heading, npcGo.transform.eulerAngles.z);
+        npcGo.transform.eulerAngles = new Vector3(npcGo.transform.eulerAngles.x, VectorUtils.ConvertRotToUnity(identity.Heading), npcGo.transform.eulerAngles.z);
         npcGo.transform.name = identity.Name;
         npcGo.SetActive(true);
 
@@ -454,9 +449,14 @@ public class World : MonoBehaviour
     {
         entity.Identity.UpdateEntityPartial(identity);
         ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(identity.Position);
+
+        // THIS MESSES UP THE LOOKAT TARGET
+
         // float rotation = VectorUtils.ConvertRotToUnity(identity.Heading);
         // ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetFinalRotation(rotation);
         //entity.Status.UpdateStatus(status);
+
+
         entity.Stats.UpdateStats(stats);
         entity.Running = running;
 
@@ -728,6 +728,25 @@ public class World : MonoBehaviour
     // Execute action after 2 entities are loaded
     public async Task ExecuteWithEntitiesAsync(int id1, int id2, Action<Entity, Entity> action)
     {
+        if (id1 == id2)
+        {
+            // Load the entity once if the IDs are the same
+            var entity = await GetEntityAsync(id1);
+            if (entity != null)
+            {
+                try
+                {
+                    _eventProcessor.QueueEvent(() => action(entity, entity));
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"Operation failed - Target {id1} - Error {ex.Message}");
+                }
+            }
+            return;
+        }
+
+        // Load both entities in parallel if IDs are different
         var entity1Task = GetEntityAsync(id1);
         var entity2Task = GetEntityAsync(id2);
 

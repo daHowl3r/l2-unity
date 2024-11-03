@@ -119,13 +119,20 @@ public abstract class Combat : MonoBehaviour
     {
     }
 
-    public virtual void AttackOnce()
+    public virtual bool AttackOnce()
     {
+        if (IsDead())
+        {
+            return false;
+        }
+
         _combatTimestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
         if (_target != null)
         {
             _attackTarget = _target;
         }
+
+        return true;
     }
 }

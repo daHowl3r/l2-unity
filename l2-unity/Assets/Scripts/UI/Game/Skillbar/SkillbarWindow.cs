@@ -319,8 +319,6 @@ public class SkillbarWindow : L2PopupWindow
         int toggleCount = 1;
         while (true)
         {
-            Debug.LogWarning(_toggledSlots.Count);
-
             _toggledSlots.ForEach((slot) =>
             {
                 slot.SlotElement.AddToClassList("toggle-" + toggleCount);

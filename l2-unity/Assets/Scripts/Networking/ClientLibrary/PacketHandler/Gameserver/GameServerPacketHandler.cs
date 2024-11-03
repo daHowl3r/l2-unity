@@ -108,6 +108,9 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.ShortcutRegister:
                 OnShortcutRegister(data);
                 break;
+            case GameServerPacketType.ShortcutDelete:
+                OnShortcutDelete(data);
+                break;
             case GameServerPacketType.ChangeWaitType:
                 OnChangeWaitType(data);
                 break;
@@ -517,6 +520,12 @@ public class GameServerPacketHandler : ServerPacketHandler
     {
         ShortcutRegisterPacket packet = new ShortcutRegisterPacket(data);
         _eventProcessor.QueueEvent(() => PlayerShortcuts.Instance.RegisterShortcut(packet.NewShortcut));
+    }
+
+    private void OnShortcutDelete(byte[] data)
+    {
+        ShortcutDeletePacket packet = new ShortcutDeletePacket(data);
+        _eventProcessor.QueueEvent(() => PlayerShortcuts.Instance.RemoveShotcutLocally(packet.Slot));
     }
 
     private void OnChangeWaitType(byte[] data)

@@ -144,7 +144,7 @@ public class PlayerShortcuts : MonoBehaviour
         return null;
     }
 
-    private void RemoveShotcutLocally(int slot)
+    public void RemoveShotcutLocally(int slot)
     {
         SkillbarWindow.Instance.RemoveShortcut(slot);
         _shortcuts.Remove(slot);

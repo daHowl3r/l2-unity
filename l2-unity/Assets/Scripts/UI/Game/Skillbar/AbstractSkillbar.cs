@@ -91,7 +91,7 @@ public abstract class AbstractSkillbar
 
         VisualElement anchor = _slotAnchors[position];
 
-        //Debug.Log($"Create slot at {position} with anchor {anchor.name}.");
+        Debug.Log($"Create slot at {position} with anchor {anchor.name}.");
 
         // Clear childs
         anchor.Clear();

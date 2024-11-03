@@ -8,6 +8,7 @@ public class InventorySlot : L2DraggableSlot
     private long _remainingTime;
     private SlotClickSoundManipulator _slotClickSoundManipulator;
     private int _objectId;
+    private ItemName _assignedItem;
     private ItemType1 _type1;
     private ItemType2 _type2;
     protected bool _empty = true;
@@ -16,6 +17,8 @@ public class InventorySlot : L2DraggableSlot
     public ItemType1 Type1 { get { return _type1; } }
     public ItemType2 Type2 { get { return _type2; } }
     public int ObjectId { get { return _objectId; } }
+
+    public ItemName ItemName { get { return _assignedItem; } }
 
     public InventorySlot(int position, VisualElement slotElement, L2Tab tab, SlotType slotType)
     : base(position, slotElement, slotType, false, true)
@@ -49,6 +52,7 @@ public class InventorySlot : L2DraggableSlot
             _objectId = item.ObjectId;
             _empty = false;
             _type1 = item.Type1;
+            _assignedItem = item.ItemData.ItemName;
         }
         else
         {
@@ -59,6 +63,7 @@ public class InventorySlot : L2DraggableSlot
             _icon = "";
             _objectId = -1;
             _type1 = Type1;
+            _assignedItem = new ItemName();
         }
 
         _count = item.Count;

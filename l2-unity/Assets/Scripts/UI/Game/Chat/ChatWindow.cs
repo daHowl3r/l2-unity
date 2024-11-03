@@ -242,7 +242,14 @@ public class ChatWindow : L2Window
         }
         else
         {
-            GameClient.Instance.ClientPacketHandler.SendMessage(text);
+            if (text.StartsWith("//"))
+            {
+                GameClient.Instance.ClientPacketHandler.SendGMCommand(text.Replace("//", ""));
+            }
+            else
+            {
+                GameClient.Instance.ClientPacketHandler.SendMessage(text);
+            }
         }
     }
 

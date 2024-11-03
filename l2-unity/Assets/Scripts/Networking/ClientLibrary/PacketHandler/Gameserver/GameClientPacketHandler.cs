@@ -221,4 +221,16 @@ public class GameClientPacketHandler : ClientPacketHandler
         RequestBypassToServerPacket packet = new RequestBypassToServerPacket(htmlCommand);
         SendPacket(packet);
     }
+
+    public void RequestAutoSoulshot(int id, bool toggled)
+    {
+        RequestAutoSoulshotPacket packet = new RequestAutoSoulshotPacket(id, !toggled);
+        SendPacket(packet);
+    }
+
+    public void SendGMCommand(string command)
+    {
+        GMCommandPacket packet = new GMCommandPacket(command);
+        SendPacket(packet);
+    }
 }

@@ -25,10 +25,12 @@ public enum GameClientPacketType : byte
     RequestRestart = 0x46,
     ValidatePosition = 0x48,
     RequestDestroyItem = 0x59,
+    GMCommand = 0x5b,
     RequestRestartPoint = 0x6d,
+    DoubleOPCode = 0xd0,
 
 
-
+    //deprecated
     Ping = 0xF0,
     RequestRotate = 0xF3,
     RequestAnim = 0xF4,

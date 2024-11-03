@@ -387,4 +387,9 @@ public class WorldCombat : MonoBehaviour
         // return attacker.Appearance.CollisionRadius + target.Appearance.CollisionRadius;
         return attacker.Stats.AttackRange;
     }
+
+    public void ExAutoSoulshotReceived(int itemId, bool enable)
+    {
+        EventProcessor.Instance.QueueEvent(() => PlayerShortcuts.Instance.ToggleShortcutItem(itemId, enable));
+    }
 }

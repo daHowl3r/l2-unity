@@ -10,9 +10,11 @@ public class PlayerShortcuts : MonoBehaviour
     public const int MAXIMUM_SHORTCUTS_PER_BAR = 12;
     public const int MAXIMUM_SKILLBAR_COUNT = 5;
     private int[] _pageMap;
+    private List<int> _toggledItemIds;
 
     private Dictionary<int, Shortcut> _shortcuts;
     public List<Shortcut> Shortcuts { get { return _shortcuts.Values.ToList(); } }
+    public List<int> ToggledItemIds { get { return _toggledItemIds; } }
 
     private static PlayerShortcuts _instance;
     public static PlayerShortcuts Instance
@@ -33,6 +35,7 @@ public class PlayerShortcuts : MonoBehaviour
 
         _shortcuts = new Dictionary<int, Shortcut>();
         _pageMap = new int[5] { 0, 1, 2, 3, 4 };
+        _toggledItemIds = new List<int>();
     }
 
     private void OnDestroy()
@@ -147,7 +150,6 @@ public class PlayerShortcuts : MonoBehaviour
         _shortcuts.Remove(slot);
     }
 
-
     public void UpdatePageMapping(int skillbarIndex, int page)
     {
         _pageMap[skillbarIndex] = page;
@@ -191,4 +193,36 @@ public class PlayerShortcuts : MonoBehaviour
     }
 
     #endregion
+
+    public void RequestToggleShortcutItem(int id, bool enable)
+    {
+        GameClient.Instance.ClientPacketHandler.RequestAutoSoulshot(id, enable);
+    }
+
+    public void ToggleShortcutItem(int id, bool enable)
+    {
+        Debug.LogWarning("Toggle update from server");
+        if (enable)
+        {
+            if (!_toggledItemIds.Contains(id))
+            {
+                _toggledItemIds.Add(id);
+            }
+        }
+        else
+        {
+            if (_toggledItemIds.Contains(id))
+            {
+                _toggledItemIds.Remove(id);
+            }
+        }
+
+        //Refresh skillbar
+        StartCoroutine(SkillbarWindow.Instance.UpdateAllShortcuts(_shortcuts.Values.ToList()));
+    }
+
+    public bool IsItemToggled(int itemId)
+    {
+        return _toggledItemIds.Contains(itemId);
+    }
 }

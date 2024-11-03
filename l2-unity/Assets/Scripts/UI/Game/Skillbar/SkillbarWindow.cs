@@ -14,6 +14,7 @@ public class SkillbarWindow : L2PopupWindow
 
     private List<Coroutine> _expandCoroutines;
     private List<Coroutine> _minimizeCoroutines;
+    private Coroutine _slotToggleAnimationCoroutine;
     private VisualElement _skillbarContainerHorizontal;
     private VisualElement _skillbarContainerVertical;
     private VisualTreeAsset _skillbarHorizontalTemplate;
@@ -21,6 +22,7 @@ public class SkillbarWindow : L2PopupWindow
     private VisualTreeAsset _barSlotTemplate;
     private List<AbstractSkillbar> _skillbars;
     private static SkillbarWindow _instance;
+    private List<SkillbarSlot> _toggledSlots;
 
     public bool Locked { get { return _locked; } set { _locked = value; } }
     public bool Vertical { get { return _vertical; } set { _vertical = value; } }
@@ -41,6 +43,7 @@ public class SkillbarWindow : L2PopupWindow
 
         _expandCoroutines = new List<Coroutine>();
         _minimizeCoroutines = new List<Coroutine>();
+        _toggledSlots = new List<SkillbarSlot>();
     }
 
     private void OnDestroy()
@@ -111,6 +114,8 @@ public class SkillbarWindow : L2PopupWindow
         {
             AddSkillbar();
         }
+
+        _slotToggleAnimationCoroutine = StartCoroutine(PlayToggleAnimations());
 
 #if UNITY_EDITOR
         // DebugData();
@@ -199,14 +204,18 @@ public class SkillbarWindow : L2PopupWindow
 
     public void OnPageChanged(int skillbarIndex, int page)
     {
+        Debug.LogWarning("1");
         for (int x = 0; x < 2; x++)
         {
             _skillbars[skillbarIndex + PlayerShortcuts.MAXIMUM_SKILLBAR_COUNT * x].ChangePage(page);
         }
 
+        Debug.LogWarning("2");
         PlayerShortcuts.Instance.UpdatePageMapping(skillbarIndex, page);
 
-        UpdateAllShortcuts();
+        Debug.LogWarning("3");
+        StartCoroutine(UpdateAllShortcuts(PlayerShortcuts.Instance.Shortcuts));
+        Debug.LogWarning("4");
     }
 
     public void ToggleLockSkillBar()
@@ -229,17 +238,14 @@ public class SkillbarWindow : L2PopupWindow
         }
     }
 
-    public void UpdateAllShortcuts()
-    {
-        UpdateAllShortcuts(PlayerShortcuts.Instance.Shortcuts);
-    }
-
     public IEnumerator UpdateAllShortcuts(List<Shortcut> shortcuts)
     {
         while (!PlayerInventory.Instance.Initialized)
         {
             yield return new WaitForSeconds(0.1f);
         }
+
+        _toggledSlots.Clear();
 
         _skillbars.ForEach((skillbar) => skillbar.ResetShortcuts());
 
@@ -290,6 +296,48 @@ public class SkillbarWindow : L2PopupWindow
                     skillbar.DeleteShortcut(oldSlot);
                 }
             });
+    }
+
+    public void AddToggledSlot(SkillbarSlot slot)
+    {
+        if (!_toggledSlots.Contains(slot))
+        {
+            _toggledSlots.Add(slot);
+        }
+    }
+
+    public void RemoveToggledSlot(SkillbarSlot slot)
+    {
+        if (_toggledSlots.Contains(slot))
+        {
+            _toggledSlots.Remove(slot);
+        }
+    }
+
+    private IEnumerator PlayToggleAnimations()
+    {
+        int toggleCount = 1;
+        while (true)
+        {
+            Debug.LogWarning(_toggledSlots.Count);
+
+            _toggledSlots.ForEach((slot) =>
+            {
+                slot.SlotElement.AddToClassList("toggle-" + toggleCount);
+            });
+
+            yield return new WaitForSeconds(0.1f);
+
+            _toggledSlots.ForEach((slot) =>
+            {
+                slot.SlotElement.RemoveFromClassList("toggle-" + toggleCount);
+            });
+
+            if (toggleCount++ > 12)
+            {
+                toggleCount = 1;
+            }
+        }
     }
 
 #if UNITY_EDITOR

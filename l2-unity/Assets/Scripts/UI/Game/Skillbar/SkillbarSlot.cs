@@ -1,6 +1,6 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static L2Slot;
 
 public class SkillbarSlot : L2ClickableSlot
 {
@@ -10,6 +10,9 @@ public class SkillbarSlot : L2ClickableSlot
     private int _skillbarId;
     private int _slot;
     private VisualElement _keyElement;
+    private bool _toggled;
+
+    public bool Toggled { get { return _toggled; } }
 
     public SkillbarSlot(VisualElement slotElement, int position, int skillbarId, int slot) : base(slotElement, position, SlotType.SkillBar, true, false)
     {
@@ -18,6 +21,7 @@ public class SkillbarSlot : L2ClickableSlot
         _skillbarId = skillbarId;
         _slot = slot;
         _keyElement = _slotElement.Q<VisualElement>("Key");
+        _toggled = false;
     }
 
     public void AssignShortcut(Shortcut shortcut)
@@ -52,6 +56,17 @@ public class SkillbarSlot : L2ClickableSlot
         ((L2ClickableSlot)_innerSlot).UnregisterClickableCallback();
 
         UpdateInputInfo();
+
+        if (PlayerShortcuts.Instance.IsItemToggled(item.ItemId))
+        {
+            _toggled = true;
+            SkillbarWindow.Instance.AddToggledSlot(this);
+        }
+        else
+        {
+            _toggled = false;
+            SkillbarWindow.Instance.RemoveToggledSlot(this);
+        }
     }
 
     public void AssignAction(int objectId)
@@ -100,6 +115,18 @@ public class SkillbarSlot : L2ClickableSlot
 
     protected override void HandleRightClick()
     {
+        if (_shortcut != null)
+        {
+            if (_shortcut.Type == Shortcut.TYPE_ITEM)
+            {
+                ItemName itemName = ((InventorySlot)_innerSlot).ItemName;
+                if (itemName.DefaultAction == "action_soulshot")
+                {
+                    Debug.LogWarning($"Toggle bar slot {_position}.");
+                    PlayerShortcuts.Instance.RequestToggleShortcutItem(itemName.Id, _toggled);
+                }
+            }
+        }
     }
 
     protected override void HandleMiddleClick()

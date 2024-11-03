@@ -34,9 +34,11 @@ public enum GameServerPacketType : int
     ValidateLocation = 0x61,
     SystemMessage = 0x64,
     MyTargetSet = 0xA6,
+    ExAutoSoulshot = 0xFE,
 
 
 
+    // Deprecated / need to implement
     ObjectPosition = 0xFF7,
     ObjectRotation = 0xFF9,
     ObjectAnimation = 0xFFA,

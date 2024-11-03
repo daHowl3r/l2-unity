@@ -138,6 +138,9 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.NpcHtml:
                 OnNpcHtmlReceive(data);
                 break;
+            case GameServerPacketType.ExAutoSoulshot:
+                OnExAutoSoulshot(data);
+                break;
             default:
                 Debug.LogWarning($"Received unhandled packet with OPCode [{packetType}].");
                 break;
@@ -558,5 +561,11 @@ public class GameServerPacketHandler : ServerPacketHandler
     {
         NpcHtmlPacket packet = new NpcHtmlPacket(data);
         World.Instance.NpcHtmlReceived(packet.ObjectId, packet.Html, packet.ItemId);
+    }
+
+    private void OnExAutoSoulshot(byte[] data)
+    {
+        ExAutoSoulshotPacket packet = new ExAutoSoulshotPacket(data);
+        WorldCombat.Instance.ExAutoSoulshotReceived(packet.ItemId, packet.Enable);
     }
 }

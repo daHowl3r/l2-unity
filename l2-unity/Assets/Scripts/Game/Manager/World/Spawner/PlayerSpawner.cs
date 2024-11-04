@@ -10,6 +10,7 @@ public class PlayerSpawner : EntitySpawnStrategy<PlayerAppearance, PlayerStats, 
     {
     }
 
+    #region Spawn
     protected override void SpawnEntity(NetworkIdentity identity, PlayerStatus status,
         PlayerStats stats, PlayerAppearance appearance, bool running)
     {
@@ -27,34 +28,6 @@ public class PlayerSpawner : EntitySpawnStrategy<PlayerAppearance, PlayerStats, 
         InitializePlayer(player, identity, status, stats, appearance, race, raceId, running);
 
         AddEntity(identity, player);
-    }
-
-    protected override void FindAndUpdateEntity(NetworkIdentity identity, PlayerStatus status, PlayerStats stats,
-    PlayerAppearance appearance, bool running)
-    {
-        UpdateEntity(PlayerEntity.Instance, identity, status, stats, appearance, running);
-    }
-
-    protected override void UpdateEntity(Entity entity, NetworkIdentity identity,
-        PlayerStatus status, PlayerStats stats, PlayerAppearance appearance, bool running)
-    {
-        Debug.LogWarning("[" + Thread.CurrentThread.ManagedThreadId + "] UPDATE ENTITY FUNC");
-
-        Debug.LogWarning(entity);
-        Debug.LogWarning(entity.transform);
-        Debug.LogWarning(entity.Identity.Id);
-        Debug.LogWarning(entity == PlayerEntity.Instance);
-        Debug.LogWarning(entity.Identity.Id == GameClient.Instance.CurrentPlayerId);
-
-        entity.gameObject.layer = LayerMask.NameToLayer("Player");
-
-        UpdateEntityComponents((PlayerEntity)entity, identity, status, stats, appearance, running);
-
-        // Player-specific updates
-        CharacterInfoWindow.Instance.UpdateValues();
-        InventoryWindow.Instance.RefreshWeight();
-        GameManager.Instance.OnPlayerInfoReceive();
-        NetworkTransformShare.Instance.SharePosition();
     }
 
     private void InitializeGameObject(GameObject go, NetworkIdentity identity)
@@ -96,8 +69,38 @@ public class PlayerSpawner : EntitySpawnStrategy<PlayerAppearance, PlayerStats, 
     {
         WorldSpawner.Instance.AddObject(identity.Id, player);
     }
+    #endregion
 
-    public static void UpdateEntityComponents(PlayerEntity entity, NetworkIdentity identity, PlayerStatus status,
+    #region Update
+    protected override void FindAndUpdateEntity(NetworkIdentity identity, PlayerStatus status, PlayerStats stats,
+    PlayerAppearance appearance, bool running)
+    {
+        UpdateEntity(PlayerEntity.Instance, identity, status, stats, appearance, running);
+    }
+
+    protected override void UpdateEntity(Entity entity, NetworkIdentity identity,
+        PlayerStatus status, PlayerStats stats, PlayerAppearance appearance, bool running)
+    {
+        Debug.LogWarning("[" + Thread.CurrentThread.ManagedThreadId + "] UPDATE ENTITY FUNC");
+
+        Debug.LogWarning(entity);
+        Debug.LogWarning(entity.transform);
+        Debug.LogWarning(entity.Identity.Id);
+        Debug.LogWarning(entity == PlayerEntity.Instance);
+        Debug.LogWarning(entity.Identity.Id == GameClient.Instance.CurrentPlayerId);
+
+        entity.gameObject.layer = LayerMask.NameToLayer("Player");
+
+        UpdateEntityComponents((PlayerEntity)entity, identity, status, stats, appearance, running);
+
+        // Player-specific updates
+        CharacterInfoWindow.Instance.UpdateValues();
+        InventoryWindow.Instance.RefreshWeight();
+        GameManager.Instance.OnPlayerInfoReceive();
+        NetworkTransformShare.Instance.SharePosition();
+    }
+
+    private void UpdateEntityComponents(PlayerEntity entity, NetworkIdentity identity, PlayerStatus status,
     PlayerStats stats, PlayerAppearance appearance, bool running)
     {
         Debug.LogWarning("UpdateEntityComponents");
@@ -106,14 +109,14 @@ public class PlayerSpawner : EntitySpawnStrategy<PlayerAppearance, PlayerStats, 
         UpdateStatsAndAppearance(entity, stats, appearance, running);
     }
 
-    private static void UpdateIdentityAndStatus(PlayerEntity entity, NetworkIdentity identity, PlayerStatus status)
+    private void UpdateIdentityAndStatus(PlayerEntity entity, NetworkIdentity identity, PlayerStatus status)
     {
         Debug.LogWarning("UpdateIdentityAndStatus");
         entity.Identity.UpdateEntity(identity);
         ((PlayerStatus)entity.Status).UpdateStatus(status);
     }
 
-    private static void CheckAndHandleLevelUp(PlayerEntity entity, Stats stats)
+    private void CheckAndHandleLevelUp(PlayerEntity entity, Stats stats)
     {
         Debug.LogWarning("CheckAndHandleLevelUp");
         if (entity.Stats.Level != 0 && stats.Level > entity.Stats.Level)
@@ -123,7 +126,7 @@ public class PlayerSpawner : EntitySpawnStrategy<PlayerAppearance, PlayerStats, 
         }
     }
 
-    private static void UpdateStatsAndAppearance(PlayerEntity entity, PlayerStats stats,
+    private void UpdateStatsAndAppearance(PlayerEntity entity, PlayerStats stats,
         PlayerAppearance appearance, bool running)
     {
         Debug.LogWarning("UpdateStatsAndAppearance");
@@ -142,4 +145,5 @@ public class PlayerSpawner : EntitySpawnStrategy<PlayerAppearance, PlayerStats, 
         entity.EquipAllWeapons();
         entity.EquipAllArmors();
     }
+    #endregion
 }

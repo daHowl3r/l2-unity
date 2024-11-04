@@ -27,6 +27,7 @@ public class WorldSpawner : MonoBehaviour
 
     private NpcSpawner _npcSpawner;
     private PlayerSpawner _playerSpawner;
+    private UserSpawner _userSpawner;
 
     private static WorldSpawner _instance;
     public static WorldSpawner Instance { get { return _instance; } }
@@ -53,6 +54,7 @@ public class WorldSpawner : MonoBehaviour
 
         _playerSpawner = new PlayerSpawner(_eventProcessor);
         _npcSpawner = new NpcSpawner(_eventProcessor, _npcsContainer.transform, _monstersContainer.transform, _npcPlaceHolder, _monsterPlaceholder);
+        _userSpawner = new UserSpawner(_eventProcessor, _usersContainer.transform);
     }
 
     void OnDestroy()
@@ -356,91 +358,92 @@ public class WorldSpawner : MonoBehaviour
 
     public void OnReceiveUserInfo(NetworkIdentity identity, PlayerStatus status, Stats stats, PlayerAppearance appearance, bool running)
     {
-        if (!IsEntityPresent(identity.Id))
-        {
-            Debug.LogWarning("USER NOT PRESENT");
-            _eventProcessor.QueueEvent(() => SpawnUser(identity, status, stats, appearance, running));
-        }
-        else
-        {
-            Debug.LogWarning("USER PRESENT");
-            // Dont need to block thread
-            Task task = new Task(async () =>
-            {
-                var entity = await GetEntityAsync(identity.Id);
+        _userSpawner.OnReceiveEntityInfo(identity, status, stats, appearance, running);
+        // if (!IsEntityPresent(identity.Id))
+        // {
+        //     Debug.LogWarning("USER NOT PRESENT");
+        //     _eventProcessor.QueueEvent(() => SpawnUser(identity, status, stats, appearance, running));
+        // }
+        // else
+        // {
+        //     Debug.LogWarning("USER PRESENT");
+        //     // Dont need to block thread
+        //     Task task = new Task(async () =>
+        //     {
+        //         var entity = await GetEntityAsync(identity.Id);
 
-                if (entity != null)
-                {
-                    _eventProcessor.QueueEvent(() => UpdateUser(entity, identity, status, stats, appearance, running));
-                }
-            });
-            task.Start();
-        }
+        //         if (entity != null)
+        //         {
+        //             _eventProcessor.QueueEvent(() => UpdateUser(entity, identity, status, stats, appearance, running));
+        //         }
+        //     });
+        //     task.Start();
+        // }
     }
 
-    public void SpawnUser(NetworkIdentity identity, Status status, Stats stats, PlayerAppearance appearance, bool running)
-    {
-        Debug.Log("Spawn User");
-        identity.SetPosY(World.Instance.GetGroundHeight(identity.Position));
-        identity.EntityType = EntityType.User;
+    // public void SpawnUser(NetworkIdentity identity, Status status, Stats stats, PlayerAppearance appearance, bool running)
+    // {
+    //     Debug.Log("Spawn User");
+    //     identity.SetPosY(World.Instance.GetGroundHeight(identity.Position));
+    //     identity.EntityType = EntityType.User;
 
-        CharacterRace race = (CharacterRace)appearance.Race;
-        CharacterModelType raceId = CharacterModelTypeParser.ParseRace(race, appearance.Race, identity.IsMage);
+    //     CharacterRace race = (CharacterRace)appearance.Race;
+    //     CharacterModelType raceId = CharacterModelTypeParser.ParseRace(race, appearance.Race, identity.IsMage);
 
-        GameObject go = CharacterBuilder.Instance.BuildCharacterBase(raceId, appearance, identity.EntityType);
-        go.transform.position = identity.Position;
-        float rotation = VectorUtils.ConvertRotToUnity(identity.Heading);
-        go.transform.eulerAngles = new Vector3(transform.eulerAngles.x, rotation, transform.eulerAngles.z);
+    //     GameObject go = CharacterBuilder.Instance.BuildCharacterBase(raceId, appearance, identity.EntityType);
+    //     go.transform.position = identity.Position;
+    //     float rotation = VectorUtils.ConvertRotToUnity(identity.Heading);
+    //     go.transform.eulerAngles = new Vector3(transform.eulerAngles.x, rotation, transform.eulerAngles.z);
 
-        NetworkHumanoidEntity user = go.GetComponent<NetworkHumanoidEntity>();
+    //     NetworkHumanoidEntity user = go.GetComponent<NetworkHumanoidEntity>();
 
-        user.Status = status;
-        user.Identity = identity;
-        user.Appearance = appearance;
-        user.Stats = stats;
-        user.Race = race;
-        user.RaceId = raceId;
-        user.UpdateMoveType(running);
+    //     user.Status = status;
+    //     user.Identity = identity;
+    //     user.Appearance = appearance;
+    //     user.Stats = stats;
+    //     user.Race = race;
+    //     user.RaceId = raceId;
+    //     user.UpdateMoveType(running);
 
-        ((NetworkEntityReferenceHolder)user.ReferenceHolder).NetworkTransformReceive.enabled = true;
+    //     ((NetworkEntityReferenceHolder)user.ReferenceHolder).NetworkTransformReceive.enabled = true;
 
-        go.transform.name = identity.Name;
-        go.SetActive(true);
+    //     go.transform.name = identity.Name;
+    //     go.SetActive(true);
 
-        user.ReferenceHolder.AnimationController.Initialize();
-        user.ReferenceHolder.Gear.Initialize(user.Identity.Id, user.RaceId);
-        user.Initialize();
+    //     user.ReferenceHolder.AnimationController.Initialize();
+    //     user.ReferenceHolder.Gear.Initialize(user.Identity.Id, user.RaceId);
+    //     user.Initialize();
 
-        go.transform.SetParent(_usersContainer.transform);
+    //     go.transform.SetParent(_usersContainer.transform);
 
-        _players.TryAdd(identity.Id, user);
-        _objects.TryAdd(identity.Id, user);
-    }
+    //     _players.TryAdd(identity.Id, user);
+    //     _objects.TryAdd(identity.Id, user);
+    // }
 
-    public void UpdateUser(Entity entity, NetworkIdentity identity, PlayerStatus status, Stats stats, PlayerAppearance appearance, bool running)
-    {
-        entity.Identity.UpdateEntityPartial(identity);
-        ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(identity.Position);
+    // public void UpdateUser(Entity entity, NetworkIdentity identity, PlayerStatus status, Stats stats, PlayerAppearance appearance, bool running)
+    // {
+    //     entity.Identity.UpdateEntityPartial(identity);
+    //     ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive.SetNewPosition(identity.Position);
 
-        ((PlayerStatus)entity.Status).UpdateStatus(status);
+    //     ((PlayerStatus)entity.Status).UpdateStatus(status);
 
-        if (entity.Stats.Level != 0 && stats.Level > entity.Stats.Level)
-        {
-            Debug.LogWarning("Entity level up!");
-            WorldCombat.Instance.EntityCastSkill(entity, 2122);
-        }
+    //     if (entity.Stats.Level != 0 && stats.Level > entity.Stats.Level)
+    //     {
+    //         Debug.LogWarning("Entity level up!");
+    //         WorldCombat.Instance.EntityCastSkill(entity, 2122);
+    //     }
 
-        entity.Stats.UpdateStats(stats);
-        entity.Running = running;
-        ((PlayerAppearance)entity.Appearance).UpdateAppearance(appearance);
+    //     entity.Stats.UpdateStats(stats);
+    //     entity.Running = running;
+    //     ((PlayerAppearance)entity.Appearance).UpdateAppearance(appearance);
 
-        entity.UpdatePAtkSpeed(stats.PAtkSpd);
-        entity.UpdateMAtkSpeed(stats.MAtkSpd);
-        entity.UpdateWalkSpeed(stats.WalkSpeed);
-        entity.UpdateRunSpeed(stats.RunSpeed);
-        entity.EquipAllWeapons();
-        ((NetworkHumanoidEntity)entity).EquipAllArmors();
-    }
+    //     entity.UpdatePAtkSpeed(stats.PAtkSpd);
+    //     entity.UpdateMAtkSpeed(stats.MAtkSpd);
+    //     entity.UpdateWalkSpeed(stats.WalkSpeed);
+    //     entity.UpdateRunSpeed(stats.RunSpeed);
+    //     entity.EquipAllWeapons();
+    //     ((NetworkHumanoidEntity)entity).EquipAllArmors();
+    // }
 
     // public void OnReceiveNpcInfo(NetworkIdentity identity, NpcStatus status, Stats stats, Appearance appearance, bool running)
     // {

@@ -22,6 +22,7 @@ public class NpcSpawner : EntitySpawnStrategy<Appearance, Stats, NpcStatus>
         _monsterPlaceholder = monsterPlaceholder;
     }
 
+    #region Spawn
     protected override void SpawnEntity(NetworkIdentity identity, NpcStatus status,
         Stats stats, Appearance appearance, bool running)
     {
@@ -44,13 +45,6 @@ public class NpcSpawner : EntitySpawnStrategy<Appearance, Stats, NpcStatus>
         ConfigureNpcComponents(npc, identity, status, stats, appearance, npcgrp, npcName, running);
 
         AddEntity(identity, npc);
-    }
-
-    protected override void UpdateEntity(Entity entity, NetworkIdentity identity,
-        NpcStatus status, Stats stats, Appearance appearance, bool running)
-    {
-        Debug.LogWarning("[" + Thread.CurrentThread.ManagedThreadId + "] UPDATE ENTITY FUNC");
-        UpdateNpcComponents(entity, identity, status as NpcStatus, stats, appearance, running);
     }
 
     private GameObject CreateNpcGameObject(Npcgrp npcgrp, NetworkIdentity identity)
@@ -162,6 +156,21 @@ public class NpcSpawner : EntitySpawnStrategy<Appearance, Stats, NpcStatus>
         npc.Initialize();
     }
 
+    protected override void AddEntity(NetworkIdentity identity, Entity npc)
+    {
+        WorldSpawner.Instance.AddNpc(identity.Id, npc);
+        WorldSpawner.Instance.AddObject(identity.Id, npc);
+    }
+    #endregion
+
+    #region Update
+    protected override void UpdateEntity(Entity entity, NetworkIdentity identity,
+        NpcStatus status, Stats stats, Appearance appearance, bool running)
+    {
+        Debug.LogWarning("[" + Thread.CurrentThread.ManagedThreadId + "] UPDATE ENTITY FUNC");
+        UpdateNpcComponents(entity, identity, status, stats, appearance, running);
+    }
+
     private void UpdateNpcComponents(
         Entity entity,
         NetworkIdentity identity,
@@ -188,10 +197,5 @@ public class NpcSpawner : EntitySpawnStrategy<Appearance, Stats, NpcStatus>
         entity.UpdateRunSpeed(stats.RunSpeed);
         entity.EquipAllWeapons();
     }
-
-    protected override void AddEntity(NetworkIdentity identity, Entity npc)
-    {
-        WorldSpawner.Instance.AddNpc(identity.Id, npc);
-        WorldSpawner.Instance.AddObject(identity.Id, npc);
-    }
+    #endregion
 }

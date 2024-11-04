@@ -167,7 +167,6 @@ public class World : MonoBehaviour
         });
     }
 
-
     public Task ObjectStoppedMove(int id, Vector3 position, int heading)
     {
         return _worldSpawner.ExecuteWithEntityAsync(id, e =>

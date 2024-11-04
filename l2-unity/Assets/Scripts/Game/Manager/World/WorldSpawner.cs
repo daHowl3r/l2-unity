@@ -197,7 +197,15 @@ public class WorldSpawner : MonoBehaviour
     public async Task<Entity> GetEntityAsync(int id)
     {
         Entity entity;
-        if (!_objects.TryGetValue(id, out entity))
+        if (id == GameClient.Instance.CurrentPlayerId)
+        {
+            entity = PlayerEntity.Instance;
+            if (entity == null)
+            {
+                Debug.LogError("Player entity is null");
+            }
+        }
+        else if (!_objects.TryGetValue(id, out entity))
         {
             Debug.LogWarning($"GetEntityAsync - Entity {id} not found, retrying...");
         }

@@ -482,9 +482,6 @@ PrefabInstance:
       addedObject: {fileID: 406145051770247770}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 119c7f53190e6834899dc50d40497ea4, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8459454354862100934}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 119c7f53190e6834899dc50d40497ea4, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6232266328323461320}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 119c7f53190e6834899dc50d40497ea4, type: 3}
       insertIndex: -1
@@ -510,6 +507,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 119c7f53190e6834899dc50d40497ea4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7429210855861054680}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 119c7f53190e6834899dc50d40497ea4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1271091017202438010}
   m_SourcePrefab: {fileID: 100100000, guid: 119c7f53190e6834899dc50d40497ea4, type: 3}
 --- !u!4 &342640671227963933 stripped
 Transform:
@@ -543,22 +543,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8459454354862100934
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4953784905715130736}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b37216beee5d6a4897e9224d4eedbc1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _entityReferenceHolder: {fileID: 5319185895358655643}
-  _resetStateOnReceive: 0
-  _lastAnimationType: 0
-  _weaponAnim: 0
 --- !u!114 &6232266328323461320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -616,9 +600,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _direction: {x: 0, y: 0, z: 0}
+  _distanceToDestination: 0
   _speed: 0
   _destination: {x: 0, y: 0, z: 0}
+  _lastDestination: {x: 0, y: 0, z: 0}
   _gravity: 28
+  _moveSpeedMultiplier: 1
+  _stopAtRange: 0
+  _stopAtRangeDefault: 0.05
 --- !u!114 &8341392628561791156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -649,17 +638,22 @@ MonoBehaviour:
   _status:
     _hp: 0
     _mp: 0
+    _dead: 0
   _stats:
     _level: 0
     _runSpeed: 0
+    _moveSpeedMultiplier: 0
     _walkSpeed: 0
     _scaledRunSpeed: 0
     _scaledWalkSpeed: 0
+    _attackSpeedMultiplier: 0
+    _attackRange: 0
     _pAtkSpd: 0
     _mAtkSpd: 0
     _maxHp: 0
     _maxMp: 0
     _maxCp: 0
+    _karma: 0
   _appearance:
     _collisonHeight: 0
     _collisionRadius: 0
@@ -785,9 +779,10 @@ MonoBehaviour:
   _entity: {fileID: 8341392628561791156}
   _gear: {fileID: 3591634587347588127}
   _combat: {fileID: 2717183511516887576}
-  _animationController: {fileID: 8459454354862100934}
+  _animationController: {fileID: 1271091017202438010}
   _audioHandler: {fileID: 7429210855861054680}
   _animator: {fileID: 406145051770247770}
+  _clickArea: {fileID: 5021150889320141982}
   _networkTransformReceive: {fileID: 6232266328323461320}
   _networkCharacterControllerReceive: {fileID: 4939414340454241317}
 --- !u!114 &4560522507747747326
@@ -825,8 +820,8 @@ MonoBehaviour:
   _targetId: 0
   _target: {fileID: 0}
   _attackTarget: {fileID: 0}
-  _stopAutoAttackTime: 0
-  _startAutoAttackTime: 0
+  _combatTimestamp: 0
+  _attackStance: 0
 --- !u!114 &7429210855861054680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -879,6 +874,22 @@ MonoBehaviour:
     _lhand: 0
     _maxHp: 0
     _maxMp: 0
+--- !u!114 &1271091017202438010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4953784905715130736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f11c36874c9e74a4aabfa2b520cd1a12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _entityReferenceHolder: {fileID: 5319185895358655643}
+  _resetStateOnReceive: 0
+  _lastAnimationType: 0
+  _weaponAnim: 0
 --- !u!4 &5547643553892814995 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8898206202251522894, guid: 119c7f53190e6834899dc50d40497ea4, type: 3}

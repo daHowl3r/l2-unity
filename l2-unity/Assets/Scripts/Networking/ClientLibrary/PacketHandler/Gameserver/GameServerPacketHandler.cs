@@ -15,9 +15,9 @@ public class GameServerPacketHandler : ServerPacketHandler
 
         switch (packetType)
         {
-            case GameServerPacketType.Ping:
-                OnPingReceive();
-                break;
+            // case GameServerPacketType.Ping:
+            //     OnPingReceive();
+            //     break;
             case GameServerPacketType.VersionCheck:
                 OnKeyReceive(data);
                 break;
@@ -146,6 +146,9 @@ public class GameServerPacketHandler : ServerPacketHandler
                 break;
             case GameServerPacketType.MagicSkillUse:
                 OnMagicSkillUse(data);
+                break;
+            case GameServerPacketType.UserInfo:
+                OnUserInfoReceived(data);
                 break;
             default:
                 Debug.LogWarning($"Received unhandled packet with OPCode [{packetType}].");
@@ -342,6 +345,13 @@ public class GameServerPacketHandler : ServerPacketHandler
             Debug.LogError("Player info but id doesn't match!");
             // World.Instance.OnReceiveUserInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running);
         }
+    }
+
+    private void OnUserInfoReceived(byte[] data)
+    {
+        UserInfoPacket packet = new UserInfoPacket(data);
+
+        WorldSpawner.Instance.OnReceiveUserInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running);
     }
 
     private void OnUpdatePosition(byte[] data)

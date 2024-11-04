@@ -737,9 +737,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _direction: {x: 0, y: 0, z: 0}
+  _distanceToDestination: 0
   _speed: 0
   _destination: {x: 0, y: 0, z: 0}
+  _lastDestination: {x: 0, y: 0, z: 0}
   _gravity: 28
+  _moveSpeedMultiplier: 1
+  _stopAtRange: 0
+  _stopAtRangeDefault: 0.05
 --- !u!114 &3436038088666502123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -770,17 +775,22 @@ MonoBehaviour:
   _status:
     _hp: 0
     _mp: 0
+    _dead: 0
   _stats:
     _level: 0
     _runSpeed: 0
+    _moveSpeedMultiplier: 0
     _walkSpeed: 0
     _scaledRunSpeed: 0
     _scaledWalkSpeed: 0
+    _attackSpeedMultiplier: 0
+    _attackRange: 0
     _pAtkSpd: 0
     _mAtkSpd: 0
     _maxHp: 0
     _maxMp: 0
     _maxCp: 0
+    _karma: 0
   _appearance:
     _collisonHeight: 0
     _collisionRadius: 0
@@ -926,8 +936,8 @@ MonoBehaviour:
   _targetId: 0
   _target: {fileID: 0}
   _attackTarget: {fileID: 0}
-  _stopAutoAttackTime: 0
-  _startAutoAttackTime: 0
+  _combatTimestamp: 0
+  _attackStance: 0
 --- !u!114 &3338246304494464234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -946,6 +956,7 @@ MonoBehaviour:
   _animationController: {fileID: 7920491900291778529}
   _audioHandler: {fileID: 440925854372505582}
   _animator: {fileID: 913855636754541505}
+  _clickArea: {fileID: 8786095581596520369}
   _networkTransformReceive: {fileID: 1857529476798599586}
   _networkCharacterControllerReceive: {fileID: 1463889701934394372}
 --- !u!114 &440925854372505582

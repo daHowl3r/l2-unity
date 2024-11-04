@@ -29,7 +29,6 @@ public class PlayerStats : Stats
     [SerializeField] private byte _men;
     [SerializeField] private byte _int;
 
-    [SerializeField] private int _karma;
     [SerializeField] private int _pvpKills;
     [SerializeField] private int _pkKills;
 
@@ -57,7 +56,6 @@ public class PlayerStats : Stats
     public byte Men { get { return _men; } set { _men = value; } }
     public byte Int { get { return _int; } set { _int = value; } }
 
-    public int Karma { get { return _karma; } set { _karma = value; } }
     public int PvpKills { get { return _pvpKills; } set { _pvpKills = value; } }
     public int PkKills { get { return _pkKills; } set { _pkKills = value; } }
 
@@ -97,7 +95,6 @@ public class PlayerStats : Stats
         _men = stats.Men;
         _int = stats.Int;
 
-        _karma = stats.Karma;
         _pvpKills = stats.PvpKills;
         _pkKills = stats.PkKills;
     }

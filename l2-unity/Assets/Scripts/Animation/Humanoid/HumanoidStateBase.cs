@@ -7,7 +7,7 @@ public class HumanoidStateBase : StateMachineBehaviour
 
     protected HumanoidAudioHandler AudioHandler { get { return (HumanoidAudioHandler)_referenceHolder.AudioHandler; } }
     protected NetworkCharacterControllerReceive CharacterController { get { return (NetworkCharacterControllerReceive)_referenceHolder.NetworkCharacterControllerReceive; } }
-    protected NetworkAnimationController AnimationController { get { return (NetworkAnimationController)_referenceHolder.AnimationController; } }
+    protected HumanoidAnimationController AnimationController { get { return (HumanoidAnimationController)_referenceHolder.AnimationController; } }
     protected Entity Entity { get { return _referenceHolder.Entity; } }
 
     protected bool _cancelAction = false;
@@ -22,7 +22,11 @@ public class HumanoidStateBase : StateMachineBehaviour
             if (_referenceHolder == null)
             {
                 entityTransform = animator.transform.parent.parent;
+                Debug.LogWarning("==========================");
+                Debug.LogWarning(entityTransform);
                 _referenceHolder = entityTransform.GetComponent<NetworkEntityReferenceHolder>();
+                Debug.LogWarning(_referenceHolder);
+                Debug.LogWarning(AnimationController);
             }
         }
     }

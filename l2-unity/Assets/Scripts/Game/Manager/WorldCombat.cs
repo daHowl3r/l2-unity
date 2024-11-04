@@ -265,6 +265,7 @@ public class WorldCombat : MonoBehaviour
             }
             else
             {
+                // NetworkTransformShare.Instance.SharePosition();
                 PlayerTransformReceive.Instance.SetNewPosition(attackerPosition);
             }
 

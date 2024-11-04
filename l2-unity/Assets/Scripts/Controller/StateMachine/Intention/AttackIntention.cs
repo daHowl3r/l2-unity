@@ -34,7 +34,7 @@ public class AttackIntention : IntentionBase
         float attackRange = WorldCombat.Instance.GetRealAttackRange(PlayerEntity.Instance, TargetManager.Instance.AttackTarget.Data.Entity);
 
         float distance = Vector3.Distance(PlayerEntity.Instance.transform.position, targetPos);
-        Debug.Log($"target: {target} distance: {distance} range: {attackRange}");
+        // Debug.Log($"target: {target} distance: {distance} range: {attackRange}");
 
         // Is close enough? Is player already waiting for server reply?
         if (distance <= attackRange * 0.95f && !_stateMachine.WaitingForServerReply)

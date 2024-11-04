@@ -54,7 +54,7 @@ public class NetworkTransformShare : MonoBehaviour
     // Share position every 0.25f and based on delay
     public bool ShouldSharePosition()
     {
-        if (Vector3.Distance(transform.position, _lastPos) > .25f || Time.time - _lastSharedPosTime >= 10f)
+        if (Vector3.Distance(transform.position, _lastPos) >= 1f || Time.time - _lastSharedPosTime >= 10f)
         {
             return true;
         }

@@ -219,6 +219,8 @@ public class World : MonoBehaviour
         CharacterInfoWindow.Instance.UpdateValues();
         InventoryWindow.Instance.RefreshWeight();
         GameManager.Instance.OnPlayerInfoReceive();
+
+        NetworkTransformShare.Instance.SharePosition();
     }
 
     public void OnReceiveUserInfo(NetworkIdentity identity, PlayerStatus status, Stats stats, PlayerAppearance appearance, bool running)
@@ -510,7 +512,6 @@ public class World : MonoBehaviour
         });
     }
 
-
     public Task NpcHtmlReceived(int objectId, string html, int itemId)
     {
         _eventProcessor.QueueEvent(() => NpcHtmlWindow.Instance.RefreshContent(objectId, html, itemId));
@@ -589,9 +590,12 @@ public class World : MonoBehaviour
 
             if (id == GameClient.Instance.CurrentPlayerId)
             {
-                Debug.LogWarning("Should not happen");
+                // Debug.LogWarning("Should not happen");
                 PlayerTransformReceive.Instance.SetNewPosition(position);
-                NetworkCharacterControllerShare.Instance.Heading = heading;
+                // NetworkCharacterControllerShare.Instance.Heading = heading;
+
+                //Verify position on server
+                // NetworkTransformShare.Instance.SharePosition();
             }
             else
             {
@@ -610,6 +614,9 @@ public class World : MonoBehaviour
             if (owner != GameClient.Instance.CurrentPlayerId)
             {
                 ((NetworkEntityReferenceHolder)e.ReferenceHolder).NetworkTransformReceive.SetNewPosition(entityPosition);
+
+                //Verify position on server
+                // NetworkTransformShare.Instance.SharePosition();
             }
             else
             {

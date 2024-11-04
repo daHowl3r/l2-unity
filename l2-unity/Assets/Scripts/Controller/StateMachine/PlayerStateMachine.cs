@@ -15,6 +15,8 @@ public class PlayerStateMachine : MonoBehaviour
     [SerializeField] private bool _waitingForServerReply;
 
     public bool WaitingForServerReply { get { return _waitingForServerReply; } }
+    public bool LogsEnabled { get { return _enableLogs; } }
+
     private StateBase _stateInstance;
     private IntentionBase _intentionInstance;
 

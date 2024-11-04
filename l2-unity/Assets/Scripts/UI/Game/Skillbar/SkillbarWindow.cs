@@ -268,7 +268,7 @@ public class SkillbarWindow : L2PopupWindow
             {
                 if (skillbar.Page == shortcut.Page)
                 {
-                    Debug.Log($"Add shortcut at page {shortcut.Page} in slot {shortcut.Slot}.");
+                    // Debug.Log($"Add shortcut at page {shortcut.Page} in slot {shortcut.Slot}.");
                     skillbar.UpdateShortcut(shortcut, shortcut.Slot);
                 }
             });

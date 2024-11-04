@@ -148,10 +148,5 @@ public class SceneLoader : MonoBehaviour
         {
             GameManager.Instance.OnWorldSceneLoaded();
         }
-        else
-        {
-            Debug.Log("Spawn player");
-            World.Instance.SpawnPlayerOfflineMode();
-        }
     }
 }

@@ -7,6 +7,8 @@ using static StatusUpdatePacket;
 public class WorldCombat : MonoBehaviour
 {
     [SerializeField] private List<Hit> _hits;
+    private EventProcessor _eventProcessor;
+    private WorldSpawner _worldSpawner;
 
     private static WorldCombat _instance;
     public static WorldCombat Instance { get { return _instance; } }
@@ -23,6 +25,8 @@ public class WorldCombat : MonoBehaviour
         }
 
         _hits = new List<Hit>();
+        _eventProcessor = EventProcessor.Instance;
+        _worldSpawner = GetComponent<WorldSpawner>();
     }
 
     void OnDestroy()
@@ -102,7 +106,7 @@ public class WorldCombat : MonoBehaviour
 
     public Task OnMagicSkillUse(MagicSkillUsePacket packet)
     {
-        return World.Instance.ExecuteWithEntitiesAsync(packet.ObjectId, packet.TargetId, (targeter, targeted) =>
+        return _worldSpawner.ExecuteWithEntitiesAsync(packet.ObjectId, packet.TargetId, (targeter, targeted) =>
         {
             EntityCastSkill(targeter, packet.SkillId);
         });
@@ -158,7 +162,7 @@ public class WorldCombat : MonoBehaviour
 
     public Task UpdateEntityTarget(int id, int targetId, Vector3 position)
     {
-        return World.Instance.ExecuteWithEntitiesAsync(id, targetId, (targeter, targeted) =>
+        return _worldSpawner.ExecuteWithEntitiesAsync(id, targetId, (targeter, targeted) =>
         {
             ((NetworkEntityReferenceHolder)targeter.ReferenceHolder).NetworkTransformReceive.SetNewPosition(position);
             targeter.Combat.TargetId = targetId;
@@ -168,7 +172,7 @@ public class WorldCombat : MonoBehaviour
 
     public Task UpdateMyTarget(int id, int targetId)
     {
-        return World.Instance.ExecuteWithEntitiesAsync(id, targetId, (targeter, targeted) =>
+        return _worldSpawner.ExecuteWithEntitiesAsync(id, targetId, (targeter, targeted) =>
         {
             targeter.Combat.TargetId = targetId;
             targeter.Combat.Target = targeted;
@@ -177,7 +181,7 @@ public class WorldCombat : MonoBehaviour
 
     public Task UnsetEntityTarget(int id)
     {
-        return World.Instance.ExecuteWithEntityAsync(id, e =>
+        return _worldSpawner.ExecuteWithEntityAsync(id, e =>
         {
             e.Combat.TargetId = -1;
             e.Combat.Target = null;
@@ -186,7 +190,7 @@ public class WorldCombat : MonoBehaviour
 
     public Task StatusUpdate(int id, List<StatusUpdatePacket.Attribute> attributes)
     {
-        return World.Instance.ExecuteWithEntityAsync(id, e =>
+        return _worldSpawner.ExecuteWithEntityAsync(id, e =>
         {
             StatusUpdate(e, attributes);
             if (e == PlayerEntity.Instance)
@@ -199,7 +203,7 @@ public class WorldCombat : MonoBehaviour
 
     public Task EntityAttackStanceStart(int id)
     {
-        return World.Instance.ExecuteWithEntityAsync(id, e =>
+        return _worldSpawner.ExecuteWithEntityAsync(id, e =>
         {
             // EntityStartAutoAttacking(e);
         });
@@ -207,7 +211,7 @@ public class WorldCombat : MonoBehaviour
 
     public Task EntityAttackStanceEnd(int id)
     {
-        return World.Instance.ExecuteWithEntityAsync(id, e =>
+        return _worldSpawner.ExecuteWithEntityAsync(id, e =>
         {
             // EntityStopAutoAttacking(e);
         });
@@ -215,7 +219,7 @@ public class WorldCombat : MonoBehaviour
 
     public Task EntityDied(int id, bool toVillageAllowed, bool toClanHallAllowed, bool toCastleAllowed, bool toSiegeHQAllowed, bool sweepable, bool fixedResAllowed)
     {
-        return World.Instance.ExecuteWithEntityAsync(id, e =>
+        return _worldSpawner.ExecuteWithEntityAsync(id, e =>
         {
             if (id == GameClient.Instance.CurrentPlayerId)
             {
@@ -229,7 +233,7 @@ public class WorldCombat : MonoBehaviour
 
     public Task EntityRevived(int id)
     {
-        return World.Instance.ExecuteWithEntityAsync(id, e =>
+        return _worldSpawner.ExecuteWithEntityAsync(id, e =>
         {
             e.ReferenceHolder.Combat.OnRevive();
         });
@@ -237,10 +241,12 @@ public class WorldCombat : MonoBehaviour
 
     public Task EntityAttacks(Vector3 attackerPosition, int sender, Hit hit)
     {
-        return World.Instance.ExecuteWithEntitiesAsync(sender, hit.TargetId, (senderEntity, targetEntity) =>
+        Debug.LogWarning("ENTITY ATTACK?");
+        return _worldSpawner.ExecuteWithEntitiesAsync(sender, hit.TargetId, (senderEntity, targetEntity) =>
         {
             //TODO: Handle AOE
 
+            Debug.LogWarning("ENTITY ATTACK SUCCESS");
             hit.Attacker = senderEntity;
             hit.Target = targetEntity;
             hit.HitTime = Time.time + senderEntity.AnimationController.PAtkSpd / 2f / 1000f;
@@ -401,6 +407,6 @@ public class WorldCombat : MonoBehaviour
 
     public void ExAutoSoulshotReceived(int itemId, bool enable)
     {
-        EventProcessor.Instance.QueueEvent(() => PlayerShortcuts.Instance.ToggleShortcutItem(itemId, enable));
+        _eventProcessor.QueueEvent(() => PlayerShortcuts.Instance.ToggleShortcutItem(itemId, enable));
     }
 }

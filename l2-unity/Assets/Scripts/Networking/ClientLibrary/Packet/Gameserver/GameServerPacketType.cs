@@ -2,7 +2,7 @@ public enum GameServerPacketType : int
 {
     VersionCheck = 0x00,
     ObjectMoveTo = 0x01,
-    UserInfo = 0x04,
+    PlayerInfo = 0x04,
     Attack = 0x05,
     DoDie = 0x06,
     Revive = 0x07,

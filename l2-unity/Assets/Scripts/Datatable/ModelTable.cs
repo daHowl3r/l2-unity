@@ -577,7 +577,7 @@ public class ModelTable
     {
         face = (byte)Mathf.Min(face, FACE_COUNT - 1);
 
-        Debug.Log($"Loading Face[{face}] Race:{raceId}");
+        // Debug.Log($"Loading Face[{face}] Race:{raceId}");
         GameObject prefab = _faceModels[(byte)raceId];
         if (prefab == null)
         {

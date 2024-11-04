@@ -34,7 +34,7 @@ public class GameServerPacketHandler : ServerPacketHandler
                 OnSystemMessageReceive(data);
                 break;
             case GameServerPacketType.CharSelected:
-                OnPlayerInfoReceive(data);
+                OnInitialPlayerInfoReceived(data);
                 break;
             case GameServerPacketType.ObjectPosition:
                 OnUpdatePosition(data);
@@ -42,9 +42,9 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.RemoveObject:
                 OnRemoveObject(data);
                 break;
-            case GameServerPacketType.ObjectRotation:
-                OnUpdateRotation(data);
-                break;
+            // case GameServerPacketType.ObjectRotation:
+            //     OnUpdateRotation(data);
+            //     break;
             // case GameServerPacketType.ObjectAnimation:
             //     OnUpdateAnimation(data);
             //     break;
@@ -57,8 +57,8 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.ObjectMoveTo:
                 OnObjectMoveTo(data);
                 break;
-            case GameServerPacketType.UserInfo:
-                OnUserInfoReceive(data);
+            case GameServerPacketType.PlayerInfo:
+                OnPlayerInfoReceive(data);
                 break;
             case GameServerPacketType.ObjectMoveDirection:
                 OnUpdateMoveDirection(data);
@@ -314,7 +314,7 @@ public class GameServerPacketHandler : ServerPacketHandler
 
     }
 
-    private void OnPlayerInfoReceive(byte[] data)
+    private void OnInitialPlayerInfoReceived(byte[] data)
     {
         CharSelectedPacket packet = new CharSelectedPacket(data);
         if (GameManager.Instance.GameState != GameState.IN_GAME)
@@ -325,34 +325,22 @@ public class GameServerPacketHandler : ServerPacketHandler
                 GameManager.Instance.OnCharacterSelect();
             });
         }
-        // else
-        // {
-        //     _eventProcessor.QueueEvent(() =>
-        //     {
-        //         GameClient.Instance.PlayerInfo = packet.PacketPlayerInfo;
-        //     });
-        //     World.Instance.OnReceivePlayerInfo(
-        //         packet.PacketPlayerInfo.Identity,
-        //         packet.PacketPlayerInfo.Status,
-        //         packet.PacketPlayerInfo.Stats,
-        //         packet.PacketPlayerInfo.Appearance,
-        //         packet.PacketPlayerInfo.Running);
-        // }
     }
 
-    private void OnUserInfoReceive(byte[] data)
+    private void OnPlayerInfoReceive(byte[] data)
     {
-        UserInfoPacket packet = new UserInfoPacket(data);
+        PlayerInfoPacket packet = new PlayerInfoPacket(data);
         if (packet.Identity.Owned)
         {
-            World.Instance.OnReceivePlayerInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running);
+            WorldSpawner.Instance.OnReceivePlayerInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running);
 
             // Additional player information received, only now is the right time to show the UI/World to avoid visual bugs
             GameManager.Instance.OnPlayerInfoReceive();
         }
         else
         {
-            World.Instance.OnReceiveUserInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running);
+            Debug.LogError("Player info but id doesn't match!");
+            // World.Instance.OnReceiveUserInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running);
         }
     }
 
@@ -376,16 +364,16 @@ public class GameServerPacketHandler : ServerPacketHandler
     private void OnRemoveObject(byte[] data)
     {
         RemoveObjectPacket packet = new RemoveObjectPacket(data);
-        World.Instance.RemoveObject(packet.Id);
+        WorldSpawner.Instance.RemoveObject(packet.Id);
     }
 
-    private void OnUpdateRotation(byte[] data)
-    {
-        UpdateRotationPacket packet = new UpdateRotationPacket(data);
-        int id = packet.Id;
-        float angle = packet.Angle;
-        World.Instance.UpdateObjectRotation(id, angle);
-    }
+    // private void OnUpdateRotation(byte[] data)
+    // {
+    //     UpdateRotationPacket packet = new UpdateRotationPacket(data);
+    //     int id = packet.Id;
+    //     float angle = packet.Angle;
+    //     World.Instance.UpdateObjectRotation(id, angle);
+    // }
 
     // private void OnUpdateAnimation(byte[] data)
     // {
@@ -416,7 +404,7 @@ public class GameServerPacketHandler : ServerPacketHandler
     private void OnNpcInfoReceive(byte[] data)
     {
         NpcInfoPacket packet = new NpcInfoPacket(data);
-        _eventProcessor.QueueEvent(() => World.Instance.OnReceiveNpcInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running));
+        _eventProcessor.QueueEvent(() => WorldSpawner.Instance.OnReceiveNpcInfo(packet.Identity, packet.Status, packet.Stats, packet.Appearance, packet.Running));
     }
 
     private void OnObjectMoveTo(byte[] data)

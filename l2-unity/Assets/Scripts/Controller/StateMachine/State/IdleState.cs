@@ -9,11 +9,11 @@ public class IdleState : StateBase
     public override void Update()
     {
         // Does the player want to move ?
-        if (InputManager.Instance.Move || PlayerController.Instance.RunningToDestination && !TargetManager.Instance.HasAttackTarget())
+        if (InputManager.Instance.Move || PlayerController.Instance != null && PlayerController.Instance.RunningToDestination && !TargetManager.Instance.HasAttackTarget())
         {
             _stateMachine.ChangeIntention(Intention.INTENTION_MOVE_TO);
         }
-        else if (PlayerController.Instance.RunningToDestination && TargetManager.Instance.HasAttackTarget())
+        else if (PlayerController.Instance != null && PlayerController.Instance.RunningToDestination && TargetManager.Instance.HasAttackTarget())
         {
             _stateMachine.ChangeIntention(Intention.INTENTION_FOLLOW);
         }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class UserInfoPacket : ServerPacket
+public class PlayerInfoPacket : ServerPacket
 {
     public NetworkIdentity Identity { get; private set; }
     public PlayerStatus Status { get; private set; }
@@ -9,7 +9,7 @@ public class UserInfoPacket : ServerPacket
     public PlayerAppearance Appearance { get; private set; }
     public bool Running { get; set; }
 
-    public UserInfoPacket(byte[] d) : base(d)
+    public PlayerInfoPacket(byte[] d) : base(d)
     {
         Identity = new NetworkIdentity();
         Status = new PlayerStatus();

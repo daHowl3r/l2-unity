@@ -209,7 +209,7 @@ public class StatusWindow : L2Window
 
         if (_CPBarBG != null && _CPBar != null)
         {
-            float cpRatio = (float)status.Cp / stats.MaxCp;
+            float cpRatio = Mathf.Min(1, (float)status.Cp / stats.MaxCp);
             float bgWidth = _CPBarBG.resolvedStyle.width;
             float barWidth = bgWidth * cpRatio;
             _CPBar.style.width = barWidth;
@@ -217,7 +217,7 @@ public class StatusWindow : L2Window
 
         if (_HPBarBG != null && _HPBar != null)
         {
-            float hpRatio = (float)status.Hp / stats.MaxHp;
+            float hpRatio = Mathf.Min(1, (float)status.Hp / stats.MaxHp);
             float bgWidth = _HPBarBG.resolvedStyle.width;
             float barWidth = bgWidth * hpRatio;
             _HPBar.style.width = barWidth;
@@ -225,7 +225,7 @@ public class StatusWindow : L2Window
 
         if (_MPBarBG != null && _MPBar != null)
         {
-            float mpRatio = (float)status.Mp / stats.MaxMp;
+            float mpRatio = Mathf.Min(1, (float)status.Mp / stats.MaxMp);
             float bgWidth = _MPBarBG.resolvedStyle.width;
             float barWidth = bgWidth * mpRatio;
             _MPBar.style.width = barWidth;
@@ -234,7 +234,7 @@ public class StatusWindow : L2Window
         if (_expBarBG != null && _expBar != null)
         {
             float bgWidth = _expBarBG.resolvedStyle.width;
-            float expRatio = stats.ExpPercent;
+            float expRatio = Mathf.Min(1, stats.ExpPercent);
             float barWidth = bgWidth * expRatio;
             _expBar.style.width = barWidth;
         }

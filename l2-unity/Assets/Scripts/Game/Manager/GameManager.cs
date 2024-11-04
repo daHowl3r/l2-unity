@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     private bool _gameReady = false;
     [SerializeField] private bool _autoLogin = false;
     [SerializeField] private Camera _loadingCamera;
+    [SerializeField] private bool _loading;
 
     public bool AutoLogin { get { return _autoLogin; } }
 
@@ -113,7 +114,7 @@ public class GameManager : MonoBehaviour
 
         WorldClock.Instance.SynchronizeClock(playerInfo.CurrentGameTime);
 
-        World.Instance.OnReceivePlayerInfo(playerInfo.Identity, playerInfo.Status, playerInfo.Stats, playerInfo.Appearance, playerInfo.Running);
+        WorldSpawner.Instance.OnReceivePlayerInfo(playerInfo.Identity, playerInfo.Status, playerInfo.Stats, playerInfo.Appearance, playerInfo.Running);
 
         PlayerStateMachine.Instance.enabled = true;
 
@@ -123,7 +124,10 @@ public class GameManager : MonoBehaviour
     public void OnPlayerInfoReceive()
     {
         // Add a small delay to avoid visual bugs
-        StartCoroutine(StopLoading());
+        if (_loading)
+        {
+            StartCoroutine(StopLoading());
+        }
     }
 
     public void OnLoginServerConnected()
@@ -290,6 +294,8 @@ public class GameManager : MonoBehaviour
 
     public void StartLoading()
     {
+        _loading = true;
+
         _loadingCamera.enabled = true;
         if (L2GameUI.Instance != null)
         {
@@ -304,6 +310,8 @@ public class GameManager : MonoBehaviour
     public IEnumerator StopLoading()
     {
         yield return new WaitForSeconds(0.15f);
+
+        _loading = false;
 
         _loadingCamera.enabled = false;
         if (L2GameUI.Instance != null)

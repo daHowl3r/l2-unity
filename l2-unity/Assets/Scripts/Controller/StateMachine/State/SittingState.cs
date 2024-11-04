@@ -13,6 +13,9 @@ public class SittingState : StateBase
             case Event.DEAD:
                 _stateMachine.ChangeState(PlayerState.DEAD);
                 break;
+            case Event.ACTION_ALLOWED:
+                _stateMachine.ChangeState(PlayerState.STANDING);
+                break;
         }
     }
 

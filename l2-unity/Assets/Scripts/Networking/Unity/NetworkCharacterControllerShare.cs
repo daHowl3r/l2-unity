@@ -44,7 +44,11 @@ public class NetworkCharacterControllerShare : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 newDirection = PlayerController.Instance.MoveDirection.normalized;
+        Vector3 newDirection = Vector3.zero;
+        if (PlayerController.Instance.IsMoving())
+        {
+            newDirection = PlayerController.Instance.MoveDirection.normalized;
+        }
         long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         if (ShouldShareMoveDirection(newDirection, now))
         {

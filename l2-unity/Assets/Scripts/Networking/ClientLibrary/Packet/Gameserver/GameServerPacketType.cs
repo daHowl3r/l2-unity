@@ -19,6 +19,7 @@ public enum GameServerPacketType : int
     CharCreateFail = 0x1a,
     InventoryItemList = 0x1b,
     ActionFailed = 0x25,
+    ServerClose = 0x26,
     TeleportToLocation = 0x28,
     EntityTargetSet = 0x29,
     EntityTargetUnset = 0x2a,
@@ -35,6 +36,7 @@ public enum GameServerPacketType : int
     RestartReponse = 0x5F,
     ValidateLocation = 0x61,
     SystemMessage = 0x64,
+    LeaveWorld = 0x7e,
     MyTargetSet = 0xA6,
     ExAutoSoulshot = 0xFE,
 
@@ -46,8 +48,6 @@ public enum GameServerPacketType : int
     ObjectAnimation = 0xFFA,
     ObjectMoveDirection = 0xFFF,
     GameTime = 0xFD0,
-    ServerClose = 0xFD5,
-    LeaveWorld = 0xFDA,
 
     SocialAction = 0xFDE,
 

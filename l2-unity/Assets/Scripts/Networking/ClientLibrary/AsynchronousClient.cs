@@ -47,7 +47,11 @@ public class AsynchronousClient
     {
         IPHostEntry ipHostInfo = Dns.GetHostEntry(_ipAddress);
         IPAddress ipAddress = ipHostInfo.AddressList[0];
-        _socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+        _socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp)
+        {
+            ReceiveTimeout = 5000,
+            SendTimeout = 5000
+        };
 
         if (_initPacketEnabled)
         {
@@ -91,6 +95,17 @@ public class AsynchronousClient
 
         EventProcessor.Instance.QueueEvent(() => _client.OnDisconnect());
     }
+
+    public bool IsConnected()
+    {
+        if (_socket == null || !_socket.Connected)
+            return false;
+
+        // Poll the socket to check for connectivity
+        bool isDisconnected = _socket.Poll(1000, SelectMode.SelectRead) && _socket.Available == 0;
+        return !isDisconnected;
+    }
+
 
     private void ClientCleanup()
     {

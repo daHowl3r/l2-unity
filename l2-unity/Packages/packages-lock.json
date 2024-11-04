@@ -17,7 +17,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collab-proxy": {
-      "version": "2.4.4",
+      "version": "2.5.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -29,8 +29,8 @@
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.8.13",
-        "com.unity.nuget.mono-cecil": "1.11.4",
         "com.unity.test-framework": "1.4.3",
+        "com.unity.nuget.mono-cecil": "1.11.4",
         "com.unity.test-framework.performance": "3.0.3"
       },
       "url": "https://packages.unity.com"
@@ -81,7 +81,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.inputsystem": {
-      "version": "1.9.0",
+      "version": "1.11.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -97,7 +97,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.memoryprofiler": {
-      "version": "1.1.0",
+      "version": "1.1.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -120,14 +120,14 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.probuilder": {
-      "version": "6.0.1",
+      "version": "6.0.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.shadergraph": "17.0.2",
-        "com.unity.settings-manager": "1.0.3",
+        "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.physics": "1.0.0",
-        "com.unity.modules.imgui": "1.0.0"
+        "com.unity.settings-manager": "1.0.3"
       },
       "url": "https://packages.unity.com"
     },
@@ -233,9 +233,9 @@
       "depth": 0,
       "source": "registry",
       "dependencies": {
+        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.director": "1.0.0",
         "com.unity.modules.animation": "1.0.0",
-        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
       },
       "url": "https://packages.unity.com"
@@ -248,13 +248,6 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
       }
-    },
-    "com.whinarn.unitymeshsimplifier": {
-      "version": "https://github.com/Whinarn/UnityMeshSimplifier.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "d741912bfeaad8da4fe0f258f4f3eefe1fe7b3f3"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",

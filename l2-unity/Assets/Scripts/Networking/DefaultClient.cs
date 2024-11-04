@@ -14,6 +14,7 @@ public abstract class DefaultClient : MonoBehaviour
     [SerializeField] protected int _sessionKey1;
     [SerializeField] protected int _sessionKey2;
     [SerializeField] protected int _ping;
+    [SerializeField] protected float _lastSocketPoll;
 
     private bool _connecting = false;
     public bool LogReceivedPackets { get { return _logReceivedPackets; } }
@@ -53,6 +54,19 @@ public abstract class DefaultClient : MonoBehaviour
             _connecting = false;
 
             EventProcessor.Instance.QueueEvent(() => OnConnectionSuccess());
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (_connected && Time.time - _lastSocketPoll >= 5f)
+        {
+            _lastSocketPoll = Time.time;
+
+            if (!_client.IsConnected())
+            {
+                Disconnect();
+            }
         }
     }
 

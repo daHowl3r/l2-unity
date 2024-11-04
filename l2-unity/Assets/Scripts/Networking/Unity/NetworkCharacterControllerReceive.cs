@@ -57,7 +57,12 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
 
         if (direction.x != 0 || direction.z != 0)
         {
+            _networkTransformReceive.PausePositionSync();
             _networkTransformReceive.SetFinalRotation(VectorUtils.CalculateMoveDirectionAngle(direction.x, direction.z));
+        }
+        else
+        {
+            _networkTransformReceive.ResumePositionSync();
         }
     }
 

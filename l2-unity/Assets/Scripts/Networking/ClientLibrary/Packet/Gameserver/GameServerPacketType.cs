@@ -39,6 +39,7 @@ public enum GameServerPacketType : int
     SystemMessage = 0x64,
     LeaveWorld = 0x7e,
     MyTargetSet = 0xA6,
+    ObjectMoveDirection = 0xC6,
     ExAutoSoulshot = 0xFE,
 
 
@@ -47,7 +48,6 @@ public enum GameServerPacketType : int
     ObjectPosition = 0xFF7,
     ObjectRotation = 0xFF9,
     ObjectAnimation = 0xFFA,
-    ObjectMoveDirection = 0xFFF,
     GameTime = 0xFD0,
 
     SocialAction = 0xFDE,

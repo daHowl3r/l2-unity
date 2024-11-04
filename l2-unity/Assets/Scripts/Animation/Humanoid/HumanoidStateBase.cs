@@ -22,11 +22,7 @@ public class HumanoidStateBase : StateMachineBehaviour
             if (_referenceHolder == null)
             {
                 entityTransform = animator.transform.parent.parent;
-                Debug.LogWarning("==========================");
-                Debug.LogWarning(entityTransform);
                 _referenceHolder = entityTransform.GetComponent<NetworkEntityReferenceHolder>();
-                Debug.LogWarning(_referenceHolder);
-                Debug.LogWarning(AnimationController);
             }
         }
     }

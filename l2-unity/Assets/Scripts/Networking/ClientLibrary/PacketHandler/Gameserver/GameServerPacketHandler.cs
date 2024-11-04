@@ -426,7 +426,7 @@ public class GameServerPacketHandler : ServerPacketHandler
     private void OnUpdateMoveDirection(byte[] data)
     {
         UpdateMoveDirectionPacket packet = new UpdateMoveDirectionPacket(data);
-        World.Instance.UpdateObjectMoveDirection(packet.Id, packet.Speed, packet.Direction);
+        World.Instance.UpdateObjectMoveDirection(packet.Id, packet.Position, packet.Direction);
     }
 
     private void OnEntityTargetSet(byte[] data)

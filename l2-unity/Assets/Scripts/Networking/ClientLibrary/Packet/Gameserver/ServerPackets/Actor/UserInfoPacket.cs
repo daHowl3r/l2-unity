@@ -11,7 +11,7 @@ public class UserInfoPacket : ServerPacket
     public bool Sitting { get; set; }
     public bool InCombat { get; set; }
     public bool AlikeDead { get; set; }
-    public bool Visible { get; set; }
+    public bool Invisible { get; set; }
 
     public UserInfoPacket(byte[] d) : base(d)
     {
@@ -64,12 +64,11 @@ public class UserInfoPacket : ServerPacket
             ReadI();
             ReadI();
 
-
             ReadI(); // pvp flag
             Stats.Karma = ReadI(); // karma
 
-            Stats.PAtkSpd = ReadI();
             Stats.MAtkSpd = ReadI();
+            Stats.PAtkSpd = ReadI();
 
             ReadI(); // pvp flag
             Stats.Karma = ReadI(); // karma
@@ -102,11 +101,11 @@ public class UserInfoPacket : ServerPacket
 
             ReadI();
 
-            Sitting = ReadB() == 1;
+            Sitting = ReadB() == 0;
             Running = ReadB() == 1;
             InCombat = ReadB() == 1;
             AlikeDead = ReadB() == 1;
-            Visible = ReadB() == 1;
+            Invisible = ReadB() == 1;
 
             ReadB(); //MountType
             ReadB(); //OperateType
@@ -134,6 +133,7 @@ public class UserInfoPacket : ServerPacket
             ReadB(); //IsNoble
             ReadB(); //Hero/GM Aura
             ReadB(); //IsFishing
+
             ReadI(); // Fishing Loc X
             ReadI(); // Fishing Loc Y
             ReadI(); // Fishing Loc Z
@@ -178,7 +178,7 @@ public class UserInfoPacket : ServerPacket
                $"Face: {Appearance.Face}, CollisionRadius: {Appearance.CollisionRadius}, CollisionHeight: {Appearance.CollisionHeight}, " +
                $"RHand: {Appearance.RHand}, LHand: {Appearance.LHand}, Gloves: {Appearance.Gloves}, Chest: {Appearance.Chest}, " +
                $"Legs: {Appearance.Legs}, Feet: {Appearance.Feet} }}, " +
-               $"Running: {Running}, Sitting: {Sitting}, InCombat: {InCombat}, AlikeDead: {AlikeDead}, Visible: {Visible} " +
+               $"Running: {Running}, Sitting: {Sitting}, InCombat: {InCombat}, AlikeDead: {AlikeDead}, Invisible: {Invisible} " +
                $"}}";
     }
 }

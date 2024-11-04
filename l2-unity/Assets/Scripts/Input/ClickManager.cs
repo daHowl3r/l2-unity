@@ -15,6 +15,7 @@ public class ClickManager : MonoBehaviour
     private Vector3 _lastClickPosition = Vector3.zero;
     [SerializeField] private LayerMask _entityMask;
     [SerializeField] private LayerMask _clickThroughMask;
+    private Camera _mainCamera;
 
     private static ClickManager _instance;
     public static ClickManager Instance { get { return _instance; } }
@@ -41,6 +42,7 @@ public class ClickManager : MonoBehaviour
         _locator = GameObject.Find("Locator");
         _locatorBaseEffect = _locator.transform.GetChild(0).gameObject;
         _locatorReachedEffect = _locator.transform.GetChild(1).gameObject;
+        _mainCamera = CameraController.Instance.GetComponent<Camera>();
 
         HideLocator(false);
     }
@@ -58,7 +60,7 @@ public class ClickManager : MonoBehaviour
             return;
         }
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, 1000f, ~_clickThroughMask))

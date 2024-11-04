@@ -236,6 +236,8 @@ public class GameServerPacketHandler : ServerPacketHandler
 
     private void OnCharSelectionInfoReceive(byte[] data)
     {
+        Debug.LogWarning("OnCharSelectionInfoReceive");
+        Debug.LogWarning(GameManager.Instance.GameState);
         CharSelectionInfoPacket packet = new CharSelectionInfoPacket(data);
 
         CharacterSelector.Instance.Characters = packet.Characters;

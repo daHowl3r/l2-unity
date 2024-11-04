@@ -14,6 +14,7 @@ public class NameplatesManager : MonoBehaviour
     [SerializeField] private float _nameplateViewDistance = 50f;
     [SerializeField] private LayerMask _entityMask;
     [SerializeField] public RaycastHit[] _entitiesInRange;
+    private Camera _mainCamera;
 
     private static NameplatesManager _instance;
     public static NameplatesManager Instance { get { return _instance; } }
@@ -46,6 +47,8 @@ public class NameplatesManager : MonoBehaviour
         {
             Debug.LogError("Could not load chat window template.");
         }
+
+        _mainCamera = CameraController.Instance.GetComponent<Camera>();
     }
 
     public void SetMask(LayerMask mask)
@@ -272,7 +275,7 @@ public class NameplatesManager : MonoBehaviour
     {
         try
         {
-            Vector2 nameplatePos = Camera.main.WorldToScreenPoint(nameplate.Target.position + Vector3.up * nameplate.NameplateOffsetHeight);
+            Vector2 nameplatePos = _mainCamera.WorldToScreenPoint(nameplate.Target.position + Vector3.up * nameplate.NameplateOffsetHeight);
             nameplate.NameplateEle.style.left = nameplatePos.x - nameplate.NameplateEle.resolvedStyle.width / 2f;
             nameplate.NameplateEle.style.top = Screen.height - nameplatePos.y - nameplate.NameplateEle.resolvedStyle.height;
         }

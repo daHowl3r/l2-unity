@@ -29,6 +29,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float _rootBoneHeight = 0;
 
     [SerializeField] private CameraCollisionDetection _collisionDetector;
+    private Camera _mainCamera;
 
     public Transform Target { get { return _target; } set { _target = value; } }
 
@@ -50,6 +51,8 @@ public class CameraController : MonoBehaviour
         {
             Destroy(this);
         }
+
+        _mainCamera = GetComponent<Camera>();
     }
 
     void OnDestroy()
@@ -99,7 +102,7 @@ public class CameraController : MonoBehaviour
 
         _rootBone = _target.transform.FindRecursive(child => child.tag == "Root");
         _rootBoneHeight = _rootBone.position.y - _target.position.y;
-        _collisionDetector = new CameraCollisionDetection(GetComponent<Camera>(), _target, _camOffset, _collisionMask);
+        _collisionDetector = new CameraCollisionDetection(_mainCamera, _target, _camOffset, _collisionMask);
     }
 
     public bool IsObjectVisible(Transform target)
@@ -121,7 +124,7 @@ public class CameraController : MonoBehaviour
             return false;
         }
 
-        Vector3 viewPort = Camera.main.WorldToViewportPoint(target.position);
+        Vector3 viewPort = _mainCamera.WorldToViewportPoint(target.position);
         bool insideView = viewPort.x <= 1 && viewPort.x >= 0 && viewPort.y <= 1 && viewPort.y >= 0 && viewPort.z >= -0.2f;
         return insideView;
     }

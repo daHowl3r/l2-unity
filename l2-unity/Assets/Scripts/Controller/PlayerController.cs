@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform _lookAtTarget;
     private float _stopAtRange;
     private Vector3 _flatTransformPos;
+    private Camera _mainCamera;
 
     public float CurrentSpeed { get { return _currentSpeed; } }
     public float DefaultRunSpeed { get { return _defaultRunSpeed; } set { _defaultRunSpeed = value; } }
@@ -60,6 +61,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _controller = GetComponent<CharacterController>();
+        _mainCamera = CameraController.Instance.GetComponent<Camera>();
     }
 
     void Update()
@@ -203,7 +205,7 @@ public class PlayerController : MonoBehaviour
             angle = Mathf.Atan2(_axis.x, _axis.y) * Mathf.Rad2Deg;
             angle = Mathf.Round(angle / 45f);
             angle *= 45f;
-            angle += Camera.main.transform.eulerAngles.y;
+            angle += _mainCamera.transform.eulerAngles.y;
         }
 
         return angle;
@@ -215,10 +217,10 @@ public class PlayerController : MonoBehaviour
         Vector3 direction;
         if (_controller.isGrounded)
         {
-            //Vector3 forward = Camera.main.transform.TransformDirection(Vector3.forward);
+            //Vector3 forward = mainCamera.transform.TransformDirection(Vector3.forward);
             Vector3 rotationAxis = Vector3.up; // Axis of rotation (e.g., upwards)
             // Create a Quaternion representing the rotation
-            Quaternion rotation = Quaternion.AngleAxis(Camera.main.transform.eulerAngles.y, rotationAxis);
+            Quaternion rotation = Quaternion.AngleAxis(_mainCamera.transform.eulerAngles.y, rotationAxis);
             // Rotate the vector based on camera angle
             Vector3 forward = rotation * Vector3.forward;
             // Calculate vector based on keyboard inputs + camera angle
@@ -290,7 +292,7 @@ public class PlayerController : MonoBehaviour
     {
         if (followCamera)
         {
-            _finalAngle = Camera.main.transform.eulerAngles.y;
+            _finalAngle = _mainCamera.transform.eulerAngles.y;
         }
 
         transform.rotation = Quaternion.Euler(Vector3.up * _finalAngle);

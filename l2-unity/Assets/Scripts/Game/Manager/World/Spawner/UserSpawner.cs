@@ -30,6 +30,8 @@ public class UserSpawner : EntitySpawnStrategy<PlayerAppearance, Stats, PlayerSt
         go.SetActive(true);
         go.transform.SetParent(_usersContainer.transform);
 
+        UpdateEntityComponents(user, identity, status, stats, appearance, running);
+
         AddEntity(identity, user);
     }
 
@@ -78,21 +80,11 @@ public class UserSpawner : EntitySpawnStrategy<PlayerAppearance, Stats, PlayerSt
     {
         Debug.LogWarning("[" + Thread.CurrentThread.ManagedThreadId + "] UPDATE ENTITY FUNC");
 
-        if (entity.Stats.Level != 0 && stats.Level > entity.Stats.Level)
-        {
-            Debug.LogWarning("Entity level up!");
-            WorldCombat.Instance.EntityCastSkill(entity, 2122);
-        }
-
-        // Player-specific updates
-        CharacterInfoWindow.Instance.UpdateValues();
-        InventoryWindow.Instance.RefreshWeight();
-        GameManager.Instance.OnPlayerInfoReceive();
-        NetworkTransformShare.Instance.SharePosition();
+        UpdateEntityComponents((NetworkHumanoidEntity)entity, identity, status, stats, appearance, running);
     }
 
-    private void UpdateEntityComponents(PlayerEntity entity, NetworkIdentity identity, PlayerStatus status,
-    PlayerStats stats, PlayerAppearance appearance, bool running)
+    private void UpdateEntityComponents(NetworkHumanoidEntity entity, NetworkIdentity identity, PlayerStatus status,
+    Stats stats, PlayerAppearance appearance, bool running)
     {
         Debug.LogWarning("UpdateEntityComponents");
         UpdateIdentityAndStatus(entity, identity, status);
@@ -100,7 +92,7 @@ public class UserSpawner : EntitySpawnStrategy<PlayerAppearance, Stats, PlayerSt
         UpdateStatsAndAppearance(entity, stats, appearance, running);
     }
 
-    private void UpdateIdentityAndStatus(PlayerEntity entity, NetworkIdentity identity, PlayerStatus status)
+    private void UpdateIdentityAndStatus(NetworkHumanoidEntity entity, NetworkIdentity identity, PlayerStatus status)
     {
         Debug.LogWarning("UpdateIdentityAndStatus");
         entity.Identity.UpdateEntityPartial(identity);
@@ -108,13 +100,14 @@ public class UserSpawner : EntitySpawnStrategy<PlayerAppearance, Stats, PlayerSt
         ((PlayerStatus)entity.Status).UpdateStatus(status);
     }
 
-    private void UpdateStatsAndAppearance(Entity entity, PlayerStats stats,
+    private void UpdateStatsAndAppearance(NetworkHumanoidEntity entity, Stats stats,
         PlayerAppearance appearance, bool running)
     {
         entity.Stats.UpdateStats(stats);
         entity.Running = running;
         ((PlayerAppearance)entity.Appearance).UpdateAppearance(appearance);
 
+        Debug.LogWarning("===");
         entity.UpdatePAtkSpeed(stats.PAtkSpd);
         entity.UpdateMAtkSpeed(stats.MAtkSpd);
         entity.UpdateWalkSpeed(stats.WalkSpeed);

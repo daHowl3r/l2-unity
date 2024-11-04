@@ -81,14 +81,6 @@ public class PlayerSpawner : EntitySpawnStrategy<PlayerAppearance, PlayerStats, 
     protected override void UpdateEntity(Entity entity, NetworkIdentity identity,
         PlayerStatus status, PlayerStats stats, PlayerAppearance appearance, bool running)
     {
-        Debug.LogWarning("[" + Thread.CurrentThread.ManagedThreadId + "] UPDATE ENTITY FUNC");
-
-        Debug.LogWarning(entity);
-        Debug.LogWarning(entity.transform);
-        Debug.LogWarning(entity.Identity.Id);
-        Debug.LogWarning(entity == PlayerEntity.Instance);
-        Debug.LogWarning(entity.Identity.Id == GameClient.Instance.CurrentPlayerId);
-
         entity.gameObject.layer = LayerMask.NameToLayer("Player");
 
         UpdateEntityComponents((PlayerEntity)entity, identity, status, stats, appearance, running);
@@ -103,7 +95,6 @@ public class PlayerSpawner : EntitySpawnStrategy<PlayerAppearance, PlayerStats, 
     private void UpdateEntityComponents(PlayerEntity entity, NetworkIdentity identity, PlayerStatus status,
     PlayerStats stats, PlayerAppearance appearance, bool running)
     {
-        Debug.LogWarning("UpdateEntityComponents");
         UpdateIdentityAndStatus(entity, identity, status);
         CheckAndHandleLevelUp(entity, stats);
         UpdateStatsAndAppearance(entity, stats, appearance, running);
@@ -111,29 +102,14 @@ public class PlayerSpawner : EntitySpawnStrategy<PlayerAppearance, PlayerStats, 
 
     private void UpdateIdentityAndStatus(PlayerEntity entity, NetworkIdentity identity, PlayerStatus status)
     {
-        Debug.LogWarning("UpdateIdentityAndStatus");
         entity.Identity.UpdateEntity(identity);
         ((PlayerStatus)entity.Status).UpdateStatus(status);
-    }
-
-    private void CheckAndHandleLevelUp(PlayerEntity entity, Stats stats)
-    {
-        Debug.LogWarning("CheckAndHandleLevelUp");
-        if (entity.Stats.Level != 0 && stats.Level > entity.Stats.Level)
-        {
-            Debug.LogWarning("Entity level up!");
-            WorldCombat.Instance.EntityCastSkill(entity, 2122);
-        }
     }
 
     private void UpdateStatsAndAppearance(PlayerEntity entity, PlayerStats stats,
         PlayerAppearance appearance, bool running)
     {
-        Debug.LogWarning("UpdateStatsAndAppearance");
-        Debug.LogWarning(stats.MaxHp);
-        Debug.LogWarning(entity);
         ((PlayerStats)entity.Stats).UpdateStats(stats);
-        Debug.LogWarning(entity.Stats.MaxHp);
         entity.UpdateMoveType(running);
 
         ((PlayerAppearance)entity.Appearance).UpdateAppearance(appearance);

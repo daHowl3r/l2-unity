@@ -75,7 +75,7 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
         }
 
         _lastDestination = destination;
-        Debug.LogWarning("SetDestination: " + destination);
+        // Debug.LogWarning("SetDestination: " + destination);
         _stopAtRange = stopAtRange > 0 ? stopAtRange + 0.28f : 0; //TODO: Change 0.28f based on entities collision width
         _destination = destination;
         _speed = _entity.Running ? _entity.Stats.ScaledRunSpeed : _entity.Stats.ScaledWalkSpeed;

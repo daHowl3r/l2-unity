@@ -33,7 +33,6 @@ public abstract class EntitySpawnStrategy<TAppearance, TStats, TStatus> where TA
             var entity = await WorldSpawner.Instance.GetEntityAsync(identity.Id);
             if (entity != null)
             {
-                Debug.LogWarning("[" + Thread.CurrentThread.ManagedThreadId + "] UPDATE ENTITY");
                 _eventProcessor.QueueEvent(() => UpdateEntity(entity, identity, status, stats, appearance, running));
             }
         });
@@ -50,7 +49,6 @@ public abstract class EntitySpawnStrategy<TAppearance, TStats, TStatus> where TA
 
     protected void CheckAndHandleLevelUp(Entity entity, Stats stats)
     {
-        Debug.LogWarning("CheckAndHandleLevelUp");
         if (entity.Stats.Level != 0 && stats.Level > entity.Stats.Level)
         {
             Debug.LogWarning("Entity level up!");

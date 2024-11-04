@@ -167,7 +167,6 @@ public class NpcSpawner : EntitySpawnStrategy<Appearance, Stats, NpcStatus>
     protected override void UpdateEntity(Entity entity, NetworkIdentity identity,
         NpcStatus status, Stats stats, Appearance appearance, bool running)
     {
-        Debug.LogWarning("[" + Thread.CurrentThread.ManagedThreadId + "] UPDATE ENTITY FUNC");
         UpdateNpcComponents(entity, identity, status, stats, appearance, running);
     }
 
@@ -179,7 +178,6 @@ public class NpcSpawner : EntitySpawnStrategy<Appearance, Stats, NpcStatus>
         Appearance appearance,
         bool running)
     {
-        Debug.LogWarning("[" + Thread.CurrentThread.ManagedThreadId + "] UpdateNpcComponents");
         entity.Identity.UpdateEntityPartial(identity);
 
         var networkTransform = ((NetworkEntityReferenceHolder)entity.ReferenceHolder).NetworkTransformReceive;

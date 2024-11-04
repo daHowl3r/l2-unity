@@ -71,7 +71,6 @@ public class WorldSpawner : MonoBehaviour
 
     public bool AddObject(int id, Entity entity)
     {
-        Debug.LogWarning("Adding object: " + entity);
         if (!_objects.TryAdd(id, entity))
         {
             Debug.LogError($"Cant add npc with ID {id} in Objects.");

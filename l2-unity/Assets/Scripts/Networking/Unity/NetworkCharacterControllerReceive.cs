@@ -10,9 +10,11 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
     [SerializeField] private float _distanceToDestination;
     [SerializeField] private float _speed;
     [SerializeField] private Vector3 _destination;
+    [SerializeField] private Vector3 _lastDestination;
     [SerializeField] private float _gravity = 28f;
     [SerializeField] private float _moveSpeedMultiplier = 1f;
     [SerializeField] private float _stopAtRange = 0;
+    [SerializeField] private float _stopAtRangeDefault = 0.05f;
 
     public Vector3 MoveDirection { get { return _direction; } set { _direction = value; } }
 
@@ -62,6 +64,13 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
     // Move to destination packets
     public void SetDestination(Vector3 destination, float stopAtRange)
     {
+        if (_lastDestination == destination)
+        {
+            return;
+        }
+
+        _lastDestination = destination;
+        Debug.LogWarning("SetDestination: " + destination);
         _stopAtRange = stopAtRange > 0 ? stopAtRange + 0.28f : 0; //TODO: Change 0.28f based on entities collision width
         _destination = destination;
         _speed = _entity.Running ? _entity.Stats.ScaledRunSpeed : _entity.Stats.ScaledWalkSpeed;
@@ -71,7 +80,7 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
         _distanceToDestination = Vector3.Distance(transformFlat, destinationFlat);
         _direction = (destinationFlat - transformFlat).normalized;
 
-        if (_distanceToDestination > 0.05f + stopAtRange)
+        if (_distanceToDestination > _stopAtRangeDefault + stopAtRange)
         {
             _networkTransformReceive.PausePositionSync();
         }
@@ -81,7 +90,7 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
     {
         _distanceToDestination = Vector3.Distance(VectorUtils.To2D(transform.position), VectorUtils.To2D(_destination));
 
-        if (_distanceToDestination < 0.05f + _stopAtRange)
+        if (_distanceToDestination < _stopAtRangeDefault)
         {
             if (_direction != Vector3.zero)
             {

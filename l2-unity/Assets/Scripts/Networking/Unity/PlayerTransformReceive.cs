@@ -24,6 +24,11 @@ public class PlayerTransformReceive : NetworkTransformReceive
         PausePositionSync();
     }
 
+    protected override float GetPositionSyncThreshold()
+    {
+        return GameClient.Instance.PlayerPositionSyncThreshold;
+    }
+
     /* Set new theorical position */
     public override void SetNewPosition(Vector3 pos, bool calculateY)
     {

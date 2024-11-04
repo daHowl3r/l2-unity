@@ -4,6 +4,7 @@ using UnityEngine;
 public class MonsterStateAtk : MonsterStateAction
 {
     private float clipLength;
+    private float _lastNormalizedTime = 0;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -21,7 +22,6 @@ public class MonsterStateAtk : MonsterStateAction
 
         SetBool(MonsterAnimationEvent.wait, false);
         SetBool(MonsterAnimationEvent.atkwait, false);
-        SetBool(MonsterAnimationEvent.atk01, false);
 
         PlaySoundAtRatio(EntitySoundEvent.Atk, AudioHandler.AtkRatio);
         PlaySoundAtRatio(EntitySoundEvent.Swish, AudioHandler.SwishRatio);
@@ -30,8 +30,14 @@ public class MonsterStateAtk : MonsterStateAction
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (stateInfo.normalizedTime > 0.25f)
+        {
+            SetBool(MonsterAnimationEvent.atk01, false);
+        }
+
         if (IsDead())
         {
+            SetBool(MonsterAnimationEvent.atk01, false);
             SetBool(MonsterAnimationEvent.death, true);
             return;
         }
@@ -40,10 +46,12 @@ public class MonsterStateAtk : MonsterStateAction
         {
             if (Entity.Running)
             {
+                SetBool(MonsterAnimationEvent.atk01, false);
                 SetBool(MonsterAnimationEvent.run, true);
             }
             else
             {
+                SetBool(MonsterAnimationEvent.atk01, false);
                 SetBool(MonsterAnimationEvent.walk, true);
             }
 
@@ -52,8 +60,14 @@ public class MonsterStateAtk : MonsterStateAction
 
         if (DidAttackTimeout())
         {
-            SetBool(MonsterAnimationEvent.atkwait, true);
             SetBool(MonsterAnimationEvent.atk01, false);
+            SetBool(MonsterAnimationEvent.atkwait, true);
+        }
+
+        if ((stateInfo.normalizedTime - _lastNormalizedTime) >= 1f)
+        {
+            _lastNormalizedTime = stateInfo.normalizedTime;
+            PlaySoundAtRatio(EntitySoundEvent.Atk, AudioHandler.AtkRatio);
         }
     }
 

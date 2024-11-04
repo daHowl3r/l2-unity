@@ -68,13 +68,17 @@ public class NetworkTransformReceive : MonoBehaviour
         _posLerpValue = 0;
     }
 
-    /* Safety measure to keep the transform position synced */
+    protected virtual float GetPositionSyncThreshold()
+    {
+        return GameClient.Instance.ServerEntityPositionSyncThreshold;
+    }
 
+    /* Safety measure to keep the transform position synced */
     private void UpdatePosition()
     {
         /* Check if client transform position is synced with server's */
         _positionDelta = VectorUtils.Distance2D(transform.position, _serverPosition);
-        if (_positionDelta > GameClient.Instance.PositionSyncThreshold && _positionSynced)
+        if (_positionDelta > GetPositionSyncThreshold() && _positionSynced)
         {
             _lastDesyncTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             _positionSynced = false;
@@ -107,7 +111,7 @@ public class NetworkTransformReceive : MonoBehaviour
             }
 
             transform.position = Vector3.Lerp(_lastPos, _serverPosition, _posLerpValue);
-            _posLerpValue += (1 / _lerpDuration) * Time.deltaTime;
+            _posLerpValue += 1 / _lerpDuration * Time.deltaTime;
         }
     }
 
@@ -124,14 +128,14 @@ public class NetworkTransformReceive : MonoBehaviour
 
     public virtual void SetFinalRotation(float finalRotation)
     {
-        Debug.Log($"[{transform.name}]Setting new final rotation: {finalRotation}");
+        // Debug.Log($"[{transform.name}]Setting new final rotation: {finalRotation}");
         _newRotation = finalRotation;
         _lastRotationUpdateTime = Time.time;
     }
 
     public virtual void LookAt(Transform target)
     {
-        Debug.Log($"[{transform.name}] LookAt {target}");
+        // Debug.Log($"[{transform.name}] LookAt {target}");
         if (target != null)
         {
             SetFinalRotation(VectorUtils.CalculateMoveDirectionAngle(transform.position, target.position));

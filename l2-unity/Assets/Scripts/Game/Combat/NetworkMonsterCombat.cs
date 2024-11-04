@@ -40,6 +40,7 @@ public class NetworkMonsterCombat : NetworkCombat
 
     public override bool AttackOnce()
     {
+        Debug.LogWarning("AttackOnce");
         if (base.AttackOnce())
         {
             MonsterAnimationController.SetBool(MonsterAnimationEvent.atk01, true);

@@ -74,10 +74,11 @@ public class TargetManager : MonoBehaviour
 
         for (int i = 0; i < _entitiesInRange.Length; i++)
         {
-            Transform entity = _entitiesInRange[i].transform;
-            if (IsTransformVisible(entity))
+            Transform entityTransform = _entitiesInRange[i].transform;
+            Entity entity = entityTransform.GetComponent<Entity>();
+            if (IsTransformVisible(entityTransform) && entity.Identity.EntityType == EntityType.Monster && !entity.IsDead)
             {
-                visibleEntities.Add(entity);
+                visibleEntities.Add(entityTransform);
             }
         }
 
@@ -137,6 +138,11 @@ public class TargetManager : MonoBehaviour
     {
         int index = _nextTargetIndex;
 
+        if (_visibleEntities.Count == 0)
+        {
+            return 0;
+        }
+
         if (index >= _visibleEntities.Count)
         {
             index = 0;
@@ -157,6 +163,11 @@ public class TargetManager : MonoBehaviour
 
     public void NextTarget()
     {
+        if (_visibleEntities.Count == 0)
+        {
+            return;
+        }
+
         _nextTargetIndex = GetNextTargetIndex();
 
         SetTarget(new ObjectData(_visibleEntities[_nextTargetIndex].gameObject));

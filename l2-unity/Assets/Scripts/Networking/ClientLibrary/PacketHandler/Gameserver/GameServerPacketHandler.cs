@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 public class GameServerPacketHandler : ServerPacketHandler
 {
@@ -15,9 +14,6 @@ public class GameServerPacketHandler : ServerPacketHandler
 
         switch (packetType)
         {
-            // case GameServerPacketType.Ping:
-            //     OnPingReceive();
-            //     break;
             case GameServerPacketType.VersionCheck:
                 OnKeyReceive(data);
                 break;
@@ -42,12 +38,6 @@ public class GameServerPacketHandler : ServerPacketHandler
             case GameServerPacketType.RemoveObject:
                 OnRemoveObject(data);
                 break;
-            // case GameServerPacketType.ObjectRotation:
-            //     OnUpdateRotation(data);
-            //     break;
-            // case GameServerPacketType.ObjectAnimation:
-            //     OnUpdateAnimation(data);
-            //     break;
             case GameServerPacketType.Attack:
                 OnEntityAttack(data);
                 break;
@@ -71,12 +61,6 @@ public class GameServerPacketHandler : ServerPacketHandler
                 break;
             case GameServerPacketType.MyTargetSet:
                 OnMyTargetSet(data);
-                break;
-            case GameServerPacketType.AutoAttackStart:
-                OnEntityAttackStanceStart(data);
-                break;
-            case GameServerPacketType.AutoAttackStop:
-                OnEntityAttackStanceEnd(data);
                 break;
             case GameServerPacketType.ActionFailed:
                 OnActionFailed(data);
@@ -177,35 +161,6 @@ public class GameServerPacketHandler : ServerPacketHandler
         }
 
         return data;
-    }
-
-    private void OnPingReceive()
-    {
-        long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        int ping = _timestamp != 0 ? (int)(now - _timestamp) : 0;
-        GameClient.Instance.Ping = ping;
-
-        Task.Delay(1000).ContinueWith(t =>
-        {
-            if (!_tokenSource.IsCancellationRequested)
-            {
-                ((GameClientPacketHandler)_clientPacketHandler).SendPing();
-                _timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            }
-
-            Task.Delay(GameClient.Instance.ConnectionTimeoutMs + 100).ContinueWith(t =>
-            {
-                if (!_tokenSource.IsCancellationRequested)
-                {
-                    long now2 = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                    if (now2 - _timestamp >= GameClient.Instance.ConnectionTimeoutMs)
-                    {
-                        Debug.LogWarning("Connection timed out");
-                        _client.Disconnect();
-                    }
-                }
-            }, _tokenSource.Token);
-        }, _tokenSource.Token);
     }
 
     private void OnKeyReceive(byte[] data)
@@ -377,26 +332,6 @@ public class GameServerPacketHandler : ServerPacketHandler
         WorldSpawner.Instance.RemoveObject(packet.Id);
     }
 
-    // private void OnUpdateRotation(byte[] data)
-    // {
-    //     UpdateRotationPacket packet = new UpdateRotationPacket(data);
-    //     int id = packet.Id;
-    //     float angle = packet.Angle;
-    //     World.Instance.UpdateObjectRotation(id, angle);
-    // }
-
-    // private void OnUpdateAnimation(byte[] data)
-    // {
-    //     UpdateAnimationPacket packet = new UpdateAnimationPacket(data);
-    //     int id = packet.Id;
-    //     int animId = packet.AnimId;
-    //     float value = packet.Value;
-
-    //     Debug.Log($"ID: {id} AnimId: {(HumanoidAnimationEvent)animId} Value: {value}");
-
-    //     World.Instance.UpdateObjectAnimation(id, animId, value);
-    // }
-
     private void OnEntityAttack(byte[] data)
     {
         InflictDamagePacket packet = new InflictDamagePacket(data);
@@ -445,19 +380,6 @@ public class GameServerPacketHandler : ServerPacketHandler
     {
         MyTargetSetPacket packet = new MyTargetSetPacket(data);
         WorldCombat.Instance.UpdateMyTarget(GameClient.Instance.CurrentPlayerId, packet.TargetId);
-    }
-
-    private void OnEntityAttackStanceStart(byte[] data)
-    {
-        Debug.Log("OnEntityAttackStanceStart");
-        AttackStanceStartPacket packet = new AttackStanceStartPacket(data);
-        WorldCombat.Instance.EntityAttackStanceStart(packet.EntityId);
-    }
-
-    private void OnEntityAttackStanceEnd(byte[] data)
-    {
-        AttackStanceEndPacket packet = new AttackStanceEndPacket(data);
-        WorldCombat.Instance.EntityAttackStanceEnd(packet.EntityId);
     }
 
     private void OnActionFailed(byte[] data)
